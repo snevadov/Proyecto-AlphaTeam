@@ -1,0 +1,20 @@
+{
+  "name": "app-entrega-semana2-bootstrap",
+  "version": "1.0.0",
+  "main": "src/app",
+  "dependencies": {
+    "body-parse": "^0.1.0",
+    "bootstrap": "^4.3.1",
+    "express": "^4.17.0",
+    "hbs": "^4.0.4",
+    "jquery": "^3.4.1",
+    "popper.js": "^1.15.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}

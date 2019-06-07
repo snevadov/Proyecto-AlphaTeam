@@ -1,0 +1,44 @@
+{{>header}}
+
+<div class="container">
+    <h1>Formulario para ingresar un nuevo curso</h1>
+
+    <form action="/crear-curso" method="POST">
+            <div class="form-group">
+                    <label for="id">Id Curso</label>
+                    <input type="text"  class="form-control" name="id" required>
+            </div>
+
+            <div class="form-group">
+                    <label for="nombre">Nombre Curso</label>
+                    <input type="text"  class="form-control" name="nombre" required>
+            </div>
+
+            <div class="form-group">
+                <label for="modalidad">Modalidad</label>
+                <select class="form-control" id="modalidad">
+                    <option>Presencial</option>
+                    <option>Virtual</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                    <label for="valor">Valor</label>
+                    <input type="number" class="form-control" name="valor" required>
+            </div>
+            
+            <div class="form-group">
+                    <label for="descripcion">Descripcion</label>
+                    <textarea class="form-control" id="descripcion" rows="3" required></textarea>
+            </div>        
+
+            <div class="form-group">
+                    <label for="intensidad">Intensidad horaria</label>
+                    <input type="number" class="form-control" name="intensidad" required>
+            </div>
+
+            <button class="btn btn-primary">Calcular</button>
+    </form>
+</div>
+
+{{>footer}}

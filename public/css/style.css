@@ -1,0 +1,15 @@
+body {
+    color: grey;
+    font-family: arial;
+    min-height: 100vh;
+}
+
+header {
+    margin-top: 16px;
+    margin-bottom: 48px;
+}
+
+h1 {
+    font-size: 49px;
+    margin-bottom: 16px;
+}
