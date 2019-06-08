@@ -3,6 +3,8 @@ const app = express();
 const path = require('path');
 const hbs = require('hbs');
 const bodyParser = require('body-parser');
+//requiero filesystem
+const fs = require('fs');
 require('./helpers');
 
 const directoriopublico = path.join(__dirname, '../public');
@@ -85,11 +87,50 @@ app.post('/registrar-usuario',(req, res) => {
     usuario: usuario
   });
 });
+
+app.post('/',(req, res) => {
+  
+  id = parseInt(req.body.id);
+  contrasena = req.body.contrasena;
+
+  let listaUsuarios = [];
+  listaUsuarios = require('./usuario.json');
+
+  //Obtengo el usuario basado en el id
+  let usuario = listaUsuarios.find(usr => (usr.id === id && usr.contrasena === contrasena));
+  console.log(usuario);
+
+  //Si no encuentro el usuario, muestro error
+  if(!usuario)
+    {
+      res.render('index', {
+        claseAlerta:'alert alert-danger col-6 col-sm-7 col-lg-4 col-xl-4',
+        mensajeLogin:'El usuario y/o contraseña son incorrectos!'
+      });
+    }
+    else
+    {
+        //Dependiendo del rol, redirecciono a una página
+        if(usuario.tipo == 'administrador')
+        {
+          res.redirect('/listado-cursos');
+        }
+        else if(usuario.tipo == 'aspirante')
+        {
+          res.redirect('/listado-cursos-aspirante');
+        }
+        else if(usuario.tipo == 'docente')
+        {
+          res.redirect('/listado-cursos-aspirante');
+        }
+    }
+
+});
 //** FIN SEBASTIÁN */
 
 app.get('*', (req, res) => {
   res.render('error',{
-    estudiante: 'error'
+    estudiante: 'Error'
   });
 });
 
