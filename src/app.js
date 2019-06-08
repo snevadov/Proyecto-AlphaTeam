@@ -121,7 +121,7 @@ app.post('/',(req, res) => {
         }
         else if(usuario.tipo == 'docente')
         {
-          res.redirect('/listado-cursos-aspirante');
+          res.redirect('/listado-cursos-docente');
         }
     }
 
