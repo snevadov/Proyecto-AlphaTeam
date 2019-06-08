@@ -61,6 +61,32 @@ app.post('/crear-curso',(req, res) => {
   });
 });
 
+//** SEBASTIÁN */
+//Llamada para cargar formulario de creación de usuarios
+app.get('/registrar-usuario',(req, res) => {
+  res.render('registrar-usuario');
+});
+
+//Llamada para cargar formulario de creación de usuarios
+app.post('/registrar-usuario',(req, res) => {
+  
+  //Defino variable usuario
+  let usuario = {
+    id: parseInt(req.body.id),
+    nombre: req.body.nombre,
+    correo: req.body.correo,
+    telefono: req.body.telefono,
+    contrasena: req.body.contrasena,
+    tipo: 'aspirante'
+  };
+
+  //Realiza la redirección
+  res.render('registrar-usuario-resultado', {
+    usuario: usuario
+  });
+});
+//** FIN SEBASTIÁN */
+
 app.get('*', (req, res) => {
   res.render('error',{
     estudiante: 'error'

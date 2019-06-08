@@ -1,4 +1,6 @@
 const hbs = require('hbs');
+//requiero filesystem
+const fs = require('fs');
 
 hbs.registerHelper('obtenerPromedio', (valor) => {
 return (valor*100)
@@ -58,3 +60,44 @@ hbs.registerHelper('listar2', () => {
 
     return texto;
 });
+
+//** SEBASTIÁN */
+// Registro de usuarios
+hbs.registerHelper('registrarUsuario', (usuario) => {
+    let listaUsuarios = [];
+    listaUsuarios = require('./usuario.json');
+
+    let respuesta = '';
+
+    //Armo el objeto de curso
+    let nuevoUsuario = {
+        id: usuario.id,
+        nombre: usuario.nombre,
+        correo: usuario.correo,
+        telefono: usuario.telefono,
+        contrasena: usuario.contrasena,
+        tipo: usuario.tipo
+    };
+
+    //Valido que no permita guardar duplicados
+    let duplicado = listaUsuarios.find(usr => usr.id === nuevoUsuario.id);
+    if(!duplicado)
+    {
+        listaUsuarios.push(nuevoUsuario);
+        let datos = JSON.stringify(listaUsuarios);
+        fs.writeFile('src/usuario.json', datos, (err)=>{
+            if(err) console.log(err);
+            console.log('Archivo creado con éxito');
+        });
+
+        respuesta = "El usuario " + nuevoUsuario.nombre + ' con documento de identidad ' + nuevoUsuario.id  + " fue creado de manera exitosa!";
+    }
+    else
+    {
+        respuesta = "No se fue posible registrar el usuario" + nuevoUsuario.nombre + ' con documento de identidad ' + nuevoUsuario.id + '. Ya existe otro usuario con es documento.';
+    }
+
+    return respuesta;
+});
+
+//** FIN SEBASTIÁN */

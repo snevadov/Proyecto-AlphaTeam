@@ -1,0 +1,36 @@
+{{>header}}
+
+<div class="container">
+    <h1>Formulario para registro de usuarios</h1>
+
+    <form action="/registrar-usuario" method="POST">
+            <div class="form-group">
+                    <label for="id">Documento de identidad</label>
+                    <input type="number"  class="form-control" name="id" placeholder="Ingrese su documento de identidad" aria-describedby="idHelp" required>
+                    <small id="idHelp" class="form-text text-muted">Será el usuario para ingresar</small>
+            </div>
+
+            <div class="form-group">
+                    <label for="nombre">Nombre</label>
+                    <input type="text"  class="form-control" name="nombre" placeholder="Ingrese su nombre" required>
+            </div>
+            <div class="form-group">
+                    <label for="correo">Correo electrónico</label>
+                    <input type="email"  class="form-control" name="correo" placeholder="Ingrese un correo electrónico" required>
+            </div>
+
+            <div class="form-group">
+                    <label for="telefono">Teléfono</label>
+                    <input type="tel"  class="form-control" name="telefono" placeholder="Ingrese un teléfono" required>
+            </div>
+
+            <div class="form-group">
+                    <label for="contrasena">Contraseña</label>
+                    <input type="password"  class="form-control" name="contrasena" placeholder="Ingrese una contraseña" required>
+            </div>
+
+            <button class="btn btn-primary">Registrar</button>
+    </form>
+</div>
+
+{{>footer}}
