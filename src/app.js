@@ -68,10 +68,11 @@ app.get('*', (req, res) => {
 });
 
 
-
+//** JHON */
 console.log(__dirname)
 console.log(directoriopublico)
 
 app.listen(3000, () => {
   console.log('Escuchando por el puerto 3000');
 });
+//** FIN */

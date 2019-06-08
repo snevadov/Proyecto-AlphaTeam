@@ -16,5 +16,13 @@
   },
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/snevadov/Proyecto-AlphaTeam.git"
+  },
+  "bugs": {
+    "url": "https://github.com/snevadov/Proyecto-AlphaTeam/issues"
+  },
+  "homepage": "https://github.com/snevadov/Proyecto-AlphaTeam#readme"
 }
