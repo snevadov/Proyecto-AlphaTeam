@@ -88,6 +88,7 @@ app.post('/registrar-usuario',(req, res) => {
   });
 });
 
+//Llamada al login cuando pulso ingresar
 app.post('/',(req, res) => {
   
   id = parseInt(req.body.id);
@@ -129,6 +130,59 @@ app.post('/',(req, res) => {
 //Llamada para cargar el listado de usuarios
 app.get('/listado-usuarios',(req, res) => {
   res.render('listado-usuarios');
+});
+
+//Carga la edición de usuario
+app.post('/editar-usuario',(req, res) => {
+  
+  id = parseInt(req.body.id);
+
+  let listaUsuarios = [];
+  listaUsuarios = require('./usuario.json');
+
+  //Obtengo el usuario basado en el id
+  let usuario = listaUsuarios.find(usr => (usr.id === id));
+
+  //Si no encuentro el usuario, muestro error
+  if(!usuario)
+    {
+      res.render('index', {
+        claseAlerta:'alert alert-danger col-6 col-sm-7 col-lg-4 col-xl-4',
+        mensajeLogin:'El usuario y/o contraseña son incorrectos!'
+      });
+    }
+    else
+    {
+        res.render('editar-usuario', {
+          id:usuario.id,
+          nombre:usuario.nombre,
+          correo:usuario.correo,
+          telefono:usuario.telefono,
+          contrasena:usuario.contrasena,
+          tipo:usuario.tipo
+        });
+    }
+
+});
+
+//Guarda la edición de usuario
+app.post('/actualizar-usuario',(req, res) => {
+  
+  //Defino variable usuario
+  let usuario = {
+    id: parseInt(req.body.id),
+    nombre: req.body.nombre,
+    correo: req.body.correo,
+    telefono: req.body.telefono,
+    contrasena: req.body.contrasena,
+    tipo: req.body.tipo,
+  };
+
+  //Realiza la redirección
+  res.render('actualizar-usuario-resultado', {
+    usuario: usuario
+  });
+
 });
 //** FIN SEBASTIÁN */
 

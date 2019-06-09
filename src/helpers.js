@@ -135,7 +135,7 @@ hbs.registerHelper('listarUsuariosSelect', () => {
     let listaUsuarios = [];
     listaUsuarios = require('./usuario.json');
 
-    let texto = '<select class="form-control" name="id"><option value="">Usuarios...</otpion>'
+    let texto = '<select class="form-control" name="id"><option value="">Usuarios...</option>'
     
     listaUsuarios.forEach(usuario => {
         texto = texto + '<option value="' + usuario.id + '">' + usuario.id + ' | ' + usuario.nombre + '</option>';
@@ -144,6 +144,71 @@ hbs.registerHelper('listarUsuariosSelect', () => {
     texto = texto + "</select>";
 
     return texto;
+});
+
+// listado de roles en select o si es administrador no permite cambiarlo
+hbs.registerHelper('listarRolesUsuarios', (id) => {
+    let listaUsuarios = [];
+    listaUsuarios = require('./usuario.json');
+
+    //Obtengo el usuario basado en el id
+    let usuario = listaUsuarios.find(usr => (usr.id === id));
+    console.log(usuario);
+
+    let texto = '<select class="form-control" name="tipo" ';
+    if(usuario.tipo == 'administrador')
+    {
+        texto = texto + 'readonly disabled> \
+        <option value="administrador" selected>Administrador</option> \
+        <option value="aspirante">Aspirante</option> \
+        <option value="docente">Docente</option>';
+    }
+    else if(usuario.tipo == 'docente')
+    {
+        texto = texto + '><option value="aspirante">Aspirante</option><option value="docente" selected>Docente</option>'
+    }
+    else if(usuario.tipo == 'aspirante')
+    {
+        texto = texto + '><option value="aspirante" selected>Aspirante</option><option value="docente">Docente</option>'
+    };
+
+    texto = texto + "</select>";
+
+    return texto;
+});
+
+// Actaulización de usuarios
+hbs.registerHelper('actualizarUsuario', (usuario) => {
+    let listaUsuarios = [];
+    listaUsuarios = require('./usuario.json');
+
+    let respuesta = '';
+
+    //Valido que no permita guardar duplicados
+    let encontrado = listaUsuarios.find(usr => usr.id === usuario.id);
+    if(encontrado)
+    {
+        encontrado['id'] = usuario.id;
+        encontrado['nombre'] = usuario.nombre;
+        encontrado['correo'] = usuario.correo;
+        encontrado['telefono'] = usuario.telefono;
+        encontrado['contrasena'] = usuario.contrasena;
+        encontrado['tipo'] = usuario.tipo;
+
+        let datos = JSON.stringify(listaUsuarios);
+        fs.writeFile('src/usuario.json', datos, (err)=>{
+            if(err) console.log(err);
+            console.log('Archivo creado con éxito');
+        });
+
+        respuesta = "El usuario " + usuario.nombre + ' con documento de identidad ' + usuario.id  + " fue actualizado de manera exitosa!";
+    }
+    else
+    {
+        respuesta = "No se fue posible actualizar el usuario" + usuario.nombre + ' con documento de identidad ' + usuario.id + '. No existe usuario con ese documento.';
+    }
+
+    return respuesta;
 });
 
 //** FIN SEBASTIÁN */
