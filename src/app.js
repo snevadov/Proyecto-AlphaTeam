@@ -98,7 +98,6 @@ app.post('/',(req, res) => {
 
   //Obtengo el usuario basado en el id
   let usuario = listaUsuarios.find(usr => (usr.id === id && usr.contrasena === contrasena));
-  console.log(usuario);
 
   //Si no encuentro el usuario, muestro error
   if(!usuario)
@@ -125,6 +124,11 @@ app.post('/',(req, res) => {
         }
     }
 
+});
+
+//Llamada para cargar el listado de usuarios
+app.get('/listado-usuarios',(req, res) => {
+  res.render('listado-usuarios');
 });
 //** FIN SEBASTIÁN */
 

@@ -100,4 +100,50 @@ hbs.registerHelper('registrarUsuario', (usuario) => {
     return respuesta;
 });
 
+// listado de usuarios
+hbs.registerHelper('listarUsuarios', () => {
+    let listaUsuarios = [];
+    listaUsuarios = require('./usuario.json');
+
+    let texto = "<table class='table'> \
+                    <thead class='thead-dark'> \
+                    <th>Documento de identidad </th>\
+                    <th>Nombre </th>\
+                    <th>Correo </th>\
+                    <th>Teléfono </th>\
+                    <th>Rol </th>\
+                    </theader> \
+                <tbody>";
+    
+    listaUsuarios.forEach(usuario => {
+        texto = texto +            
+            "<tr>" +
+            "<td>" + usuario.id + '</td>' +
+            "<td>" + usuario.nombre + '</td>' +
+            "<td>" + usuario.correo + '</td>' +
+            "<td>" + usuario.telefono + '</td>' +
+            "<td>" + usuario.tipo + '</td>' +
+            "<tr>"
+    });
+    texto = texto + "</tbody></table>"
+
+    return texto;
+});
+
+// listado de usuarios en select
+hbs.registerHelper('listarUsuariosSelect', () => {
+    let listaUsuarios = [];
+    listaUsuarios = require('./usuario.json');
+
+    let texto = '<select class="form-control" name="id"><option value="">Usuarios...</otpion>'
+    
+    listaUsuarios.forEach(usuario => {
+        texto = texto + '<option value="' + usuario.id + '">' + usuario.id + ' | ' + usuario.nombre + '</option>';
+    });
+
+    texto = texto + "</select>";
+
+    return texto;
+});
+
 //** FIN SEBASTIÁN */
