@@ -429,11 +429,3 @@ const listaCursosEstudiantes = () => {
 	}	
 }
 /* Fin Walter */
-+ usuario.id + '. No existe usuario con ese documento.';
-    }
-
-    return respuesta;
-});
-
-//** FIN SEBASTIÁN */
->>>>>>> 66addf2595936b98d63c92cf294a93a2fc194e0b
