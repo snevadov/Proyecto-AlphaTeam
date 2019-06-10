@@ -40,10 +40,14 @@ app.post('/calculos',(req, res) => {
   });
 });
 
+//** JHON */
 app.get('/listado-cursos',(req, res) => {
   res.render('listado-cursos');
 });
 
+app.get('/listado-cursos-docente',(req, res) => {
+  res.render('listado-cursos-docente');
+});
 
 
 app.get('/crear-curso',(req, res) => {
@@ -60,6 +64,7 @@ app.post('/crear-curso',(req, res) => {
     intensidad: parseInt(req.body.intensidad)
   });
 });
+//** FIN */
 
 app.get('*', (req, res) => {
   res.render('error',{
@@ -68,11 +73,10 @@ app.get('*', (req, res) => {
 });
 
 
-//** JHON */
+
 console.log(__dirname)
 console.log(directoriopublico)
 
 app.listen(3000, () => {
   console.log('Escuchando por el puerto 3000');
 });
-//** FIN */
