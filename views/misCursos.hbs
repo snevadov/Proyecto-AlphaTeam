@@ -1,0 +1,16 @@
+{{>header}}
+	<div class="container">
+		<h1 align="center">Formulario para ver mis cursos</h1>
+		<h5 align="center">Utilice este formulario para ver y eliminar mis cursos</h5>
+		
+		<form action="/eliminarCurso" method="POST">			
+			<div class="container">
+			  <div class="row">
+				<div class="col-sm">
+					{{{listarMisCursos}}}
+				</div>
+			  </div>
+			</div>
+		</form>
+	</div>
+{{>footer}}
