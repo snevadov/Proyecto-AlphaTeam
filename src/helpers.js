@@ -101,7 +101,7 @@ hbs.registerHelper('listar-cursos-docente', () => {
     listaEstudiantes = [];
     listaCursos = require('./bd-cursos.json')
     listaEstudiantes = require('./estudiantes.json')
-    listaCursosEstudiantes = require('./cursos-estudiantes.json')
+    listadoCursosEstudiantes = require('./cursos-estudiantes.json')
 
     let cursos = listaCursos.filter(buscar => buscar.estado == "Disponible");    
     if (cursos.length == 0){
@@ -125,13 +125,14 @@ hbs.registerHelper('listar-cursos-docente', () => {
                                     <div class="card-header text-center id="heading${i}">
                                     <h2 class="mb-0">
                                         <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse${i}" aria-expanded="true" aria-controls="collapse${i}">
-                                            Curso: ${curso.nombre} - (id: ${curso.id}) <button type="button" class="btn btn-outline-danger">Cerrar Curso</button>
+                                            Curso: ${curso.nombre} - (id: ${curso.id})
                                         </button>
+                                        <a class="btn btn-outline-danger" href="listado-cursos-docente-eliminar" role="button">Cerrar Curso</a>
                                     </h2>
                                     </div>        
                                     <div id="collapse${i}" class="collapse" aria-labelledby="heading${i}" data-parent="#accordionExample">
                                     <div class="card-body">`
-                                        cursosEstudiantes = listaCursosEstudiantes.filter(buscar => buscar.curso == curso.id);
+                                        cursosEstudiantes = listadoCursosEstudiantes.filter(buscar => buscar.curso == curso.id);
 
                                         if (cursosEstudiantes.length == 0){
                                             texto = texto +                       
