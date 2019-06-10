@@ -61,11 +61,51 @@ app.post('/crear-curso',(req, res) => {
   });
 });
 
+//** WALTER */
+app.get('/inscripcion',(req, res) => {
+  res.render('inscripcion');
+});
+
+app.post('/inscripcion',(req, res) => {
+  res.render('inscripcion-confirmacion', {
+    nombre: req.body.nombre,
+    curso: req.body.modalidad
+  });
+});
+
+app.post('/crearIncripcion',(req,res)=>{	
+	res.render('inscripcion-confirmacion',{
+		documento: req.body.documento,
+		correo: req.body.correo,
+		nombre: req.body.nombre,
+		telefono: req.body.telefono,
+		curso: req.body.curso,
+	});
+});
+
+app.get('/misCursos',(req, res) => {
+  res.render('misCursos');
+});
+
+app.post('/misCursos',(req, res) => {
+  res.render('eliminar-confirmacion', {
+  });
+});
+
+app.post('/eliminarCurso',(req,res)=>{	
+	res.render('eliminar-curso-confirmacion',{
+		cursoest: req.body.cursoest
+	});
+});
+
+//** FIN */
+
 app.get('*', (req, res) => {
   res.render('error',{
     estudiante: 'error'
   });
 });
+
 
 
 //** JHON */
