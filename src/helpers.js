@@ -1,4 +1,5 @@
 const hbs = require('hbs');
+//requiero filesystem
 const fs = require('fs');
 listaEstudiantes = [];
 listaEstudiantesCursos = [];
@@ -62,6 +63,158 @@ hbs.registerHelper('listar2', () => {
 
     return texto;
 });
+
+//** SEBASTIÁN */
+// Registro de usuarios
+hbs.registerHelper('registrarUsuario', (usuario) => {
+    let listaUsuarios = [];
+    listaUsuarios = require('./usuario.json');
+
+    let respuesta = '';
+
+    //Armo el objeto de curso
+    let nuevoUsuario = {
+        id: usuario.id,
+        nombre: usuario.nombre,
+        correo: usuario.correo,
+        telefono: usuario.telefono,
+        contrasena: usuario.contrasena,
+        tipo: usuario.tipo
+    };
+
+    //Valido que no permita guardar duplicados
+    let duplicado = listaUsuarios.find(usr => usr.id === nuevoUsuario.id);
+    if(!duplicado)
+    {
+        listaUsuarios.push(nuevoUsuario);
+        let datos = JSON.stringify(listaUsuarios);
+        fs.writeFile('src/usuario.json', datos, (err)=>{
+            if(err) console.log(err);
+            console.log('Archivo creado con éxito');
+        });
+
+        respuesta = "El usuario " + nuevoUsuario.nombre + ' con documento de identidad ' + nuevoUsuario.id  + " fue creado de manera exitosa!";
+    }
+    else
+    {
+        respuesta = "No se fue posible registrar el usuario" + nuevoUsuario.nombre + ' con documento de identidad ' + nuevoUsuario.id + '. Ya existe otro usuario con es documento.';
+    }
+
+    return respuesta;
+});
+
+// listado de usuarios
+hbs.registerHelper('listarUsuarios', () => {
+    let listaUsuarios = [];
+    listaUsuarios = require('./usuario.json');
+
+    let texto = "<table class='table'> \
+                    <thead class='thead-dark'> \
+                    <th>Documento de identidad </th>\
+                    <th>Nombre </th>\
+                    <th>Correo </th>\
+                    <th>Teléfono </th>\
+                    <th>Rol </th>\
+                    </theader> \
+                <tbody>";
+    
+    listaUsuarios.forEach(usuario => {
+        texto = texto +            
+            "<tr>" +
+            "<td>" + usuario.id + '</td>' +
+            "<td>" + usuario.nombre + '</td>' +
+            "<td>" + usuario.correo + '</td>' +
+            "<td>" + usuario.telefono + '</td>' +
+            "<td>" + usuario.tipo + '</td>' +
+            "<tr>"
+    });
+    texto = texto + "</tbody></table>"
+
+    return texto;
+});
+
+// listado de usuarios en select
+hbs.registerHelper('listarUsuariosSelect', () => {
+    let listaUsuarios = [];
+    listaUsuarios = require('./usuario.json');
+
+    let texto = '<select class="form-control" name="id"><option value="">Usuarios...</option>'
+    
+    listaUsuarios.forEach(usuario => {
+        texto = texto + '<option value="' + usuario.id + '">' + usuario.id + ' | ' + usuario.nombre + '</option>';
+    });
+
+    texto = texto + "</select>";
+
+    return texto;
+});
+
+// listado de roles en select o si es administrador no permite cambiarlo
+hbs.registerHelper('listarRolesUsuarios', (id) => {
+    let listaUsuarios = [];
+    listaUsuarios = require('./usuario.json');
+
+    //Obtengo el usuario basado en el id
+    let usuario = listaUsuarios.find(usr => (usr.id === id));
+    console.log(usuario);
+
+    let texto = '<select class="form-control" name="tipo" ';
+    if(usuario.tipo == 'administrador')
+    {
+        texto = texto + 'readonly disabled> \
+        <option value="administrador" selected>Administrador</option> \
+        <option value="aspirante">Aspirante</option> \
+        <option value="docente">Docente</option>';
+    }
+    else if(usuario.tipo == 'docente')
+    {
+        texto = texto + '><option value="aspirante">Aspirante</option><option value="docente" selected>Docente</option>'
+    }
+    else if(usuario.tipo == 'aspirante')
+    {
+        texto = texto + '><option value="aspirante" selected>Aspirante</option><option value="docente">Docente</option>'
+    };
+
+    texto = texto + "</select>";
+
+    return texto;
+});
+
+// Actaulización de usuarios
+hbs.registerHelper('actualizarUsuario', (usuario) => {
+    let listaUsuarios = [];
+    listaUsuarios = require('./usuario.json');
+
+    let respuesta = '';
+
+    //Valido que no permita guardar duplicados
+    let encontrado = listaUsuarios.find(usr => usr.id === usuario.id);
+    if(encontrado)
+    {
+        encontrado['id'] = usuario.id;
+        encontrado['nombre'] = usuario.nombre;
+        encontrado['correo'] = usuario.correo;
+        encontrado['telefono'] = usuario.telefono;
+        encontrado['contrasena'] = usuario.contrasena;
+        encontrado['tipo'] = usuario.tipo;
+
+        let datos = JSON.stringify(listaUsuarios);
+        fs.writeFile('src/usuario.json', datos, (err)=>{
+            if(err) console.log(err);
+            console.log('Archivo creado con éxito');
+        });
+
+        respuesta = "El usuario " + usuario.nombre + ' con documento de identidad ' + usuario.id  + " fue actualizado de manera exitosa!";
+    }
+    else
+    {
+        respuesta = "No se fue posible actualizar el usuario" + usuario.nombre + ' con documento de identidad ' + usuario.id + '. No existe usuario con ese documento.';
+    }
+
+    return respuesta;
+});
+
+//** FIN SEBASTIÁN */
 
 /* Walter */
 hbs.registerHelper('listarCursos',()=>{
@@ -276,3 +429,11 @@ const listaCursosEstudiantes = () => {
 	}	
 }
 /* Fin Walter */
++ usuario.id + '. No existe usuario con ese documento.';
+    }
+
+    return respuesta;
+});
+
+//** FIN SEBASTIÁN */
+>>>>>>> 66addf2595936b98d63c92cf294a93a2fc194e0b
