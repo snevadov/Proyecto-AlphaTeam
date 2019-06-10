@@ -127,7 +127,7 @@ hbs.registerHelper('listar-cursos-docente', () => {
                                         <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse${i}" aria-expanded="true" aria-controls="collapse${i}">
                                             Curso: ${curso.nombre} - (id: ${curso.id})
                                         </button>
-                                        <a class="btn btn-outline-danger" href="listado-cursos-docente-eliminar" role="button">Cerrar Curso</a>
+                                        <a class="btn btn-outline-danger" href="\listado-cursos-docente-eliminar" role="button" name="id" value="${curso.id}">Cerrar Curso</a>
                                     </h2>
                                     </div>        
                                     <div id="collapse${i}" class="collapse" aria-labelledby="heading${i}" data-parent="#accordionExample">
@@ -237,6 +237,19 @@ hbs.registerHelper('crearCurso', (id, nombre, modalidad, valor, descripcion, int
                     'Ya existe un Curso con el ID ' +  id +
                 '</div>';
     }
+
+    return texto;
+
+});
+
+hbs.registerHelper('cerrarCurso', (id) => {
+
+    listaCursos = [];
+    texto = '';
+
+    texto = id;
+    //Listar
+    listaCursos = require('./bd-cursos.json');
 
     return texto;
 
