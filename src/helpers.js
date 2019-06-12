@@ -716,7 +716,9 @@ const listarCursos = () => {
 
 hbs.registerHelper('listarMisCursos',(documentoLogin)=>{
     listaEstudiantesCursos = [];
-    console.log("PAOS documentoLogin::::" + documentoLogin);
+	console.log("%%%%%%%%documentoLogin::::"+  documentoLogin);
+	let usuario = buscarUsuario(documentoLogin);
+    console.log("PASO documentoLogin::::" + usuario.documento);
     
     //listaCursosEstudiantes();
     //listaEstudiantesCursos=require('./cursos-estudiantes.json');
@@ -729,6 +731,7 @@ hbs.registerHelper('listarMisCursos',(documentoLogin)=>{
     console.log("listaEstudiantesCursos.length:::" + listaEstudiantesCursos.length);
     if( listaEstudiantesCursos.length >= 1 )
     {
+		
         console.log("PAOS crear table::::" + listaEstudiantesCursos.length);
         texto = "<table class='table'> \
                     <thead class='thead-dark'> \
@@ -742,15 +745,19 @@ hbs.registerHelper('listarMisCursos',(documentoLogin)=>{
                     </thead> \
                     <tbody>";
         listaEstudiantesCursos.forEach(curso => {
-            let listCurso = listaCursos.find(cur=>cur.id==curso.curso);
-            let listEstudiante = listaEstudiantes.find(est=>est.documento==curso.documento);
-            texto = texto + '<tr>';
-            texto = texto + '<td>' + curso.documento + '</td>';
-            texto = texto + '<td>' + listEstudiante.nombre + '</td>';
-            texto = texto + '<td>' + curso.curso + '</td>';
-            texto = texto + '<td>' + listCurso.nombre + '</td>';
-            texto = texto + '<td>' + '<button class="btn btn-primary" name="cursoest" value="' + curso.documento + curso.curso +'">Eliminar</button>' + '</td>';
-            texto = texto + '</tr>';
+			if ( usuario.documento == curso.documento)
+			{
+				let listCurso = listaCursos.find(cur=>cur.id==curso.curso);
+				let listEstudiante = listaEstudiantes.find(est=>est.documento==curso.documento);
+				texto = texto + '<tr>';
+				texto = texto + '<td>' + curso.documento + '</td>';
+				texto = texto + '<td>' + listEstudiante.nombre + '</td>';
+				texto = texto + '<td>' + curso.curso + '</td>';
+				texto = texto + '<td>' + listCurso.nombre + '</td>';
+				texto = texto + '<td>' + '<button class="btn btn-primary" name="cursoest" value="' + curso.documento + curso.curso +'">Eliminar</button>' + '</td>';
+				texto = texto + '</tr>';
+			}
+            
         });
         
         texto = texto + '</tbody> </table>' ;
@@ -829,9 +836,9 @@ const guardarUsuarios = () => {
 
 //Busco usuario por documento listado de usuarios
 const buscarUsuario = (documento) => {
+	console.log("%%%%%%%%%%buscarUsuario- documento:::::::::" + documento);
     let listaUsuarios = cargarListaUsuarios();
     let usuario = listaUsuarios.find(usr => (usr.documento == documento));
-
     return usuario;
 }
 
