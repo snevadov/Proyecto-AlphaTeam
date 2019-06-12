@@ -51,12 +51,17 @@ app.get('/listado-cursos-docente',(req, res) => {
   res.render('listado-cursos-docente');
 });
 
-app.post('/listado-cursos-docente',(req, res) => {
+app.post('/listado-cursos-docente-eliminar',(req, res) => {
   res.render('listado-cursos-docente-eliminar', {
     id: parseInt(req.body.id)
   });
 });
 
+app.post('/listado-cursos-docente-abrir',(req, res) => {
+  res.render('listado-cursos-docente-abrir', {
+    id: parseInt(req.body.id)
+  });
+});
 
 app.get('/crear-curso',(req, res) => {
   res.render('crear-curso');
