@@ -130,15 +130,15 @@ app.post('/',(req, res) => {
         //Dependiendo del rol, redirecciono a una página
         if(usuario.tipo == 'administrador')
         {
-          res.redirect('/listado-cursos?documento='+documento);
+          res.redirect('/listado-cursos?documentoLogin='+documento);
         }
         else if(usuario.tipo == 'aspirante')
         {
-          res.redirect('/misCursos?documento='+documento);
+          res.redirect('/misCursos?documentoLogin='+documento);
         }
         else if(usuario.tipo == 'docente')
         {
-          res.redirect('/listado-cursos-docente?documento='+documento);
+          res.redirect('/listado-cursos-docente?documentoLogin='+documento);
         }
     }
 
@@ -206,7 +206,9 @@ app.post('/actualizar-usuario',(req, res) => {
 
 //** WALTER */
 app.get('/inscripcion',(req, res) => {
-  res.render('inscripcion');
+  res.render('inscripcion', {
+    documentoLogin: req.query.documentoLogin
+  });
 });
 
 app.post('/inscripcion',(req, res) => {
@@ -222,13 +224,14 @@ app.post('/crearIncripcion',(req,res)=>{
 		correo: req.body.correo,
 		nombre: req.body.nombre,
 		telefono: req.body.telefono,
-		curso: req.body.curso,
+    curso: req.body.curso,
+    documentoLogin: req.body.documentoLogin
 	});
 });
 
 app.get('/misCursos',(req, res) => {
   res.render('misCursos', {
-    documento: parseInt(req.query.documento)
+    documentoLogin: parseInt(req.query.documentoLogin)
   });
 });
 
@@ -239,7 +242,8 @@ app.post('/misCursos',(req, res) => {
 
 app.post('/eliminarCurso',(req,res)=>{	
 	res.render('eliminar-curso-confirmacion',{
-		cursoest: req.body.cursoest
+    cursoest: req.body.cursoest,
+    documentoLogin: req.body.documentoLogin
 	});
 });
 

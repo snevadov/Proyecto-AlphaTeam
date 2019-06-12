@@ -718,7 +718,7 @@ const listarCursos = () => {
     }   
 }
 
-hbs.registerHelper('listarMisCursos',(documento)=>{
+hbs.registerHelper('listarMisCursos',(documentoLogin)=>{
     listaEstudiantesCursos = [];
     console.log("PAOS listarMisCursos::::" + listaEstudiantesCursos.length);
     
@@ -807,13 +807,15 @@ const listaCursosEstudiantes = () => {
 
 /* SEBASTIÁN */
 //Cargo el listado de usuarios
-const listaUsuarios = () => {
+const cargarListaUsuarios = () => {
     try {
-        listaUsuarios = require('./cursos-estudiantes.json');
+        listaUsuarios = JSON.parse(fs.readFileSync('src/cursos-estudiantes.json'));
     }
     catch(error){
         listaUsuarios = [];
-    }   
+    }
+
+    return listaUsuarios;
 }
 
 //Guardo listado de usuarios
@@ -827,6 +829,7 @@ const guardarUsuarios = () => {
 
 //Busco usuario por documento listado de usuarios
 const buscarUsuario = (documento) => {
+    let listaUsuarios = cargarListaUsuarios();
     let usuario = listaUsuarios.find(usr => (usr.documento == documento));
 
     return usuario;
@@ -834,6 +837,7 @@ const buscarUsuario = (documento) => {
 
 //Busco usuario por documento y contraseña listado de usuarios
 const validarLogin = (documento, contrasena) => {
+    let listaUsuarios = cargarListaUsuarios();
     //Obtengo el usuario basado en el documento
     let usuario = listaUsuarios.find(usr => (usr.documento == documento && usr.contrasena === contrasena));
 
