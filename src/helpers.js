@@ -356,7 +356,7 @@ hbs.registerHelper('crearCurso', (id, nombre, modalidad, valor, descripcion, int
         listaCursos.push(cur);
         //Guardar
         let datos = JSON.stringify (listaCursos);
-        fs.writeFile('./src/bd-cursos.json', datos, function (err) {
+        fs.writeFileSync('./src/bd-cursos.json', datos, function (err) {
             if (err) throw err;
         });
         texto = `<div  class="alert alert-success" role="alert">
@@ -391,7 +391,7 @@ hbs.registerHelper('cerrarCurso', (id) => {
         encontrado[estado] = "Cerrado";
 
         let datos = JSON.stringify (listaCursos);
-        fs.writeFile('./src/bd-cursos.json', datos, function (err) {
+        fs.writeFileSync('./src/bd-cursos.json', datos, function (err) {
             if (err) throw err;
         });
         texto = `<div  class="alert alert-success" role="alert">
@@ -420,7 +420,7 @@ hbs.registerHelper('abrirCurso', (id) => {
         encontrado[estado] = "Disponible";
 
         let datos = JSON.stringify (listaCursos);
-        fs.writeFile('./src/bd-cursos.json', datos, function (err) {
+        fs.writeFileSync('./src/bd-cursos.json', datos, function (err) {
             if (err) throw err;
         });
         texto = `<div  class="alert alert-success" role="alert">
@@ -459,7 +459,7 @@ hbs.registerHelper('registrarUsuario', (usuario) => {
     {
         listaUsuarios.push(nuevoUsuario);
         let datos = JSON.stringify(listaUsuarios);
-        fs.writeFile('src/estudiantes.json', datos, (err)=>{
+        fs.writeFileSync('src/estudiantes.json', datos, (err)=>{
             if(err) console.log(err);
             console.log('Archivo creado con éxito');
         });
@@ -574,7 +574,7 @@ hbs.registerHelper('actualizarUsuario', (usuario) => {
         encontrado['tipo'] = usuario.tipo;
 
         let datos = JSON.stringify(listaUsuarios);
-        fs.writeFile('src/estudiantes.json', datos, (err)=>{
+        fs.writeFileSync('src/estudiantes.json', datos, (err)=>{
             if(err) console.log(err);
             console.log('Archivo creado con éxito');
         });
@@ -653,7 +653,7 @@ const crearEstudiante = (documento,nombre,correo,telefono,curso)=>{
 
 const guardarEstudiante=()=>{
     let datos = JSON.stringify(listaEstudiantes);
-    fs.writeFile('./src/estudiantes.json',datos,(err)=>{
+    fs.writeFileSync('./src/estudiantes.json',datos,(err)=>{
         if(err)throw (err);
         console.log('Archivo creado con exito');
     })
@@ -789,7 +789,7 @@ const guardarEstudianteCursos=()=>{
     console.log("Guardar listaEstudiantesCursos :::" + listaEstudiantesCursos.length);
     let datos = JSON.stringify(listaEstudiantesCursos);
     console.log("datos:::::" + datos);
-    fs.writeFile('./src/cursos-estudiantes.json',datos,(err)=>{
+    fs.writeFileSync('./src/cursos-estudiantes.json',datos,(err)=>{
         if(err)throw (err);
         console.log('Archivo creado con exito');
     })
@@ -819,7 +819,7 @@ const listaUsuarios = () => {
 //Guardo listado de usuarios
 const guardarUsuarios = () => {
     let datos = JSON.stringify(listaUsuarios);
-    fs.writeFile('src/estudiantes.json', datos, (err)=>{
+    fs.writeFileSync('src/estudiantes.json', datos, (err)=>{
         if(err)throw (err);
         console.log('Archivo creado con exito');
     })
