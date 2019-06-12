@@ -247,6 +247,14 @@ app.post('/eliminarCurso',(req,res)=>{
 	});
 });
 
+
+app.post('/eliminarCursoDocente',(req,res)=>{	
+	res.render('eliminar-curso-confirmacion',{
+    cursoest: req.body.cursoest,
+    documentoLogin: req.body.documentoLogin
+	});
+});
+
 //** FIN */
 
 app.get('*', (req, res) => {

@@ -186,7 +186,7 @@ hbs.registerHelper('listar-cursos-docente-disponibles', () => {
                                                 <td>${est.correo}</td>                
                                                 <td>${est.telefono}</td>
                                                 <td>
-                                                    <form action="/eliminarCurso" method="POST">
+                                                    <form action="/eliminarCursoDocente" method="POST">
                                                         <button  class="btn btn-danger" name="cursoest" value="` + est.documento + curso.id +`">Eliminar</button>
                                                     </form>
                                                 </td>
@@ -593,7 +593,8 @@ hbs.registerHelper('actualizarUsuario', (usuario) => {
 
 /* Walter */
 hbs.registerHelper('listarCursos',()=>{
-    listaCursos=require('./bd-cursos.json');
+    //listaCursos=require('./bd-cursos.json');
+	listaCursos = JSON.parse(fs.readFileSync('src/bd-cursos.json', 'utf8'));
     let texto = "<label for='curso'>Cursos disponibles</label> \
                     <select class='form-control' name='curso' required>";
     listaCursos.forEach(curso => {
@@ -661,7 +662,8 @@ const guardarEstudiante=()=>{
 
 const listarEstd = () => {
     try {
-        listaEstudiantes = require('./estudiantes.json');
+        //listaEstudiantes = require('./estudiantes.json');
+		listaEstudiantes = JSON.parse(fs.readFileSync('src/estudiantes.json', 'utf8'));
         //Esta funcion se utiliza para procesos asincronos
         //listaEstudiantes = JSON.parse(fs.readFileSync('listado.json'));
     }
@@ -699,7 +701,8 @@ const crearEstudianteCurso = (documento,curso)=>{
 
 const listarEstudiantesCursos = () => {
     try {
-        listaEstudiantesCursos = require('./cursos-estudiantes.json');
+        //listaEstudiantesCursos = require('./cursos-estudiantes.json');
+		listaEstudiantesCursos = JSON.parse(fs.readFileSync('src/cursos-estudiantes.json', 'utf8'));
         //Esta funcion se utiliza para procesos asincronos
         //listaEstudiantes = JSON.parse(fs.readFileSync('listado.json'));
     }
@@ -709,7 +712,8 @@ const listarEstudiantesCursos = () => {
 }
 const listarCursos = () => {
     try {
-        listaCursos = require('./bd-cursos.json');
+        //listaCursos = require('./bd-cursos.json');
+		listaCursos = JSON.parse(fs.readFileSync('src/bd-cursos.json', 'utf8'));
         //Esta funcion se utiliza para procesos asincronos
         //listaEstudiantes = JSON.parse(fs.readFileSync('listado.json'));
     }
@@ -720,12 +724,15 @@ const listarCursos = () => {
 
 hbs.registerHelper('listarMisCursos',(documentoLogin)=>{
     listaEstudiantesCursos = [];
-    console.log("PAOS listarMisCursos::::" + listaEstudiantesCursos.length);
+    console.log("PAOS documentoLogin::::" + documentoLogin);
     
     //listaCursosEstudiantes();
-    listaEstudiantesCursos=require('./cursos-estudiantes.json');
-    listaCursos=require('./bd-cursos.json');
-    listaEstudiantes = require('./estudiantes.json');
+    //listaEstudiantesCursos=require('./cursos-estudiantes.json');
+	listaEstudiantesCursos = JSON.parse(fs.readFileSync('src/cursos-estudiantes.json', 'utf8'));
+    //listaCursos=require('./bd-cursos.json');
+	listaCursos = JSON.parse(fs.readFileSync('src/bd-cursos.json', 'utf8'));
+    //listaEstudiantes = require('./estudiantes.json');
+	listaEstudiantes = JSON.parse(fs.readFileSync('src/estudiantes.json', 'utf8'));
     let texto = "";
     console.log("listaEstudiantesCursos.length:::" + listaEstudiantesCursos.length);
     if( listaEstudiantesCursos.length >= 1 )
@@ -797,7 +804,8 @@ const guardarEstudianteCursos=()=>{
 
 const listaCursosEstudiantes = () => {
     try {
-        listaEstudiantesCursos = require('./cursos-estudiantes.json');
+        //listaEstudiantesCursos = require('./cursos-estudiantes.json');
+		listaEstudiantesCursos = JSON.parse(fs.readFileSync('src/cursos-estudiantes.json', 'utf8'));
     }
     catch(error){
         listaEstudiantesCursos = [];
