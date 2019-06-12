@@ -228,8 +228,8 @@ hbs.registerHelper('listar-cursos-docente-cerrados', () => {
     listadoCursosEstudiantes = require('./cursos-estudiantes.json')*/
 
     listaCursos = JSON.parse(fs.readFileSync('src/bd-cursos.json', 'utf8'));
-    listaEstudiantes = JSON.parse(fs.readFileSync('src/estudiantes', 'utf8'));
-    listadoCursosEstudiantes = JSON.parse(fs.readFileSync('src/cursos-estudiantes', 'utf8'));
+    listaEstudiantes = JSON.parse(fs.readFileSync('src/estudiantes.json', 'utf8'));
+    listadoCursosEstudiantes = JSON.parse(fs.readFileSync('src/cursos-estudiantes.json', 'utf8'));
 
     
 
