@@ -129,15 +129,15 @@ app.post('/',(req, res) => {
         //Dependiendo del rol, redirecciono a una página
         if(usuario.tipo == 'administrador')
         {
-          res.redirect('/listado-cursos');
+          res.redirect('/listado-cursos?id='+id);
         }
         else if(usuario.tipo == 'aspirante')
         {
-          res.redirect('/listado-cursos-aspirante');
+          res.redirect('/misCursos?id='+id);
         }
         else if(usuario.tipo == 'docente')
         {
-          res.redirect('/listado-cursos-docente');
+          res.redirect('/listado-cursos-docente?id='+id);
         }
     }
 
@@ -201,6 +201,7 @@ app.post('/actualizar-usuario',(req, res) => {
 
 });
 //** FIN SEBASTIÁN */
+
 //** WALTER */
 app.get('/inscripcion',(req, res) => {
   res.render('inscripcion');
@@ -224,7 +225,9 @@ app.post('/crearIncripcion',(req,res)=>{
 });
 
 app.get('/misCursos',(req, res) => {
-  res.render('misCursos');
+  res.render('misCursos', {
+    id: parseInt(req.query.id)
+  });
 });
 
 app.post('/misCursos',(req, res) => {
