@@ -90,7 +90,7 @@ app.post('/registrar-usuario',(req, res) => {
   
   //Defino variable usuario
   let usuario = {
-    id: parseInt(req.body.id),
+    documento: parseInt(req.body.documento),
     nombre: req.body.nombre,
     correo: req.body.correo,
     telefono: req.body.telefono,
@@ -107,14 +107,15 @@ app.post('/registrar-usuario',(req, res) => {
 //Llamada al login cuando pulso ingresar
 app.post('/',(req, res) => {
   
-  id = parseInt(req.body.id);
+  documento = parseInt(req.body.documento);
   contrasena = req.body.contrasena;
 
   let listaUsuarios = [];
-  listaUsuarios = require('./usuario.json');
+  //listaUsuarios = require('./estudiantes.json');
+  listaUsuarios = JSON.parse(fs.readFileSync('src/estudiantes.json'));
 
-  //Obtengo el usuario basado en el id
-  let usuario = listaUsuarios.find(usr => (usr.id === id && usr.contrasena === contrasena));
+  //Obtengo el usuario basado en el documento
+  let usuario = listaUsuarios.find(usr => (usr.documento === documento && usr.contrasena === contrasena));
 
   //Si no encuentro el usuario, muestro error
   if(!usuario)
@@ -129,15 +130,15 @@ app.post('/',(req, res) => {
         //Dependiendo del rol, redirecciono a una página
         if(usuario.tipo == 'administrador')
         {
-          res.redirect('/listado-cursos?id='+id);
+          res.redirect('/listado-cursos?documento='+documento);
         }
         else if(usuario.tipo == 'aspirante')
         {
-          res.redirect('/misCursos?id='+id);
+          res.redirect('/misCursos?documento='+documento);
         }
         else if(usuario.tipo == 'docente')
         {
-          res.redirect('/listado-cursos-docente?id='+id);
+          res.redirect('/listado-cursos-docente?documento='+documento);
         }
     }
 
@@ -151,13 +152,14 @@ app.get('/listado-usuarios',(req, res) => {
 //Carga la edición de usuario
 app.post('/editar-usuario',(req, res) => {
   
-  id = parseInt(req.body.id);
+  documento = parseInt(req.body.documento);
 
   let listaUsuarios = [];
-  listaUsuarios = require('./usuario.json');
+  //listaUsuarios = require('./estudiantes.json');
+  listaUsuarios = JSON.parse(fs.readFileSync('src/estudiantes.json'));
 
-  //Obtengo el usuario basado en el id
-  let usuario = listaUsuarios.find(usr => (usr.id === id));
+  //Obtengo el usuario basado en el documento
+  let usuario = listaUsuarios.find(usr => (usr.documento === documento));
 
   //Si no encuentro el usuario, muestro error
   if(!usuario)
@@ -170,7 +172,7 @@ app.post('/editar-usuario',(req, res) => {
     else
     {
         res.render('editar-usuario', {
-          id:usuario.id,
+          documento:parseInt(usuario.documento),
           nombre:usuario.nombre,
           correo:usuario.correo,
           telefono:usuario.telefono,
@@ -186,7 +188,7 @@ app.post('/actualizar-usuario',(req, res) => {
   
   //Defino variable usuario
   let usuario = {
-    id: parseInt(req.body.id),
+    documento: parseInt(req.body.documento),
     nombre: req.body.nombre,
     correo: req.body.correo,
     telefono: req.body.telefono,
@@ -226,7 +228,7 @@ app.post('/crearIncripcion',(req,res)=>{
 
 app.get('/misCursos',(req, res) => {
   res.render('misCursos', {
-    id: parseInt(req.query.id)
+    documento: parseInt(req.query.documento)
   });
 });
 

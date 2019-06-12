@@ -224,10 +224,10 @@ hbs.registerHelper('listar-cursos-docente-cerrados', () => {
     /*listaCursos = require('./bd-cursos.json')
     listaEstudiantes = require('./estudiantes.json')
     listadoCursosEstudiantes = require('./cursos-estudiantes.json')*/
-
+    
     listaCursos = JSON.parse(fs.readFileSync('src/bd-cursos.json', 'utf8'));
-    listaEstudiantes = JSON.parse(fs.readFileSync('src/estudiantes', 'utf8'));
-    listadoCursosEstudiantes = JSON.parse(fs.readFileSync('src/cursos-estudiantes', 'utf8'));
+    listaEstudiantes = JSON.parse(fs.readFileSync('src/estudiantes.json', 'utf8'));
+    listadoCursosEstudiantes = JSON.parse(fs.readFileSync('src/cursos-estudiantes.json', 'utf8'));
 
     
 
@@ -438,13 +438,14 @@ hbs.registerHelper('abrirCurso', (id) => {
 // Registro de usuarios
 hbs.registerHelper('registrarUsuario', (usuario) => {
     let listaUsuarios = [];
-    listaUsuarios = require('./usuario.json');
+    listaUsuarios = JSON.parse(fs.readFileSync('src/estudiantes.json'));
+    //listaUsuarios = require('./estudiantes.json');
 
     let respuesta = '';
 
     //Armo el objeto de curso
     let nuevoUsuario = {
-        id: usuario.id,
+        id: usuario.documento,
         nombre: usuario.nombre,
         correo: usuario.correo,
         telefono: usuario.telefono,
@@ -453,21 +454,21 @@ hbs.registerHelper('registrarUsuario', (usuario) => {
     };
 
     //Valido que no permita guardar duplicados
-    let duplicado = listaUsuarios.find(usr => usr.id === nuevoUsuario.id);
+    let duplicado = listaUsuarios.find(usr => usr.documento === nuevoUsuario.documento);
     if(!duplicado)
     {
         listaUsuarios.push(nuevoUsuario);
         let datos = JSON.stringify(listaUsuarios);
-        fs.writeFile('src/usuario.json', datos, (err)=>{
+        fs.writeFile('src/estudiantes.json', datos, (err)=>{
             if(err) console.log(err);
             console.log('Archivo creado con éxito');
         });
 
-        respuesta = "El usuario " + nuevoUsuario.nombre + ' con documento de identidad ' + nuevoUsuario.id  + " fue creado de manera exitosa!";
+        respuesta = "El usuario " + nuevoUsuario.nombre + ' con documento de identidad ' + nuevoUsuario.documento  + " fue creado de manera exitosa!";
     }
     else
     {
-        respuesta = "No se fue posible registrar el usuario" + nuevoUsuario.nombre + ' con documento de identidad ' + nuevoUsuario.id + '. Ya existe otro usuario con es documento.';
+        respuesta = "No se fue posible registrar el usuario" + nuevoUsuario.nombre + ' con documento de identidad ' + nuevoUsuario.documento + '. Ya existe otro usuario con es documento.';
     }
 
     return respuesta;
@@ -476,7 +477,8 @@ hbs.registerHelper('registrarUsuario', (usuario) => {
 // listado de usuarios
 hbs.registerHelper('listarUsuarios', () => {
     let listaUsuarios = [];
-    listaUsuarios = require('./usuario.json');
+    //listaUsuarios = require('./estudiantes.json');
+    listaUsuarios = JSON.parse(fs.readFileSync('src/estudiantes.json'));
 
     let texto = "<table class='table'> \
                     <thead class='thead-dark'> \
@@ -491,7 +493,7 @@ hbs.registerHelper('listarUsuarios', () => {
     listaUsuarios.forEach(usuario => {
         texto = texto +            
             "<tr>" +
-            "<td>" + usuario.id + '</td>' +
+            "<td>" + usuario.documento + '</td>' +
             "<td>" + usuario.nombre + '</td>' +
             "<td>" + usuario.correo + '</td>' +
             "<td>" + usuario.telefono + '</td>' +
@@ -506,12 +508,13 @@ hbs.registerHelper('listarUsuarios', () => {
 // listado de usuarios en select
 hbs.registerHelper('listarUsuariosSelect', () => {
     let listaUsuarios = [];
-    listaUsuarios = require('./usuario.json');
+    //listaUsuarios = require('./estudiantes.json');
+    listaUsuarios = JSON.parse(fs.readFileSync('src/estudiantes.json'));
 
-    let texto = '<select class="form-control" name="id"><option value="">Usuarios...</option>'
+    let texto = '<select class="form-control" name="documento" required><option value="">Usuarios...</option>'
     
     listaUsuarios.forEach(usuario => {
-        texto = texto + '<option value="' + usuario.id + '">' + usuario.id + ' | ' + usuario.nombre + '</option>';
+        texto = texto + '<option value="' + usuario.documento + '">' + usuario.documento + ' | ' + usuario.nombre + '</option>';
     });
 
     texto = texto + "</select>";
@@ -520,12 +523,13 @@ hbs.registerHelper('listarUsuariosSelect', () => {
 });
 
 // listado de roles en select o si es administrador no permite cambiarlo
-hbs.registerHelper('listarRolesUsuarios', (id) => {
+hbs.registerHelper('listarRolesUsuarios', (documento) => {
     let listaUsuarios = [];
-    listaUsuarios = require('./usuario.json');
+    //listaUsuarios = require('./estudiantes.json');
+    listaUsuarios = JSON.parse(fs.readFileSync('src/estudiantes.json'));
 
-    //Obtengo el usuario basado en el id
-    let usuario = listaUsuarios.find(usr => (usr.id === id));
+    //Obtengo el usuario basado en el documento
+    let usuario = listaUsuarios.find(usr => (usr.documento == documento));
     console.log(usuario);
 
     let texto = '<select class="form-control" name="tipo" ';
@@ -553,15 +557,16 @@ hbs.registerHelper('listarRolesUsuarios', (id) => {
 // Actaulización de usuarios
 hbs.registerHelper('actualizarUsuario', (usuario) => {
     let listaUsuarios = [];
-    listaUsuarios = require('./usuario.json');
+    //listaUsuarios = require('./estudiantes.json');
+    listaUsuarios = JSON.parse(fs.readFileSync('src/estudiantes.json'));
 
     let respuesta = '';
 
     //Valido que no permita guardar duplicados
-    let encontrado = listaUsuarios.find(usr => usr.id === usuario.id);
+    let encontrado = listaUsuarios.find(usr => usr.documento === usuario.documento);
     if(encontrado)
     {
-        encontrado['id'] = usuario.id;
+        encontrado['documento'] = usuario.documento;
         encontrado['nombre'] = usuario.nombre;
         encontrado['correo'] = usuario.correo;
         encontrado['telefono'] = usuario.telefono;
@@ -569,16 +574,16 @@ hbs.registerHelper('actualizarUsuario', (usuario) => {
         encontrado['tipo'] = usuario.tipo;
 
         let datos = JSON.stringify(listaUsuarios);
-        fs.writeFile('src/usuario.json', datos, (err)=>{
+        fs.writeFile('src/estudiantes.json', datos, (err)=>{
             if(err) console.log(err);
             console.log('Archivo creado con éxito');
         });
 
-        respuesta = "El usuario " + usuario.nombre + ' con documento de identidad ' + usuario.id  + " fue actualizado de manera exitosa!";
+        respuesta = "El usuario " + usuario.nombre + ' con documento de identidad ' + usuario.documento  + " fue actualizado de manera exitosa!";
     }
     else
     {
-        respuesta = "No se fue posible actualizar el usuario" + usuario.nombre + ' con documento de identidad ' + usuario.id + '. No existe usuario con ese documento.';
+        respuesta = "No se fue posible actualizar el usuario" + usuario.nombre + ' con documento de identidad ' + usuario.documento + '. No existe usuario con ese documento.';
     }
 
     return respuesta;
@@ -713,12 +718,12 @@ const listarCursos = () => {
     }   
 }
 
-hbs.registerHelper('listarMisCursos',()=>{
+hbs.registerHelper('listarMisCursos',(documento)=>{
     listaEstudiantesCursos = [];
     console.log("PAOS listarMisCursos::::" + listaEstudiantesCursos.length);
     
     //listaCursosEstudiantes();
-    listaEstudiantesCursos=require('./cursos-estudiantes.json');    
+    listaEstudiantesCursos=require('./cursos-estudiantes.json');
     listaCursos=require('./bd-cursos.json');
     listaEstudiantes = require('./estudiantes.json');
     let texto = "";
@@ -814,23 +819,23 @@ const listaUsuarios = () => {
 //Guardo listado de usuarios
 const guardarUsuarios = () => {
     let datos = JSON.stringify(listaUsuarios);
-    fs.writeFile('src/usuario.json', datos, (err)=>{
+    fs.writeFile('src/estudiantes.json', datos, (err)=>{
         if(err)throw (err);
         console.log('Archivo creado con exito');
     })
 }
 
-//Busco usuario por id listado de usuarios
-const buscarUsuario = (id) => {
-    let usuario = listaUsuarios.find(usr => (usr.id === id));
+//Busco usuario por documento listado de usuarios
+const buscarUsuario = (documento) => {
+    let usuario = listaUsuarios.find(usr => (usr.documento == documento));
 
     return usuario;
 }
 
-//Busco usuario por id y contraseña listado de usuarios
-const validarLogin = (id, contrasena) => {
-    //Obtengo el usuario basado en el id
-    let usuario = listaUsuarios.find(usr => (usr.id === id && usr.contrasena === contrasena));
+//Busco usuario por documento y contraseña listado de usuarios
+const validarLogin = (documento, contrasena) => {
+    //Obtengo el usuario basado en el documento
+    let usuario = listaUsuarios.find(usr => (usr.documento == documento && usr.contrasena === contrasena));
 
     //Si no encuentro el usuario, muestro error
     if(!usuario)
