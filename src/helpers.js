@@ -4,6 +4,11 @@ const fs = require('fs');
 listaEstudiantes = [];
 listaEstudiantesCursos = [];
 listaCursos = [];
+/*
+//Comentario pendiente de corregir
+let listaUsuarios = [];
+
+*/
 
 hbs.registerHelper('obtenerPromedio', (valor) => {
 return (valor*100)
@@ -778,3 +783,49 @@ const listaCursosEstudiantes = () => {
 	}	
 }
 /* Fin Walter */
+
+/* SEBASTIÁN */
+//Cargo el listado de usuarios
+const listaUsuarios = () => {
+    try {
+        listaUsuarios = require('./cursos-estudiantes.json');
+    }
+    catch(error){
+        listaUsuarios = [];
+    }   
+}
+
+//Guardo listado de usuarios
+const guardarUsuarios = () => {
+    let datos = JSON.stringify(listaUsuarios);
+    fs.writeFile('src/usuario.json', datos, (err)=>{
+        if(err)throw (err);
+        console.log('Archivo creado con exito');
+    })
+}
+
+//Busco usuario por id listado de usuarios
+const buscarUsuario = (id) => {
+    let usuario = listaUsuarios.find(usr => (usr.id === id));
+
+    return usuario;
+}
+
+//Busco usuario por id y contraseña listado de usuarios
+const validarLogin = (id, contrasena) => {
+    //Obtengo el usuario basado en el id
+    let usuario = listaUsuarios.find(usr => (usr.id === id && usr.contrasena === contrasena));
+
+    //Si no encuentro el usuario, muestro error
+    if(!usuario)
+    {
+        console.log('El usuario y/o contraseña son incorrectos!');
+        return false;
+    }
+    else
+    {
+        console.log('El usuario y contraseña correctos!');
+        return true;
+    }
+}
+/*FIN SEBASTIÁN */
