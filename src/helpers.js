@@ -652,16 +652,26 @@ const listarCursos = () => {
 }
 
 hbs.registerHelper('listarMisCursos',(id)=>{
-    console.log('EL ID es: ' + id);
 	listaEstudiantesCursos = [];
 	console.log("PAOS listarMisCursos::::" + listaEstudiantesCursos.length);
 	console.log("ID::::::::::::::" + id);
-	//listaCursosEstudiantes();
-	listaEstudiantesCursos=require('./cursos-estudiantes.json');	
+    let listaEstudiantesCursosAux = fs.readFile('src/cursos-estudiantes.json', 'utf-8', (err, data) => {
+      if(err) {
+        console.log('error: ', err);
+      } else {
+        console.log('listaEstudiantesCursosAux Exito');
+      }
+    });
+
+    listaEstudiantesCursos = JSON.parse(fs.readFileSync('src/cursos-estudiantes.json', 'utf8'));
+    console.log(listaEstudiantesCursos);
+
+    //return 0;
 	listaCursos=require('./bd-cursos.json');
 	listaEstudiantes = require('./estudiantes.json');
 	let texto = "";
 	console.log("listaEstudiantesCursos.length:::" + listaEstudiantesCursos.length);
+    console.log(listaEstudiantesCursos);
 	if( listaEstudiantesCursos.length >= 1 )
 	{
 		console.log("PAOS crear table::::" + listaEstudiantesCursos.length);
