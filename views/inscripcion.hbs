@@ -5,31 +5,7 @@
     <form action="/crearIncripcion" method="POST">
 			<div class="container">
 				<input type="hidden" class="form-control" name="documentoLogin" placeholder="Ingrese su documento de identidad" aria-describedby="idHelp" value="{{{documentoLogin}}}">
-			  <div class="row">
-				<div class="col-sm">
-					<label for="id">Documento de identidad</label>
-					<input type="number"  class="form-control" name="documento" required>
-				</div>
-				<div class="col-sm">
-					<label for="correo">Correo electronico</label>
-					<input type="email" class="form-control" name="correo" placeholder="name@example.com" required>
-				</div>
-			  </div>
-			</div>
-			<div class="container">
-			  <div class="row">
-				<div class="col-sm">
-					<label for="nombre">Nombre</label>
-					<input type="text"  class="form-control" name="nombre" required>
-				</div>
-				<div class="col-sm">
-					<label for="telefono">Telefono</label>
-					<input type="number"  class="form-control" name="telefono" required>
-				</div>
-			  </div>
-			</div>
-			<div class="container">
-			  <div class="row">
+				<div class="row">
 				<div class="col-sm">
 					{{{listarCursos}}}
 				</div>

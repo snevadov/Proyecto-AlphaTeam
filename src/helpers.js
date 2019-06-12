@@ -603,10 +603,13 @@ hbs.registerHelper('listarCursos',()=>{
 
 
 
-hbs.registerHelper('incripcionCursos',(documento,nombre,correo,telefono,curso)=>{
-    console.log('PASO.');
-    let est = crearEstudiante(documento,nombre,correo,telefono,curso);
-    let result = crearEstudianteCurso(documento,curso);
+//hbs.registerHelper('incripcionCursos',(documento,nombre,correo,telefono,curso, documentoLogin)=>{
+hbs.registerHelper('incripcionCursos',(curso,documentoLogin)=>{	
+    console.log('incripcionCursos::::.' + documentoLogin);
+	listarEstd();
+	let est = listaEstudiantes.find(doc=>doc.documento==documentoLogin);
+    ///let est = crearEstudiante(documento,nombre,correo,telefono,curso);
+    let result = crearEstudianteCurso(documentoLogin,curso);
     let texto = "";
     if ( result )
     {
