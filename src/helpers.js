@@ -15,8 +15,7 @@ return (valor*100)
 
 //** JHON */
 hbs.registerHelper('listar-cursos', () => {
-    //listaCursos = require('./bd-cursos.json')
-    listaCursos = JSON.parse(fs.readFileSync('src/bd-cursos.json', 'utf8'));
+    listaCursos = require('./bd-cursos.json')
     let texto = "<table class='table'> \
                     <thead class='thead-dark'> \
                     <th>ID </th>\
@@ -48,11 +47,8 @@ hbs.registerHelper('listar-cursos', () => {
 
 hbs.registerHelper('listar-cursos-disponibles', () => {
     let texto = "";
-    //listaCursos = require('./bd-cursos.json')
-    listaCursos = JSON.parse(fs.readFileSync('src/bd-cursos.json', 'utf8'));
-
-
-
+    listaCursos = require('./bd-cursos.json')
+    
     let cursos = listaCursos.filter(buscar => buscar.estado == "Disponible");
     if (cursos.length == 0){
         console.log('No existen cursos disponibles');
@@ -107,9 +103,7 @@ hbs.registerHelper('listar-cursos-docente-disponibles', () => {
     listaCursos = [];
     listaEstudiantes = [];
     listadoCursosEstudiantes = [];
-    //listaCursos = require('./bd-cursos.json')
     listaCursos = JSON.parse(fs.readFileSync('src/bd-cursos.json', 'utf8'));
-    //listaEstudiantes = require('./estudiantes.json')
     listaEstudiantes = JSON.parse(fs.readFileSync('src/estudiantes.json', 'utf8'));
     //listadoCursosEstudiantes = require('./cursos-estudiantes.json')
     listadoCursosEstudiantes = JSON.parse(fs.readFileSync('src/cursos-estudiantes.json', 'utf8'));
@@ -221,12 +215,9 @@ hbs.registerHelper('listar-cursos-docente-disponibles', () => {
 hbs.registerHelper('listar-cursos-docente-cerrados', () => {
     let texto = "";
     listaEstudiantes = [];
-    /*listaCursos = require('./bd-cursos.json')
-    listaEstudiantes = require('./estudiantes.json')
-    listadoCursosEstudiantes = require('./cursos-estudiantes.json')*/
-    
     listaCursos = JSON.parse(fs.readFileSync('src/bd-cursos.json', 'utf8'));
     listaEstudiantes = JSON.parse(fs.readFileSync('src/estudiantes.json', 'utf8'));
+    //listadoCursosEstudiantes = require('./cursos-estudiantes.json')
     listadoCursosEstudiantes = JSON.parse(fs.readFileSync('src/cursos-estudiantes.json', 'utf8'));
 
     
@@ -336,7 +327,7 @@ hbs.registerHelper('crearCurso', (id, nombre, modalidad, valor, descripcion, int
     texto = '';
 
     //Listar
-    listaCursos = require('./bd-cursos.json');
+    listaCursos = JSON.parse(fs.readFileSync('src/bd-cursos.json', 'utf8'));
 
     console.log(modalidad);
     console.log(descripcion);
@@ -380,7 +371,8 @@ hbs.registerHelper('cerrarCurso', (id) => {
     estado = "estado";
     texto = '';
     //Listar
-    listaCursos = require('./bd-cursos.json');
+    listaCursos = JSON.parse(fs.readFileSync('src/bd-cursos.json', 'utf8'));
+
     let encontrado = listaCursos.find(buscar => buscar.id == id);
     if (!encontrado){
         texto = `<div  class="alert alert-danger" role="alert">
@@ -409,7 +401,7 @@ hbs.registerHelper('abrirCurso', (id) => {
     estado = "estado";
     texto = '';
     //Listar
-    listaCursos = require('./bd-cursos.json');
+    listaCursos = JSON.parse(fs.readFileSync('src/bd-cursos.json', 'utf8'));
     let encontrado = listaCursos.find(buscar => buscar.id == id);
     if (!encontrado){
         texto = `<div  class="alert alert-danger" role="alert">
