@@ -116,6 +116,9 @@ hbs.registerHelper('listar-cursos-docente-disponibles', () => {
                 '</div>';
     }
     else {
+<<<<<<< HEAD
+        texto = `<form action="/eliminarCurso" method="POST"> <div class="accordion" id="accordionExample">`;
+=======
         texto = `<div class="accordion" id="accordionExampleD">`;
         i = 1;
         cursosEstudiantes = [];
@@ -223,6 +226,7 @@ hbs.registerHelper('listar-cursos-docente-cerrados', () => {
     }
     else {
         texto = `<div class="accordion" id="accordionExample">`;
+>>>>>>> ef6138b5cb9687f98f2634daefec949e893a8abb
         i = 1;
         cursosEstudiantes = [];
         cursos.forEach(curso => {
@@ -284,7 +288,7 @@ hbs.registerHelper('listar-cursos-docente-cerrados', () => {
                                                 <td>${est.nombre}</td>  
                                                 <td>${est.correo}</td>                
                                                 <td>${est.telefono}</td>
-                                                <td><button type="button" class="btn btn-danger">Eliminar</button></td>
+                                                <td><button  class="btn btn-danger" name="cursoest" value="` + est.documento + curso.id +`">Eliminar</button></td>
                                                 </tr>`
                                             }     
                                         });
@@ -307,7 +311,7 @@ hbs.registerHelper('listar-cursos-docente-cerrados', () => {
             i=i+1;
         });
         texto = texto + 
-                `</div></div>`;
+                `</div></div> </form>`;
 
     }
     return texto;
@@ -698,11 +702,11 @@ const listarCursos = () => {
 }
 
 hbs.registerHelper('listarMisCursos',()=>{
-	//listarCursosEstudiantes=require('./cursos-estudiantes.json');	
 	listaEstudiantesCursos = [];
 	console.log("PAOS listarMisCursos::::" + listaEstudiantesCursos.length);
 	
-	listaCursosEstudiantes();
+	//listaCursosEstudiantes();
+	listaEstudiantesCursos=require('./cursos-estudiantes.json');	
 	listaCursos=require('./bd-cursos.json');
 	listaEstudiantes = require('./estudiantes.json');
 	let texto = "";
@@ -758,8 +762,7 @@ hbs.registerHelper('eliminarCursoEst',(cursoest)=>{
 const eliminarCursoEst=(cursoest)=>{
 	listaCursosEstudiantes();	
 	console.log("Curso a eliminar :::" + cursoest);
-	let nuevo = listaEstudiantesCursos.filter(bus=> bus.documento + bus.curso != cursoest);
-	console.log("nuevo::::" + nuevo.length + " --- viejo::::" + listaEstudiantesCursos.length);
+	let nuevo = listaEstudiantesCursos.filter( bus => bus.documento.toString() + bus.curso.toString() != cursoest);	
 	listaEstudiantesCursos = nuevo
 	guardarEstudianteCursos();
 	return true;
@@ -768,6 +771,7 @@ const eliminarCursoEst=(cursoest)=>{
 const guardarEstudianteCursos=()=>{
 	console.log("Guardar listaEstudiantesCursos :::" + listaEstudiantesCursos.length);
 	let datos = JSON.stringify(listaEstudiantesCursos);
+	console.log("datos:::::" + datos);
 	fs.writeFile('./src/cursos-estudiantes.json',datos,(err)=>{
 		if(err)throw (err);
 		console.log('Archivo creado con exito');
