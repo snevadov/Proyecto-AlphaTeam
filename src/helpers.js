@@ -745,7 +745,7 @@ hbs.registerHelper('listarMisCursos',(id)=>{
 });
 
 hbs.registerHelper('eliminarCursoEst',(cursoest)=>{
-	//eliminarCursoEst(cursoest);
+	eliminarCursoEst(cursoest);
 	let result = eliminarCursoEst(cursoest);
 	let texto = "";
 	if ( result )
@@ -776,7 +776,7 @@ const guardarEstudianteCursos=()=>{
 	fs.writeFile('./src/cursos-estudiantes.json',datos,(err)=>{
 		if(err)throw (err);
 		console.log('Archivo creado con exito');
-	});
+	})
 }
 
 const listaCursosEstudiantes = () => {
