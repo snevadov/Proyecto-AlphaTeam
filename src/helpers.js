@@ -116,9 +116,6 @@ hbs.registerHelper('listar-cursos-docente', () => {
                 '</div>';
     }
     else {
-<<<<<<< HEAD
-        texto = `<form action="/eliminarCurso" method="POST"> <div class="accordion" id="accordionExample">`;
-=======
         texto = `<div class="accordion" id="accordionExampleD">`;
         i = 1;
         cursosEstudiantes = [];
@@ -230,7 +227,6 @@ hbs.registerHelper('listar-cursos-docente-cerrados', () => {
     }
     else {
         texto = `<div class="accordion" id="accordionExample">`;
->>>>>>> d1e1da2d8cbf576a86043eff2be9d582d5031a8a
         i = 1;
         cursosEstudiantes = [];
         cursos.forEach(curso => {
@@ -656,10 +652,7 @@ const listarCursos = () => {
 }
 
 hbs.registerHelper('listarMisCursos',(id)=>{
-<<<<<<< HEAD
-=======
     console.log('EL ID es: ' + id);
->>>>>>> d1e1da2d8cbf576a86043eff2be9d582d5031a8a
 	listaEstudiantesCursos = [];
 	console.log("PAOS listarMisCursos::::" + listaEstudiantesCursos.length);
 	console.log("ID::::::::::::::" + id);
