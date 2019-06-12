@@ -701,7 +701,8 @@ const listarCursos = () => {
 	}	
 }
 
-hbs.registerHelper('listarMisCursos',()=>{
+hbs.registerHelper('listarMisCursos',(id)=>{
+    console.log('EL ID es: ' + id);
 	listaEstudiantesCursos = [];
 	console.log("PAOS listarMisCursos::::" + listaEstudiantesCursos.length);
 	
