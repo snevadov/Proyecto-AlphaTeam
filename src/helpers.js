@@ -809,7 +809,7 @@ const listaCursosEstudiantes = () => {
 //Cargo el listado de usuarios
 const cargarListaUsuarios = () => {
     try {
-        listaUsuarios = JSON.parse(fs.readFileSync('src/cursos-estudiantes.json'));
+        listaUsuarios = JSON.parse(fs.readFileSync('src/estudiantes.json'));
     }
     catch(error){
         listaUsuarios = [];
