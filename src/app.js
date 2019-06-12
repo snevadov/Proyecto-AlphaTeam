@@ -231,7 +231,7 @@ app.get('/misCursos',(req, res) => {
 });
 
 app.post('/misCursos',(req, res) => {
-  res.render('eliminar-confirmacion', {
+  res.render('eliminar-confirmacion', {	
   });
 });
 
