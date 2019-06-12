@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 [{"documento":123,"correo":"a@q","nombre":"Walter","telefono":123666},{"documento":456,"correo":"a@q","nombre":"Jhon","telefono":456666},{"documento":789,"correo":"a@q","nombre":"Sebas","telefono":789666}]
+=======
+[{"documento":123,"correo":"a@q","nombre":"Walter","telefono":123666},{"documento":456,"correo":"a@q","nombre":"Jhon","telefono":456666},{"documento":789,"correo":"a@q","nombre":"Sebas","telefono":789666},{"documento":"15515515","nombre":"Walter Serna Zapata","correo":"walterasz4@gmail.com","telefono":"3002745528"},{"documento":"71223998","nombre":"Jhon Edison","correo":"jems10@hotmail.com","telefono":"3215516506"},{"documento":"71223","nombre":"Jhon Edison","correo":"jems10@hotmail.com","telefono":"3215516506"}]
+>>>>>>> 7a7b2cf7823b4bed05d54a63db41224c966ad706
