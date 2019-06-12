@@ -103,7 +103,7 @@ hbs.registerHelper('listar-cursos-disponibles', () => {
     return texto;
 }); 
 
-hbs.registerHelper('listar-cursos-docente-disponibles', () => {
+hbs.registerHelper('listar-cursos-docente', () => {
     let texto = "";
     listaCursos = [];
     listaEstudiantes = [];
@@ -255,14 +255,9 @@ hbs.registerHelper('listar-cursos-docente-cerrados', () => {
                                     <div class="card-header text-center id="heading${i}">
                                     <h2 class="mb-0">
                                         <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse${i}" aria-expanded="true" aria-controls="collapse${i}">
-                                            Curso: ${curso.nombre} - (id: ${curso.id}) - 
-                                            <form class="form-inline" action="/listado-cursos-docente-abrir" method="POST">                                           
-                                                <button class="btn btn-outline-success" name="id" value="${curso.id}">Abrir Curso</button>
-                                            </form>
+                                            Curso: ${curso.nombre} - (id: ${curso.id})
                                         </button>
-
-                                        
-                                        
+                                        <a class="btn btn-outline-danger" href="\listado-cursos-docente-eliminar" role="button" name="id" value="${curso.id}">Cerrar Curso</a>
                                     </h2>
                                     </div>        
                                     <div id="collapse${i}" class="collapse" aria-labelledby="heading${i}" data-parent="#accordionExample">
@@ -380,56 +375,11 @@ hbs.registerHelper('crearCurso', (id, nombre, modalidad, valor, descripcion, int
 hbs.registerHelper('cerrarCurso', (id) => {
 
     listaCursos = [];
-    estado = "estado";
     texto = '';
+
+    texto = id;
     //Listar
     listaCursos = require('./bd-cursos.json');
-    let encontrado = listaCursos.find(buscar => buscar.id == id);
-    if (!encontrado){
-        texto = `<div  class="alert alert-danger" role="alert">
-                    Error cambiando estado del curso a Cerrado
-                </div>`;
-    }
-    else {
-        encontrado[estado] = "Cerrado";
-
-        let datos = JSON.stringify (listaCursos);
-        fs.writeFile('./src/bd-cursos.json', datos, function (err) {
-            if (err) throw err;
-        });
-        texto = `<div  class="alert alert-success" role="alert">
-                    Curso cerrado con Exito
-                </div>`;
-    }
-
-    return texto;
-
-});
-
-hbs.registerHelper('abrirCurso', (id) => {
-
-    listaCursos = [];
-    estado = "estado";
-    texto = '';
-    //Listar
-    listaCursos = require('./bd-cursos.json');
-    let encontrado = listaCursos.find(buscar => buscar.id == id);
-    if (!encontrado){
-        texto = `<div  class="alert alert-danger" role="alert">
-                    Error cambiando estado del curso a Disponible
-                </div>`;
-    }
-    else {
-        encontrado[estado] = "Disponible";
-
-        let datos = JSON.stringify (listaCursos);
-        fs.writeFile('./src/bd-cursos.json', datos, function (err) {
-            if (err) throw err;
-        });
-        texto = `<div  class="alert alert-success" role="alert">
-                    Curso abierto con Exito
-                </div>`;
-    }
 
     return texto;
 
@@ -716,16 +666,27 @@ const listarCursos = () => {
 	}	
 }
 
-hbs.registerHelper('listarMisCursos',()=>{
+hbs.registerHelper('listarMisCursos',(id)=>{
 	listaEstudiantesCursos = [];
 	console.log("PAOS listarMisCursos::::" + listaEstudiantesCursos.length);
-	
-	//listaCursosEstudiantes();
-	listaEstudiantesCursos=require('./cursos-estudiantes.json');	
+	console.log("ID::::::::::::::" + id);
+    let listaEstudiantesCursosAux = fs.readFile('src/cursos-estudiantes.json', 'utf-8', (err, data) => {
+      if(err) {
+        console.log('error: ', err);
+      } else {
+        console.log('listaEstudiantesCursosAux Exito');
+      }
+    });
+
+    listaEstudiantesCursos = JSON.parse(fs.readFileSync('src/cursos-estudiantes.json', 'utf8'));
+    console.log(listaEstudiantesCursos);
+
+    //return 0;
 	listaCursos=require('./bd-cursos.json');
 	listaEstudiantes = require('./estudiantes.json');
 	let texto = "";
 	console.log("listaEstudiantesCursos.length:::" + listaEstudiantesCursos.length);
+    console.log(listaEstudiantesCursos);
 	if( listaEstudiantesCursos.length >= 1 )
 	{
 		console.log("PAOS crear table::::" + listaEstudiantesCursos.length);
@@ -759,7 +720,7 @@ hbs.registerHelper('listarMisCursos',()=>{
 });
 
 hbs.registerHelper('eliminarCursoEst',(cursoest)=>{
-	eliminarCursoEst(cursoest);
+	//eliminarCursoEst(cursoest);
 	let result = eliminarCursoEst(cursoest);
 	let texto = "";
 	if ( result )
@@ -775,7 +736,7 @@ hbs.registerHelper('eliminarCursoEst',(cursoest)=>{
 });
 
 const eliminarCursoEst=(cursoest)=>{
-	listaCursosEstudiantes();	
+	listaCursosEstudiantes();
 	console.log("Curso a eliminar :::" + cursoest);
 	let nuevo = listaEstudiantesCursos.filter( bus => bus.documento.toString() + bus.curso.toString() != cursoest);	
 	listaEstudiantesCursos = nuevo
@@ -790,7 +751,7 @@ const guardarEstudianteCursos=()=>{
 	fs.writeFile('./src/cursos-estudiantes.json',datos,(err)=>{
 		if(err)throw (err);
 		console.log('Archivo creado con exito');
-	})
+	});
 }
 
 const listaCursosEstudiantes = () => {
