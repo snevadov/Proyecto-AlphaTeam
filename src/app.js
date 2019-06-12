@@ -226,7 +226,7 @@ app.post('/crearIncripcion',(req,res)=>{
 
 app.get('/misCursos',(req, res) => {
   res.render('misCursos', {
-    id: parseInt(req.body.id)
+    id: parseInt(req.query.id)
   });
 });
 
