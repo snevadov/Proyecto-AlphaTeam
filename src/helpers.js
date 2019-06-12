@@ -7,7 +7,6 @@ listaCursos = [];
 /*
 //Comentario pendiente de corregir
 let listaUsuarios = [];
-
 */
 
 hbs.registerHelper('obtenerPromedio', (valor) => {
@@ -103,7 +102,7 @@ hbs.registerHelper('listar-cursos-disponibles', () => {
     return texto;
 }); 
 
-hbs.registerHelper('listar-cursos-docente', () => {
+hbs.registerHelper('listar-cursos-docente-disponibles', () => {
     let texto = "";
     listaCursos = [];
     listaEstudiantes = [];
@@ -142,7 +141,6 @@ hbs.registerHelper('listar-cursos-docente', () => {
                                             <button class="btn btn-outline-danger" name="id" value="${curso.id}">Cerrar Curso</button>
                                             </form>
                                         </button>
-
                                         
                                         
                                     </h2>
@@ -226,7 +224,7 @@ hbs.registerHelper('listar-cursos-docente-cerrados', () => {
     /*listaCursos = require('./bd-cursos.json')
     listaEstudiantes = require('./estudiantes.json')
     listadoCursosEstudiantes = require('./cursos-estudiantes.json')*/
-
+    
     listaCursos = JSON.parse(fs.readFileSync('src/bd-cursos.json', 'utf8'));
     listaEstudiantes = JSON.parse(fs.readFileSync('src/estudiantes.json', 'utf8'));
     listadoCursosEstudiantes = JSON.parse(fs.readFileSync('src/cursos-estudiantes.json', 'utf8'));
@@ -255,9 +253,13 @@ hbs.registerHelper('listar-cursos-docente-cerrados', () => {
                                     <div class="card-header text-center id="heading${i}">
                                     <h2 class="mb-0">
                                         <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse${i}" aria-expanded="true" aria-controls="collapse${i}">
-                                            Curso: ${curso.nombre} - (id: ${curso.id})
+                                            Curso: ${curso.nombre} - (id: ${curso.id}) - 
+                                            <form class="form-inline" action="/listado-cursos-docente-abrir" method="POST">                                           
+                                                <button class="btn btn-outline-success" name="id" value="${curso.id}">Abrir Curso</button>
+                                            </form>
                                         </button>
-                                        <a class="btn btn-outline-danger" href="\listado-cursos-docente-eliminar" role="button" name="id" value="${curso.id}">Cerrar Curso</a>
+                                        
+                                        
                                     </h2>
                                     </div>        
                                     <div id="collapse${i}" class="collapse" aria-labelledby="heading${i}" data-parent="#accordionExample">
@@ -354,7 +356,7 @@ hbs.registerHelper('crearCurso', (id, nombre, modalidad, valor, descripcion, int
         listaCursos.push(cur);
         //Guardar
         let datos = JSON.stringify (listaCursos);
-        fs.writeFile('./src/bd-cursos.json', datos, function (err) {
+        fs.writeFileSync('./src/bd-cursos.json', datos, function (err) {
             if (err) throw err;
         });
         texto = `<div  class="alert alert-success" role="alert">
@@ -375,11 +377,56 @@ hbs.registerHelper('crearCurso', (id, nombre, modalidad, valor, descripcion, int
 hbs.registerHelper('cerrarCurso', (id) => {
 
     listaCursos = [];
+    estado = "estado";
     texto = '';
-
-    texto = id;
     //Listar
     listaCursos = require('./bd-cursos.json');
+    let encontrado = listaCursos.find(buscar => buscar.id == id);
+    if (!encontrado){
+        texto = `<div  class="alert alert-danger" role="alert">
+                    Error cambiando estado del curso a Cerrado
+                </div>`;
+    }
+    else {
+        encontrado[estado] = "Cerrado";
+
+        let datos = JSON.stringify (listaCursos);
+        fs.writeFileSync('./src/bd-cursos.json', datos, function (err) {
+            if (err) throw err;
+        });
+        texto = `<div  class="alert alert-success" role="alert">
+                    Curso cerrado con Exito
+                </div>`;
+    }
+
+    return texto;
+
+});
+
+hbs.registerHelper('abrirCurso', (id) => {
+
+    listaCursos = [];
+    estado = "estado";
+    texto = '';
+    //Listar
+    listaCursos = require('./bd-cursos.json');
+    let encontrado = listaCursos.find(buscar => buscar.id == id);
+    if (!encontrado){
+        texto = `<div  class="alert alert-danger" role="alert">
+                    Error cambiando estado del curso a Disponible
+                </div>`;
+    }
+    else {
+        encontrado[estado] = "Disponible";
+
+        let datos = JSON.stringify (listaCursos);
+        fs.writeFileSync('./src/bd-cursos.json', datos, function (err) {
+            if (err) throw err;
+        });
+        texto = `<div  class="alert alert-success" role="alert">
+                    Curso abierto con Exito
+                </div>`;
+    }
 
     return texto;
 
@@ -391,13 +438,14 @@ hbs.registerHelper('cerrarCurso', (id) => {
 // Registro de usuarios
 hbs.registerHelper('registrarUsuario', (usuario) => {
     let listaUsuarios = [];
-    listaUsuarios = require('./usuario.json');
+    listaUsuarios = JSON.parse(fs.readFileSync('src/estudiantes.json'));
+    //listaUsuarios = require('./estudiantes.json');
 
     let respuesta = '';
 
     //Armo el objeto de curso
     let nuevoUsuario = {
-        id: usuario.id,
+        documento: usuario.documento,
         nombre: usuario.nombre,
         correo: usuario.correo,
         telefono: usuario.telefono,
@@ -406,21 +454,21 @@ hbs.registerHelper('registrarUsuario', (usuario) => {
     };
 
     //Valido que no permita guardar duplicados
-    let duplicado = listaUsuarios.find(usr => usr.id === nuevoUsuario.id);
+    let duplicado = listaUsuarios.find(usr => usr.documento === nuevoUsuario.documento);
     if(!duplicado)
     {
         listaUsuarios.push(nuevoUsuario);
         let datos = JSON.stringify(listaUsuarios);
-        fs.writeFile('src/usuario.json', datos, (err)=>{
+        fs.writeFileSync('src/estudiantes.json', datos, (err)=>{
             if(err) console.log(err);
             console.log('Archivo creado con éxito');
         });
 
-        respuesta = "El usuario " + nuevoUsuario.nombre + ' con documento de identidad ' + nuevoUsuario.id  + " fue creado de manera exitosa!";
+        respuesta = "El usuario " + nuevoUsuario.nombre + ' con documento de identidad ' + nuevoUsuario.documento  + " fue creado de manera exitosa!";
     }
     else
     {
-        respuesta = "No se fue posible registrar el usuario" + nuevoUsuario.nombre + ' con documento de identidad ' + nuevoUsuario.id + '. Ya existe otro usuario con es documento.';
+        respuesta = "No se fue posible registrar el usuario" + nuevoUsuario.nombre + ' con documento de identidad ' + nuevoUsuario.documento + '. Ya existe otro usuario con es documento.';
     }
 
     return respuesta;
@@ -429,7 +477,8 @@ hbs.registerHelper('registrarUsuario', (usuario) => {
 // listado de usuarios
 hbs.registerHelper('listarUsuarios', () => {
     let listaUsuarios = [];
-    listaUsuarios = require('./usuario.json');
+    //listaUsuarios = require('./estudiantes.json');
+    listaUsuarios = JSON.parse(fs.readFileSync('src/estudiantes.json'));
 
     let texto = "<table class='table'> \
                     <thead class='thead-dark'> \
@@ -444,7 +493,7 @@ hbs.registerHelper('listarUsuarios', () => {
     listaUsuarios.forEach(usuario => {
         texto = texto +            
             "<tr>" +
-            "<td>" + usuario.id + '</td>' +
+            "<td>" + usuario.documento + '</td>' +
             "<td>" + usuario.nombre + '</td>' +
             "<td>" + usuario.correo + '</td>' +
             "<td>" + usuario.telefono + '</td>' +
@@ -459,12 +508,13 @@ hbs.registerHelper('listarUsuarios', () => {
 // listado de usuarios en select
 hbs.registerHelper('listarUsuariosSelect', () => {
     let listaUsuarios = [];
-    listaUsuarios = require('./usuario.json');
+    //listaUsuarios = require('./estudiantes.json');
+    listaUsuarios = JSON.parse(fs.readFileSync('src/estudiantes.json'));
 
-    let texto = '<select class="form-control" name="id"><option value="">Usuarios...</option>'
+    let texto = '<select class="form-control" name="documento" required><option value="">Usuarios...</option>'
     
     listaUsuarios.forEach(usuario => {
-        texto = texto + '<option value="' + usuario.id + '">' + usuario.id + ' | ' + usuario.nombre + '</option>';
+        texto = texto + '<option value="' + usuario.documento + '">' + usuario.documento + ' | ' + usuario.nombre + '</option>';
     });
 
     texto = texto + "</select>";
@@ -473,12 +523,13 @@ hbs.registerHelper('listarUsuariosSelect', () => {
 });
 
 // listado de roles en select o si es administrador no permite cambiarlo
-hbs.registerHelper('listarRolesUsuarios', (id) => {
+hbs.registerHelper('listarRolesUsuarios', (documento) => {
     let listaUsuarios = [];
-    listaUsuarios = require('./usuario.json');
+    //listaUsuarios = require('./estudiantes.json');
+    listaUsuarios = JSON.parse(fs.readFileSync('src/estudiantes.json'));
 
-    //Obtengo el usuario basado en el id
-    let usuario = listaUsuarios.find(usr => (usr.id === id));
+    //Obtengo el usuario basado en el documento
+    let usuario = listaUsuarios.find(usr => (usr.documento == documento));
     console.log(usuario);
 
     let texto = '<select class="form-control" name="tipo" ';
@@ -506,15 +557,16 @@ hbs.registerHelper('listarRolesUsuarios', (id) => {
 // Actaulización de usuarios
 hbs.registerHelper('actualizarUsuario', (usuario) => {
     let listaUsuarios = [];
-    listaUsuarios = require('./usuario.json');
+    //listaUsuarios = require('./estudiantes.json');
+    listaUsuarios = JSON.parse(fs.readFileSync('src/estudiantes.json'));
 
     let respuesta = '';
 
     //Valido que no permita guardar duplicados
-    let encontrado = listaUsuarios.find(usr => usr.id === usuario.id);
+    let encontrado = listaUsuarios.find(usr => usr.documento === usuario.documento);
     if(encontrado)
     {
-        encontrado['id'] = usuario.id;
+        encontrado['documento'] = usuario.documento;
         encontrado['nombre'] = usuario.nombre;
         encontrado['correo'] = usuario.correo;
         encontrado['telefono'] = usuario.telefono;
@@ -522,16 +574,16 @@ hbs.registerHelper('actualizarUsuario', (usuario) => {
         encontrado['tipo'] = usuario.tipo;
 
         let datos = JSON.stringify(listaUsuarios);
-        fs.writeFile('src/usuario.json', datos, (err)=>{
+        fs.writeFileSync('src/estudiantes.json', datos, (err)=>{
             if(err) console.log(err);
             console.log('Archivo creado con éxito');
         });
 
-        respuesta = "El usuario " + usuario.nombre + ' con documento de identidad ' + usuario.id  + " fue actualizado de manera exitosa!";
+        respuesta = "El usuario " + usuario.nombre + ' con documento de identidad ' + usuario.documento  + " fue actualizado de manera exitosa!";
     }
     else
     {
-        respuesta = "No se fue posible actualizar el usuario" + usuario.nombre + ' con documento de identidad ' + usuario.id + '. No existe usuario con ese documento.';
+        respuesta = "No se fue posible actualizar el usuario" + usuario.nombre + ' con documento de identidad ' + usuario.documento + '. No existe usuario con ese documento.';
     }
 
     return respuesta;
@@ -541,260 +593,253 @@ hbs.registerHelper('actualizarUsuario', (usuario) => {
 
 /* Walter */
 hbs.registerHelper('listarCursos',()=>{
-	listaCursos=require('./bd-cursos.json');
-	let texto = "<label for='curso'>Cursos disponibles</label> \
-					<select class='form-control' name='curso' required>";
-	listaCursos.forEach(curso => {
-		if ( curso.estado == "Disponible")
-		{
-			texto = texto + 
-			'<option>' + curso.nombre + '</option>';
-		}		
-	});
-	
-	texto = texto + '</select>' ;
-	return texto;
+    listaCursos=require('./bd-cursos.json');
+    let texto = "<label for='curso'>Cursos disponibles</label> \
+                    <select class='form-control' name='curso' required>";
+    listaCursos.forEach(curso => {
+        if ( curso.estado == "Disponible")
+        {
+            texto = texto + 
+            '<option>' + curso.nombre + '</option>';
+        }       
+    });
+    
+    texto = texto + '</select>' ;
+    return texto;
 });
 
 
 
 hbs.registerHelper('incripcionCursos',(documento,nombre,correo,telefono,curso)=>{
-	console.log('PASO.');
-	let est = crearEstudiante(documento,nombre,correo,telefono,curso);
-	let result = crearEstudianteCurso(documento,curso);
-	let texto = "";
-	if ( result )
-	{
-		texto =  "<h2> Estudiante  " + est.nombre + " inscrito con exito en el curso " + curso + "</h2>"
-	}
-	else
-	{
-		texto =  "<div class='alert alert-danger' role='alert'> Ya está registrado en este curso</div>" 
-	}
-	return texto;
+    console.log('PASO.');
+    let est = crearEstudiante(documento,nombre,correo,telefono,curso);
+    let result = crearEstudianteCurso(documento,curso);
+    let texto = "";
+    if ( result )
+    {
+        texto =  "<h2> Estudiante  " + est.nombre + " inscrito con exito en el curso " + curso + "</h2>"
+    }
+    else
+    {
+        texto =  "<div class='alert alert-danger' role='alert'> Ya está registrado en este curso</div>" 
+    }
+    return texto;
 });
 
 const crearEstudiante = (documento,nombre,correo,telefono,curso)=>{
-	listarEstd();
-	console.log("LISTARRRR::: " + listaEstudiantes);
-	let est = {
-		documento: documento,
-		nombre: nombre,
-		correo: correo,
-		telefono: telefono
-	};
-	let duplicado = listaEstudiantes.find(doc=>doc.documento==documento);
-	if(!duplicado)
-	{
-		listaEstudiantes.push(est);
-		console.log(listaEstudiantes);
-		guardarEstudiante();
-		console.log('Guardado.');
-	}
-	else
-	{
-		console.log('Ya existe otro estudiante con ese documento.' + duplicado.documento);
-	}
-	return est;
-	
+    listarEstd();
+    console.log("LISTARRRR::: " + listaEstudiantes);
+    let est = {
+        documento: documento,
+        nombre: nombre,
+        correo: correo,
+        telefono: telefono
+    };
+    let duplicado = listaEstudiantes.find(doc=>doc.documento==documento);
+    if(!duplicado)
+    {
+        listaEstudiantes.push(est);
+        console.log(listaEstudiantes);
+        guardarEstudiante();
+        console.log('Guardado.');
+    }
+    else
+    {
+        console.log('Ya existe otro estudiante con ese documento.' + duplicado.documento);
+    }
+    return est;
+    
 }
 
 const guardarEstudiante=()=>{
-	let datos = JSON.stringify(listaEstudiantes);
-	fs.writeFile('./src/estudiantes.json',datos,(err)=>{
-		if(err)throw (err);
-		console.log('Archivo creado con exito');
-	})
-}
-
-const listarEstd = () => {
-	try {
-		listaEstudiantes = require('./estudiantes.json');
-		//Esta funcion se utiliza para procesos asincronos
-		//listaEstudiantes = JSON.parse(fs.readFileSync('listado.json'));
-	}
-	catch(error){
-		listaEstudiantes = [];
-	}	
-}
-
-const crearEstudianteCurso = (documento,curso)=>{
-	listarEstudiantesCursos();
-	listarCursos();
-	console.log("Cursosprimero::: " + listaCursos);
-	let cursoSelec = listaCursos.find(cur=>cur.nombre==curso);	
-	console.log("Cursos::: " + cursoSelec);
-	let estCurso = {
-		documento: documento,
-		curso: cursoSelec.id
-	};
-	console.log("curso seleccionado : " + cursoSelec.nombre + " - id::" + cursoSelec.id);
-	let duplicado = listaEstudiantesCursos.find(doc=>doc.documento + doc.curso == documento + cursoSelec.id);
-	if(!duplicado)
-	{
-		listaEstudiantesCursos.push(estCurso);
-		console.log(listaEstudiantesCursos);
-		guardarEstudianteCursos();
-		console.log('Guardado.');
-	}
-	else
-	{
-		return false;
-	}	
-	return true;
-}
-
-
-const listarEstudiantesCursos = () => {
-	try {
-		listaEstudiantesCursos = require('./cursos-estudiantes.json');
-		//Esta funcion se utiliza para procesos asincronos
-		//listaEstudiantes = JSON.parse(fs.readFileSync('listado.json'));
-	}
-	catch(error){
-		listaEstudiantesCursos = [];
-	}	
-}
-const listarCursos = () => {
-	try {
-		listaCursos = require('./bd-cursos.json');
-		//Esta funcion se utiliza para procesos asincronos
-		//listaEstudiantes = JSON.parse(fs.readFileSync('listado.json'));
-	}
-	catch(error){
-		listaCursos = [];
-	}	
-}
-
-hbs.registerHelper('listarMisCursos',(id)=>{
-	listaEstudiantesCursos = [];
-	console.log("PAOS listarMisCursos::::" + listaEstudiantesCursos.length);
-	console.log("ID::::::::::::::" + id);
-    let listaEstudiantesCursosAux = fs.readFile('src/cursos-estudiantes.json', 'utf-8', (err, data) => {
-      if(err) {
-        console.log('error: ', err);
-      } else {
-        console.log('listaEstudiantesCursosAux Exito');
-      }
-    });
-
-    listaEstudiantesCursos = JSON.parse(fs.readFileSync('src/cursos-estudiantes.json', 'utf8'));
-    console.log(listaEstudiantesCursos);
-
-    //return 0;
-	listaCursos=require('./bd-cursos.json');
-	listaEstudiantes = require('./estudiantes.json');
-	let texto = "";
-	console.log("listaEstudiantesCursos.length:::" + listaEstudiantesCursos.length);
-    console.log(listaEstudiantesCursos);
-	if( listaEstudiantesCursos.length >= 1 )
-	{
-		console.log("PAOS crear table::::" + listaEstudiantesCursos.length);
-		texto = "<table class='table'> \
-					<thead class='thead-dark'> \
-						<tr> \
-							<th scope='documento'>Documento</th>\
-							<th scope='nombre'>Estudiante</th>\
-							<th scope='idCurso'>idCurso</th>\
-							<th scope='curso'>Curso</th>\
-							<th scope='eliminar'>Eliminar</th>\
-						</tr>\
-					</thead> \
-					<tbody>";
-		listaEstudiantesCursos.forEach(curso => {
-			let listCurso = listaCursos.find(cur=>cur.id==curso.curso);
-			let listEstudiante = listaEstudiantes.find(est=>est.documento==curso.documento);
-			texto = texto + '<tr>';
-			texto = texto + '<td>' + curso.documento + '</td>';
-			texto = texto + '<td>' + listEstudiante.nombre + '</td>';
-			texto = texto + '<td>' + curso.curso + '</td>';
-			texto = texto + '<td>' + listCurso.nombre + '</td>';
-			texto = texto + '<td>' + '<button class="btn btn-primary" name="cursoest" value="' + curso.documento + curso.curso +'">Eliminar</button>' + '</td>';
-			texto = texto + '</tr>';
-		});
-		
-		texto = texto + '</tbody> </table>' ;
-	}
-	
-	return texto;
-});
-
-hbs.registerHelper('eliminarCursoEst',(cursoest)=>{
-	//eliminarCursoEst(cursoest);
-	let result = eliminarCursoEst(cursoest);
-	let texto = "";
-	if ( result )
-	{
-		texto =  "<h2> Curso  elminado exitosamente</h2>"
-	}
-	else
-	{
-		texto =  "<div class='alert alert-danger' role='alert'> Ya está registrado en este curso</div>" 
-	}
-	return texto;
-	
-});
-
-const eliminarCursoEst=(cursoest)=>{
-	listaCursosEstudiantes();
-	console.log("Curso a eliminar :::" + cursoest);
-	let nuevo = listaEstudiantesCursos.filter( bus => bus.documento.toString() + bus.curso.toString() != cursoest);	
-	listaEstudiantesCursos = nuevo
-	guardarEstudianteCursos();
-	return true;
-}
-
-const guardarEstudianteCursos=()=>{
-	console.log("Guardar listaEstudiantesCursos :::" + listaEstudiantesCursos.length);
-	let datos = JSON.stringify(listaEstudiantesCursos);
-	console.log("datos:::::" + datos);
-	fs.writeFile('./src/cursos-estudiantes.json',datos,(err)=>{
-		if(err)throw (err);
-		console.log('Archivo creado con exito');
-	});
-}
-
-const listaCursosEstudiantes = () => {
-	try {
-		listaEstudiantesCursos = require('./cursos-estudiantes.json');
-	}
-	catch(error){
-		listaEstudiantesCursos = [];
-	}	
-}
-/* Fin Walter */
-
-/* SEBASTIÁN */
-//Cargo el listado de usuarios
-const listaUsuarios = () => {
-    try {
-        listaUsuarios = require('./cursos-estudiantes.json');
-    }
-    catch(error){
-        listaUsuarios = [];
-    }   
-}
-
-//Guardo listado de usuarios
-const guardarUsuarios = () => {
-    let datos = JSON.stringify(listaUsuarios);
-    fs.writeFile('src/usuario.json', datos, (err)=>{
+    let datos = JSON.stringify(listaEstudiantes);
+    fs.writeFileSync('./src/estudiantes.json',datos,(err)=>{
         if(err)throw (err);
         console.log('Archivo creado con exito');
     })
 }
 
-//Busco usuario por id listado de usuarios
-const buscarUsuario = (id) => {
-    let usuario = listaUsuarios.find(usr => (usr.id === id));
+const listarEstd = () => {
+    try {
+        listaEstudiantes = require('./estudiantes.json');
+        //Esta funcion se utiliza para procesos asincronos
+        //listaEstudiantes = JSON.parse(fs.readFileSync('listado.json'));
+    }
+    catch(error){
+        listaEstudiantes = [];
+    }   
+}
+
+const crearEstudianteCurso = (documento,curso)=>{
+    listarEstudiantesCursos();
+    listarCursos();
+    console.log("Cursosprimero::: " + listaCursos);
+    let cursoSelec = listaCursos.find(cur=>cur.nombre==curso);  
+    console.log("Cursos::: " + cursoSelec);
+    let estCurso = {
+        documento: documento,
+        curso: cursoSelec.id
+    };
+    console.log("curso seleccionado : " + cursoSelec.nombre + " - id::" + cursoSelec.id);
+    let duplicado = listaEstudiantesCursos.find(doc=>doc.documento + doc.curso == documento + cursoSelec.id);
+    if(!duplicado)
+    {
+        listaEstudiantesCursos.push(estCurso);
+        console.log(listaEstudiantesCursos);
+        guardarEstudianteCursos();
+        console.log('Guardado.');
+    }
+    else
+    {
+        return false;
+    }   
+    return true;
+}
+
+
+const listarEstudiantesCursos = () => {
+    try {
+        listaEstudiantesCursos = require('./cursos-estudiantes.json');
+        //Esta funcion se utiliza para procesos asincronos
+        //listaEstudiantes = JSON.parse(fs.readFileSync('listado.json'));
+    }
+    catch(error){
+        listaEstudiantesCursos = [];
+    }   
+}
+const listarCursos = () => {
+    try {
+        listaCursos = require('./bd-cursos.json');
+        //Esta funcion se utiliza para procesos asincronos
+        //listaEstudiantes = JSON.parse(fs.readFileSync('listado.json'));
+    }
+    catch(error){
+        listaCursos = [];
+    }   
+}
+
+hbs.registerHelper('listarMisCursos',(documentoLogin)=>{
+    listaEstudiantesCursos = [];
+    console.log("PAOS listarMisCursos::::" + listaEstudiantesCursos.length);
+    
+    //listaCursosEstudiantes();
+    listaEstudiantesCursos=require('./cursos-estudiantes.json');
+    listaCursos=require('./bd-cursos.json');
+    listaEstudiantes = require('./estudiantes.json');
+    let texto = "";
+    console.log("listaEstudiantesCursos.length:::" + listaEstudiantesCursos.length);
+    if( listaEstudiantesCursos.length >= 1 )
+    {
+        console.log("PAOS crear table::::" + listaEstudiantesCursos.length);
+        texto = "<table class='table'> \
+                    <thead class='thead-dark'> \
+                        <tr> \
+                            <th scope='documento'>Documento</th>\
+                            <th scope='nombre'>Estudiante</th>\
+                            <th scope='idCurso'>idCurso</th>\
+                            <th scope='curso'>Curso</th>\
+                            <th scope='eliminar'>Eliminar</th>\
+                        </tr>\
+                    </thead> \
+                    <tbody>";
+        listaEstudiantesCursos.forEach(curso => {
+            let listCurso = listaCursos.find(cur=>cur.id==curso.curso);
+            let listEstudiante = listaEstudiantes.find(est=>est.documento==curso.documento);
+            texto = texto + '<tr>';
+            texto = texto + '<td>' + curso.documento + '</td>';
+            texto = texto + '<td>' + listEstudiante.nombre + '</td>';
+            texto = texto + '<td>' + curso.curso + '</td>';
+            texto = texto + '<td>' + listCurso.nombre + '</td>';
+            texto = texto + '<td>' + '<button class="btn btn-primary" name="cursoest" value="' + curso.documento + curso.curso +'">Eliminar</button>' + '</td>';
+            texto = texto + '</tr>';
+        });
+        
+        texto = texto + '</tbody> </table>' ;
+    }
+    
+    return texto;
+});
+
+hbs.registerHelper('eliminarCursoEst',(cursoest)=>{
+    eliminarCursoEst(cursoest);
+    let result = eliminarCursoEst(cursoest);
+    let texto = "";
+    if ( result )
+    {
+        texto =  "<h2> Curso  elminado exitosamente</h2>"
+    }
+    else
+    {
+        texto =  "<div class='alert alert-danger' role='alert'> Ya está registrado en este curso</div>" 
+    }
+    return texto;
+    
+});
+
+const eliminarCursoEst=(cursoest)=>{
+    listaCursosEstudiantes();   
+    console.log("Curso a eliminar :::" + cursoest);
+    let nuevo = listaEstudiantesCursos.filter( bus => bus.documento.toString() + bus.curso.toString() != cursoest); 
+    listaEstudiantesCursos = nuevo
+    guardarEstudianteCursos();
+    return true;
+}
+
+const guardarEstudianteCursos=()=>{
+    console.log("Guardar listaEstudiantesCursos :::" + listaEstudiantesCursos.length);
+    let datos = JSON.stringify(listaEstudiantesCursos);
+    console.log("datos:::::" + datos);
+    fs.writeFileSync('./src/cursos-estudiantes.json',datos,(err)=>{
+        if(err)throw (err);
+        console.log('Archivo creado con exito');
+    })
+}
+
+const listaCursosEstudiantes = () => {
+    try {
+        listaEstudiantesCursos = require('./cursos-estudiantes.json');
+    }
+    catch(error){
+        listaEstudiantesCursos = [];
+    }   
+}
+/* Fin Walter */
+
+/* SEBASTIÁN */
+//Cargo el listado de usuarios
+const cargarListaUsuarios = () => {
+    try {
+        listaUsuarios = JSON.parse(fs.readFileSync('src/cursos-estudiantes.json'));
+    }
+    catch(error){
+        listaUsuarios = [];
+    }
+
+    return listaUsuarios;
+}
+
+//Guardo listado de usuarios
+const guardarUsuarios = () => {
+    let datos = JSON.stringify(listaUsuarios);
+    fs.writeFileSync('src/estudiantes.json', datos, (err)=>{
+        if(err)throw (err);
+        console.log('Archivo creado con exito');
+    })
+}
+
+//Busco usuario por documento listado de usuarios
+const buscarUsuario = (documento) => {
+    let listaUsuarios = cargarListaUsuarios();
+    let usuario = listaUsuarios.find(usr => (usr.documento == documento));
 
     return usuario;
 }
 
-//Busco usuario por id y contraseña listado de usuarios
-const validarLogin = (id, contrasena) => {
-    //Obtengo el usuario basado en el id
-    let usuario = listaUsuarios.find(usr => (usr.id === id && usr.contrasena === contrasena));
+//Busco usuario por documento y contraseña listado de usuarios
+const validarLogin = (documento, contrasena) => {
+    let listaUsuarios = cargarListaUsuarios();
+    //Obtengo el usuario basado en el documento
+    let usuario = listaUsuarios.find(usr => (usr.documento == documento && usr.contrasena === contrasena));
 
     //Si no encuentro el usuario, muestro error
     if(!usuario)
