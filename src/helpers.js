@@ -103,7 +103,7 @@ hbs.registerHelper('listar-cursos-disponibles', () => {
     return texto;
 }); 
 
-hbs.registerHelper('listar-cursos-docente', () => {
+hbs.registerHelper('listar-cursos-docente-disponibles', () => {
     let texto = "";
     listaCursos = [];
     listaEstudiantes = [];
@@ -257,7 +257,7 @@ hbs.registerHelper('listar-cursos-docente-cerrados', () => {
                                         <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse${i}" aria-expanded="true" aria-controls="collapse${i}">
                                             Curso: ${curso.nombre} - (id: ${curso.id})
                                         </button>
-                                        <a class="btn btn-outline-danger" href="\listado-cursos-docente-eliminar" role="button" name="id" value="${curso.id}">Cerrar Curso</a>
+                                        <a class="btn btn-outline-success" href="/listado-cursos-docente-eliminar" role="button" name="id" value="${curso.id}">Abrir Curso</a>
                                     </h2>
                                     </div>        
                                     <div id="collapse${i}" class="collapse" aria-labelledby="heading${i}" data-parent="#accordionExample">
