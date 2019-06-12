@@ -279,7 +279,6 @@ hbs.registerHelper('listar-cursos-docente-cerrados', () => {
                                                             <th scope="col">Nombre</th>
                                                             <th scope="col">Correo</th>
                                                             <th scope="col">Telefono</th>
-                                                            <th scope="col">Eliminar</th>
                                                             </tr>
                                                         </thead>
                                                     <tbody>`;
@@ -291,7 +290,6 @@ hbs.registerHelper('listar-cursos-docente-cerrados', () => {
                                                 <td>${est.nombre}</td>  
                                                 <td>${est.correo}</td>                
                                                 <td>${est.telefono}</td>
-                                                <td><button type="button" class="btn btn-danger">Eliminar</button></td>
                                                 </tr>`
                                             }     
                                         });
