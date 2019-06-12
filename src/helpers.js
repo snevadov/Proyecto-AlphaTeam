@@ -445,7 +445,7 @@ hbs.registerHelper('registrarUsuario', (usuario) => {
 
     //Armo el objeto de curso
     let nuevoUsuario = {
-        id: usuario.documento,
+        documento: usuario.documento,
         nombre: usuario.nombre,
         correo: usuario.correo,
         telefono: usuario.telefono,
