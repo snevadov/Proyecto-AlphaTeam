@@ -129,15 +129,15 @@ app.post('/',(req, res) => {
         //Dependiendo del rol, redirecciono a una página
         if(usuario.tipo == 'administrador')
         {
-          res.redirect('/listado-cursos?id='.id);
+          res.redirect('/listado-cursos?id='+id);
         }
         else if(usuario.tipo == 'aspirante')
         {
-          res.redirect('/misCursos?id='.id);
+          res.redirect('/misCursos?id='+id);
         }
         else if(usuario.tipo == 'docente')
         {
-          res.redirect('/listado-cursos-docente?id='.id);
+          res.redirect('/listado-cursos-docente?id='+id);
         }
     }
 
