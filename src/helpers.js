@@ -724,7 +724,8 @@ const listarCursos = () => {
 
 hbs.registerHelper('listarMisCursos',(documentoLogin)=>{
     listaEstudiantesCursos = [];
-    console.log("PAOS documentoLogin::::" + documentoLogin);
+	let usuario = buscarUsuario(documentoLogin);
+    console.log("PASO documentoLogin::::" + usuario.documento);
     
     //listaCursosEstudiantes();
     //listaEstudiantesCursos=require('./cursos-estudiantes.json');
@@ -837,9 +838,9 @@ const guardarUsuarios = () => {
 
 //Busco usuario por documento listado de usuarios
 const buscarUsuario = (documento) => {
+	console.log("%%%%%%%%%%buscarUsuario- documento:::::::::" + documento);
     let listaUsuarios = cargarListaUsuarios();
     let usuario = listaUsuarios.find(usr => (usr.documento == documento));
-
     return usuario;
 }
 
