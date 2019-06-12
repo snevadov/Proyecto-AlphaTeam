@@ -6,8 +6,9 @@
     <form action="/actualizar-usuario" method="POST">
             <div class="form-group">
                     <label for="id">Documento de identidad</label>
-                    <input type="number"  class="form-control" name="id" placeholder="Ingrese su documento de identidad" aria-describedby="idHelp" value="{{{id}}}" required>
+                    <input type="number"  class="form-control" name="id" placeholder="Ingrese su documento de identidad" aria-describedby="idHelp" value="{{{documento}}}" disabled>
                     <small id="idHelp" class="form-text text-muted">Será el usuario para ingresar</small>
+                    <input type="hidden"  class="form-control" name="documento" placeholder="Ingrese su documento de identidad" aria-describedby="idHelp" value="{{{documento}}}">
             </div>
 
             <div class="form-group">
@@ -31,7 +32,7 @@
 
             <div class="form-group">
                 <label for="tipo">Rol</label>
-                {{{listarRolesUsuarios id}}}
+                {{{listarRolesUsuarios documento}}}
             </div>
 
             <div class="form-group" align="center">
