@@ -224,8 +224,8 @@ app.post('/crearIncripcion',(req,res)=>{
 		correo: req.body.correo,
 		nombre: req.body.nombre,
 		telefono: req.body.telefono,
-    curso: req.body.curso,
-    documentoLogin: req.body.documentoLogin
+		curso: req.body.curso,
+		documentoLogin: req.body.documentoLogin
 	});
 });
 
@@ -249,7 +249,7 @@ app.post('/eliminarCurso',(req,res)=>{
 
 
 app.post('/eliminarCursoDocente',(req,res)=>{	
-	res.render('eliminar-curso-confirmacion',{
+	res.render('eliminar-curso-docente-confirmacion',{
     cursoest: req.body.cursoest,
     documentoLogin: req.body.documentoLogin
 	});
