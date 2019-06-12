@@ -116,9 +116,6 @@ hbs.registerHelper('listar-cursos-docente-disponibles', () => {
                 '</div>';
     }
     else {
-<<<<<<< HEAD
-        texto = `<form action="/eliminarCurso" method="POST"> <div class="accordion" id="accordionExample">`;
-=======
         texto = `<div class="accordion" id="accordionExampleD">`;
         i = 1;
         cursosEstudiantes = [];
@@ -130,12 +127,12 @@ hbs.registerHelper('listar-cursos-docente-disponibles', () => {
             texto = texto +            
                             `<div class="col">            
                                 <div class="card">
-                                    <div class="card-header text-center id="headingD${i}">
-                                    <h2 class="mb-0">
-                                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseD${i}" aria-expanded="true" aria-controls="collapseD${i}">
-                                            Curso: ${curso.nombre} - (id: ${curso.id}) - 
-                                            <form class="form-inline" action="/listado-cursos-docente-eliminar" method="POST">                                           
-                                                <button class="btn btn-outline-danger" name="id" value="${curso.id}">Cerrar Curso</button>
+                                <div class="card-header text-center id="headingD${i}">
+                                <h2 class="mb-0">
+                                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseD${i}" aria-expanded="true" aria-controls="collapseD${i}">
+                                        Curso: ${curso.nombre} - (id: ${curso.id}) - 
+                                        <form class="form-inline" action="/listado-cursos-docente-eliminar" method="POST">                                           
+                                            <button class="btn btn-outline-danger" name="id" value="${curso.id}">Cerrar Curso</button>
                                             </form>
                                         </button>
 
@@ -181,7 +178,11 @@ hbs.registerHelper('listar-cursos-docente-disponibles', () => {
                                                 <td>${est.nombre}</td>  
                                                 <td>${est.correo}</td>                
                                                 <td>${est.telefono}</td>
-                                                <td><button type="button" class="btn btn-danger">Eliminar</button></td>
+                                                <td>
+                                                    <form action="/eliminarCurso" method="POST">
+                                                        <button  class="btn btn-danger" name="cursoest" value="` + est.documento + curso.id +`">Eliminar</button>
+                                                    </form>
+                                                </td>
                                                 </tr>`
                                             }     
                                         });
@@ -226,7 +227,6 @@ hbs.registerHelper('listar-cursos-docente-cerrados', () => {
     }
     else {
         texto = `<div class="accordion" id="accordionExample">`;
->>>>>>> ef6138b5cb9687f98f2634daefec949e893a8abb
         i = 1;
         cursosEstudiantes = [];
         cursos.forEach(curso => {
@@ -288,7 +288,7 @@ hbs.registerHelper('listar-cursos-docente-cerrados', () => {
                                                 <td>${est.nombre}</td>  
                                                 <td>${est.correo}</td>                
                                                 <td>${est.telefono}</td>
-                                                <td><button  class="btn btn-danger" name="cursoest" value="` + est.documento + curso.id +`">Eliminar</button></td>
+                                                <td><button type="button" class="btn btn-danger">Eliminar</button></td>
                                                 </tr>`
                                             }     
                                         });
@@ -311,7 +311,7 @@ hbs.registerHelper('listar-cursos-docente-cerrados', () => {
             i=i+1;
         });
         texto = texto + 
-                `</div></div> </form>`;
+                `</div></div>`;
 
     }
     return texto;
