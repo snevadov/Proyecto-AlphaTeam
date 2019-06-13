@@ -8,7 +8,8 @@
     "express": "^4.17.0",
     "hbs": "^4.0.4",
     "jquery": "^3.4.1",
-    "popper.js": "^1.15.0"
+    "popper.js": "^1.15.0",
+    "yargs": "^13.2.4"
   },
   "devDependencies": {},
   "scripts": {
@@ -16,5 +17,13 @@
   },
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/snevadov/Proyecto-AlphaTeam.git"
+  },
+  "bugs": {
+    "url": "https://github.com/snevadov/Proyecto-AlphaTeam/issues"
+  },
+  "homepage": "https://github.com/snevadov/Proyecto-AlphaTeam#readme"
 }

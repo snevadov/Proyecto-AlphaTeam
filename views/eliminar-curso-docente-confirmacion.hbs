@@ -1,0 +1,15 @@
+{{>headerDocente}}
+	<form action="/listado-cursos-docente" method="GET">		
+		<div class="container">
+			{{{eliminarCursoEst cursoest}}}
+		</div>
+		<div class="container">
+			<input type="hidden"  class="form-control" name="documentoLogin" placeholder="Ingrese su documento de identidad" aria-describedby="idHelp" value="{{{documentoLogin}}}">
+			<div class="row">
+				<div class="col-sm" align="center">
+					<button class="btn btn-primary">Volver</button>
+				</div>
+			</div>
+		</div>            
+    </form>
+{{>footer}}
