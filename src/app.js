@@ -153,6 +153,7 @@ app.get('/listado-usuarios',(req, res) => {
 app.post('/editar-usuario',(req, res) => {
   
   documento = parseInt(req.body.documento);
+  console.log(documento);
 
   let listaUsuarios = [];
   //listaUsuarios = require('./estudiantes.json');
