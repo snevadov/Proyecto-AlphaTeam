@@ -15,7 +15,8 @@ return (valor*100)
 
 //** JHON */
 hbs.registerHelper('listar-cursos', () => {
-    listaCursos = require('./bd-cursos.json')
+    //listaCursos = require('./bd-cursos.json');
+    listaCursos = JSON.parse(fs.readFileSync('src/bd-cursos.json', 'utf8'));
     let texto = "<table class='table'> \
                     <thead class='thead-dark'> \
                     <th>ID </th>\
@@ -47,7 +48,7 @@ hbs.registerHelper('listar-cursos', () => {
 
 hbs.registerHelper('listar-cursos-disponibles', () => {
     let texto = "";
-    listaCursos = require('./bd-cursos.json')
+    listaCursos = JSON.parse(fs.readFileSync('src/bd-cursos.json', 'utf8'));
     
     let cursos = listaCursos.filter(buscar => buscar.estado == "Disponible");
     if (cursos.length == 0){
