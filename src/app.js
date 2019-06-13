@@ -128,9 +128,9 @@ app.post('/',(req, res) => {
     else
     {
         //Dependiendo del rol, redirecciono a una página
-        if(usuario.tipo == 'administrador')
+        if(usuario.tipo == 'coordinador')
         {
-          res.redirect('/listado-cursos?documentoLogin='+documento);
+          res.redirect('/listado-cursos-docente');
         }
         else if(usuario.tipo == 'aspirante')
         {
@@ -138,7 +138,7 @@ app.post('/',(req, res) => {
         }
         else if(usuario.tipo == 'docente')
         {
-          res.redirect('/listado-cursos-docente?documentoLogin='+documento);
+          res.redirect('/listado-cursos');
         }
     }
 

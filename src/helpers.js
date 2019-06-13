@@ -523,10 +523,10 @@ hbs.registerHelper('listarRolesUsuarios', (documento) => {
     console.log(usuario);
 
     let texto = '<select class="form-control" name="tipo" ';
-    if(usuario.tipo == 'administrador')
+    if(usuario.tipo == 'coordinador')
     {
         texto = texto + 'readonly disabled> \
-        <option value="administrador" selected>Administrador</option> \
+        <option value="coordinador" selected>Coordinador</option> \
         <option value="aspirante">Aspirante</option> \
         <option value="docente">Docente</option>';
     }
