@@ -202,6 +202,14 @@ app.post('/actualizar-usuario',(req, res) => {
   });
 
 });
+
+//Llamada para cargar formulario de listado de cursos para estudiante
+app.get('/listado-cursos-estudiante',(req, res) => {
+  res.render('listado-cursos-estudiante', {
+    documentoLogin: parseInt(req.query.documentoLogin)
+  });
+});
+
 //** FIN SEBASTIÁN */
 
 //** WALTER */
