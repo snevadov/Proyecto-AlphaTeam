@@ -105,8 +105,7 @@ app.post('/calculos',(req, res) => {
       nombre: req.body.nombre,
       correo: req.body.correo,
       telefono: req.body.telefono,
-      contrasena: req.body.contrasena,
-      tipo: 'aspirante'
+      contrasena: req.body.contrasena
     });
     
     //Guarda y realiza la redirección
