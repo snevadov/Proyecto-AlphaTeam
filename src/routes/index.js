@@ -3,7 +3,7 @@ const express = require('express');
 const app = express ();
 const path = require('path');
 const hbs = require('hbs');
-const Estudiante = require('./../models/estudiante');
+const Usuario = require('./../models/usuario');
 //requiero filesystem
 const fs = require('fs');
 
@@ -100,19 +100,30 @@ app.post('/calculos',(req, res) => {
   app.post('/registrar-usuario',(req, res) => {
     
     //Defino variable usuario
-    let usuario = {
+    let usuario = new Usuario({
       documento: parseInt(req.body.documento),
       nombre: req.body.nombre,
       correo: req.body.correo,
       telefono: req.body.telefono,
       contrasena: req.body.contrasena,
       tipo: 'aspirante'
-    };
-  
-    //Realiza la redirección
-    res.render('registrar-usuario-resultado', {
-      usuario: usuario
     });
+    
+    //Guarda y realiza la redirección
+	usuario.save((err, resultado) => {
+        let respuesta = '';
+		if(err){
+            respuesta = "No se fue posible registrar el usuario" + usuario.nombre + ' con documento de identidad ' + usuario.documento + '. Error: ' + err;
+			return res.render('registrar-usuario-resultado', {
+				mostrar: respuesta
+			})
+        }
+        respuesta = "El usuario " + usuario.nombre + ' con documento de identidad ' + usuario.documento  + " fue creado de manera exitosa!";
+		return res.render('registrar-usuario-resultado', {
+			mostrar: respuesta
+		})
+    });
+  
   });
   
   //Llamada al login cuando pulso ingresar
