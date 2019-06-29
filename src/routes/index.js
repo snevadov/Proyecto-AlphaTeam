@@ -36,6 +36,11 @@ app.use(session({
 
 //Views
 app.get('/', (req, res ) => {
+  
+  //Destruyo la sesión
+  req.session.destroy((err) => {
+		if(err) return console.log(err)
+  })
 	res.render('index', {
 		titulo: 'Inicio'		
 	})
@@ -105,7 +110,7 @@ app.post('/calculos',(req, res) => {
       nombre: req.body.nombre,
       correo: req.body.correo,
       telefono: req.body.telefono,
-      contrasena: req.body.contrasena
+      contrasena: bcrypt.hashSync(req.body.contrasena, 10)
       
     });
     
@@ -132,37 +137,54 @@ app.post('/calculos',(req, res) => {
     documento = parseInt(req.body.documento);
     contrasena = req.body.contrasena;
   
-    let listaUsuarios = [];
-    //listaUsuarios = require('./estudiantes.json');
-    listaUsuarios = JSON.parse(fs.readFileSync('src/estudiantes.json'));
-  
     //Obtengo el usuario basado en el documento
-    let usuario = listaUsuarios.find(usr => (usr.documento === documento && usr.contrasena === contrasena));
-  
-    //Si no encuentro el usuario, muestro error
-    if(!usuario)
-      {
-        res.render('index', {
+    Usuario.findOne({documento: documento}, (err, usuario) => {
+      if(err){
+        return console.log(err);
+      }
+      
+      //Si no encuentra el usuario genera error
+      if(!usuario){
+        return res.render('index', {
           claseAlerta:'alert alert-danger col-6 col-sm-7 col-lg-4 col-xl-4',
           mensajeLogin:'El usuario y/o contraseña son incorrectos!'
-        });
+        })
       }
-      else
+
+      //Si la contraseña no coincide genera error
+      if(!bcrypt.compareSync(contrasena, usuario.contrasena)){
+        return res.render('index', {
+          claseAlerta:'alert alert-danger col-6 col-sm-7 col-lg-4 col-xl-4',
+          mensajeLogin:'El usuario y/o contraseña son incorrectos!'
+        })
+      }
+      
+      //Seteo variables de sesión
+      req.session.idusuario = usuario._id;
+      req.session.nombre = usuario.nombre;
+      req.session.documento = usuario.documento;
+      req.session.tipo = usuario.tipo;
+  
+      // res.render('index', {
+      //   mensaje : "Bienvenido " + usuario.nombre,
+      //   sesion: true,
+      //   nombre: req.session.nombre
+      // })
+
+      //Dependiendo del rol, redirecciono a una página
+      if(usuario.tipo == 'coordinador')
       {
-          //Dependiendo del rol, redirecciono a una página
-          if(usuario.tipo == 'coordinador')
-          {
-            res.redirect('/listado-cursos-docente');
-          }
-          else if(usuario.tipo == 'aspirante')
-          {
-            res.redirect('/misCursos?documentoLogin='+documento);
-          }
-          else if(usuario.tipo == 'docente')
-          {
-            res.redirect('/listado-cursos');
-          }
+        res.redirect('/listado-cursos-docente');
       }
+      else if(usuario.tipo == 'aspirante')
+      {
+        res.redirect('/misCursos?documentoLogin='+documento);
+      }
+      else if(usuario.tipo == 'docente')
+      {
+        res.redirect('/listado-cursos');
+      }
+    })
   
   });
   
@@ -261,6 +283,7 @@ app.post('/calculos',(req, res) => {
   });
   
   app.get('/misCursos',(req, res) => {
+    console.log(req.session);
     res.render('misCursos', {
       documentoLogin: parseInt(req.query.documentoLogin)
     });
