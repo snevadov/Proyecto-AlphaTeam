@@ -106,6 +106,7 @@ app.post('/calculos',(req, res) => {
       correo: req.body.correo,
       telefono: req.body.telefono,
       contrasena: req.body.contrasena
+      
     });
     
     //Guarda y realiza la redirección
