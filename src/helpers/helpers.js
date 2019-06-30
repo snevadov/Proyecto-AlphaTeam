@@ -49,15 +49,15 @@ hbs.registerHelper('listar-cursos', () => {
     return texto;
 });
 
-hbs.registerHelper('listar-cursos-disponibles', () => {
+hbs.registerHelper('listar-cursos-disponibles', (respuesta) => {
 
     console.log("listar-cursos-disponibles")
     let texto = "";
-    Cursos.find({}).exec((err,respuesta)=> {
-		if(err){
+
+		/*if(err){
             console.log("err")
 			return console.log(err)
-		}
+		}*/
 
         if (respuesta.length == 0){
             console.log('No existen cursos disponibles');
@@ -104,13 +104,13 @@ hbs.registerHelper('listar-cursos-disponibles', () => {
                         </div>`;
 
         }
-        
-        
-    });
     //let msg = texto;
     console.log("QUE PASA");
     console.log("texto R " + texto);
-    return texto;
+    return texto;   
+        
+ 
+
 });
         
 

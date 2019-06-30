@@ -94,6 +94,7 @@ app.post('/calculos',(req, res) => {
       descripcion: req.body.descripcion,
       intensidad: parseInt(req.body.intensidad)
     })
+
     curso.save((err, resultado)=> {
       if(err){
         res.render('crear-curso-confirmacion', {
@@ -101,19 +102,30 @@ app.post('/calculos',(req, res) => {
           texto : 'KO'
         })
       }
-  
-      res.render('crear-curso-confirmacion', {
-        mostrar : resultado,
-        texto : 'OK',
-        curso : {
-                id: parseInt(req.body.id),
-                nombre: req.body.nombre,
-                modalidad: req.body.modalidad,
-                valor: parseInt(req.body.valor),
-                descripcion: req.body.descripcion,
-                intensidad: parseInt(req.body.intensidad)
-              }
-      })
+
+        Cursos.find({}).exec((err,respuesta)=> {
+          if(err){
+            console.log("err")
+          }
+          console.log(respuesta)
+
+          res.render('crear-curso-confirmacion', {
+            mostrar : resultado,
+            respuesta : respuesta,
+            texto : 'OK',
+            curso : {
+                    id: parseInt(req.body.id),
+                    nombre: req.body.nombre,
+                    modalidad: req.body.modalidad,
+                    valor: parseInt(req.body.valor),
+                    descripcion: req.body.descripcion,
+                    intensidad: parseInt(req.body.intensidad)
+                  }
+          })
+          
+        });
+
+
     })		
 
   });
