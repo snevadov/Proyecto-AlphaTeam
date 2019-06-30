@@ -4,7 +4,11 @@ const app = express ();
 const path = require('path');
 const hbs = require('hbs');
 const Usuario = require('./../models/usuario');
+<<<<<<< HEAD
 const CursoEstudiante = require('./../models/cursos-estudiantes');
+=======
+const Cursos = require('./../models/cursos');
+>>>>>>> a7145cae316c5a5caa5275517aaf95928d421a46
 //requiero filesystem
 const fs = require('fs');
 
@@ -85,14 +89,36 @@ app.post('/calculos',(req, res) => {
   });
   
   app.post('/crear-curso',(req, res) => {
-    res.render('crear-curso-confirmacion', {
+    let curso = new Cursos({
       id: parseInt(req.body.id),
       nombre: req.body.nombre,
       modalidad: req.body.modalidad,
       valor: parseInt(req.body.valor),
       descripcion: req.body.descripcion,
       intensidad: parseInt(req.body.intensidad)
-    });
+    })
+    curso.save((err, resultado)=> {
+      if(err){
+        res.render('crear-curso-confirmacion', {
+          mostrar : err,
+          texto : 'KO'
+        })
+      }
+  
+      res.render('crear-curso-confirmacion', {
+        mostrar : resultado,
+        texto : 'OK',
+        curso : {
+                id: parseInt(req.body.id),
+                nombre: req.body.nombre,
+                modalidad: req.body.modalidad,
+                valor: parseInt(req.body.valor),
+                descripcion: req.body.descripcion,
+                intensidad: parseInt(req.body.intensidad)
+              }
+      })
+    })		
+
   });
   //** FIN */
   
@@ -165,6 +191,9 @@ app.post('/calculos',(req, res) => {
       req.session.nombre = usuario.nombre;
       req.session.documento = usuario.documento;
       req.session.tipo = usuario.tipo;
+      req.session.coordinador = (usuario.tipo == 'coordinador');
+      req.session.docente = (usuario.tipo == 'docente');
+      req.session.aspirante = (usuario.tipo == 'aspirante');
   
 	 console.log('Variable de sesion:' + req.session);
       // res.render('index', {

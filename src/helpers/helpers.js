@@ -1,6 +1,9 @@
 const hbs = require('hbs');
 //requiero filesystem
 const fs = require('fs');
+
+const Cursos = require('./../models/cursos');
+
 listaEstudiantes = [];
 listaEstudiantesCursos = [];
 listaCursos = [];
@@ -47,57 +50,70 @@ hbs.registerHelper('listar-cursos', () => {
 });
 
 hbs.registerHelper('listar-cursos-disponibles', () => {
+
+    console.log("listar-cursos-disponibles")
     let texto = "";
-    listaCursos = JSON.parse(fs.readFileSync('src/bd-cursos.json', 'utf8'));
-    
-    let cursos = listaCursos.filter(buscar => buscar.estado == "Disponible");
-    if (cursos.length == 0){
-        console.log('No existen cursos disponibles');
-        texto = '<div class="alert alert-danger" role="alert">' +
-                    'No existen cursos disponibles' +
-                '</div>';
-    }
-    else {
+    Cursos.find({}).exec((err,respuesta)=> {
+		if(err){
+            console.log("err")
+			return console.log(err)
+		}
 
+        if (respuesta.length == 0){
+            console.log('No existen cursos disponibles');
+            texto = '<div class="alert alert-danger" role="alert">' +
+                        'No existen cursos disponibles' +
+                    '</div>';
+        }
+        else {
 
+            console.log('cursos disponibles antes del for');
 
-        texto = `<div class="accordion" id="accordionExample"> 
-                        <div class="row">`;
-        i = 1;
-        cursos.forEach(curso => {
-            texto = texto +            
-                            `<div class="col">            
-                                <div class="card">
-                                    <div class="card-header" id="heading${i}">
-                                    <h2 class="mb-0">
-                                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse${i}" aria-expanded="true" aria-controls="collapse${i}">
-                                            Curso: ${curso.nombre} - Valor: ${curso.valor} <br>
-                                            Descripcio: ${curso.descripcion}
-                                        </button>
-                                    </h2>
-                                    </div>        
-                                    <div id="collapse${i}" class="collapse" aria-labelledby="heading${i}" data-parent="#accordionExample">
-                                    <div class="card-body">
-                                        <strong>ID: </strong>${curso.id}<br><br>
-                                        <strong>Nombre Curso: </strong>${curso.nombre}<br><br>
-                                        <strong>Descripcion: </strong>${curso.descripcion}<br><br>                    
-                                        <strong>Modalidad: </strong>${curso.modalidad}<br><br>
-                                        <strong>Valor: </strong>${curso.valor}<br><br>
-                                        <strong>Intensidad: </strong>${curso.intensidad}<br><br>
-                                        <strong>Estado: </strong>${curso.estado}
-                                    </div>
-                                    </div>
-                                </div>                    
-                            </div>`;
-                i=i+1;
-        });
-        texto = texto + `</div>
-                    </div>`;
+            texto = `<div class="accordion" id="accordionExample"> 
+                            <div class="row">`;
+            i = 1;
+            respuesta.forEach(curso => {
+                console.log('cursos disponibles despues del for');
+                texto = texto +            
+                                `<div class="col">            
+                                    <div class="card">
+                                        <div class="card-header" id="heading${i}">
+                                        <h2 class="mb-0">
+                                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse${i}" aria-expanded="true" aria-controls="collapse${i}">
+                                                Curso: ${curso.nombre} - Valor: ${curso.valor} <br>
+                                                Descripcio: ${curso.descripcion}
+                                            </button>
+                                        </h2>
+                                        </div>        
+                                        <div id="collapse${i}" class="collapse" aria-labelledby="heading${i}" data-parent="#accordionExample">
+                                        <div class="card-body">
+                                            <strong>ID: </strong>${curso.id}<br><br>
+                                            <strong>Nombre Curso: </strong>${curso.nombre}<br><br>
+                                            <strong>Descripcion: </strong>${curso.descripcion}<br><br>                    
+                                            <strong>Modalidad: </strong>${curso.modalidad}<br><br>
+                                            <strong>Valor: </strong>${curso.valor}<br><br>
+                                            <strong>Intensidad: </strong>${curso.intensidad}<br><br>
+                                            <strong>Estado: </strong>${curso.estado}
+                                        </div>
+                                        </div>
+                                    </div>                    
+                                </div>`;
+                    i=i+1;
+            });
+            texto = texto + `</div>
+                        </div>`;
 
-    }
-
+        }
+        
+        
+    });
+    //let msg = texto;
+    console.log("QUE PASA");
+    console.log("texto R " + texto);
     return texto;
-}); 
+});
+        
+
 
 hbs.registerHelper('listar-cursos-docente-disponibles', () => {
     let texto = "";
@@ -319,7 +335,23 @@ hbs.registerHelper('listar-cursos-docente-cerrados', () => {
     return texto;
 });
 
-hbs.registerHelper('crearCurso', (id, nombre, modalidad, valor, descripcion, intensidad) => {
+hbs.registerHelper('crearCurso', (curso, texto, mostrar) => {
+    if (texto == 'OK'){
+        texto = `<div  class="alert alert-success" role="alert">
+                    Curso creado con Exito
+                </div>`;
+    }
+    else{
+        texto = '<div class="alert alert-danger" role="alert">' +
+                    'ERROR al crear un Curso - ' + mostrar +
+                '</div>';
+    }
+
+    return texto;
+
+});
+
+/*hbs.registerHelper('crearCurso', (id, nombre, modalidad, valor, descripcion, intensidad) => {
 
     const fs = require('fs');
     listaCursos = [];
@@ -362,7 +394,7 @@ hbs.registerHelper('crearCurso', (id, nombre, modalidad, valor, descripcion, int
 
     return texto;
 
-});
+});*/
 
 hbs.registerHelper('cerrarCurso', (id) => {
 
