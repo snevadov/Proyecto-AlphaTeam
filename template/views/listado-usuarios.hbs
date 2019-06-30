@@ -16,7 +16,9 @@
 	<div class="dropdown-divider"></div>
 	<br>
 	<h2>Listado de usuarios</h2>
-	{{{listarUsuarios}}}
+	<form action="/editar-usuario" method="POST">
+		{{{listarUsuarios listaUsuarios}}}
+	</form>
 </div>
 
 {{>footer}}

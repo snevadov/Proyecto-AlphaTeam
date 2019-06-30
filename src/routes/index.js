@@ -204,7 +204,7 @@ app.post('/calculos',(req, res) => {
       req.session.docente = (usuario.tipo == 'docente');
       req.session.aspirante = (usuario.tipo == 'aspirante');
   
-	 console.log('Variable de sesion:' + req.session);
+	    console.log('Variable de sesion:' + req.session);
       // res.render('index', {
       //   mensaje : "Bienvenido " + usuario.nombre,
       //   sesion: true,
@@ -230,62 +230,86 @@ app.post('/calculos',(req, res) => {
   
   //Llamada para cargar el listado de usuarios
   app.get('/listado-usuarios',(req, res) => {
-    res.render('listado-usuarios');
+    Usuario.find({}).exec((err, respuesta) => {
+      if(err){
+        return console.log(err);
+      }
+  
+      res.render('listado-usuarios', {
+        listaUsuarios : respuesta
+      })
+    })
   });
   
   //Carga la edición de usuario
   app.post('/editar-usuario',(req, res) => {
     
-    documento = parseInt(req.body.documento);
-    console.log(documento);
+    let id = req.body.id;
+    console.log("Editar id: " + id);
+
+    //Si no llega el id, saca error
+    if(!id)
+    {
+      console.log("El campo ID está llegando vacío");
+      
+      return res.render('error', {
+        estudiante:'Debe seleccionar un usuario a editar.'
+      });
+    }
+    
+    Usuario.findById(id, (err, usuario) => {
+      if(err){
+        return console.log('Error');
+      }
   
-    let listaUsuarios = [];
-    //listaUsuarios = require('./estudiantes.json');
-    listaUsuarios = JSON.parse(fs.readFileSync('src/estudiantes.json'));
-  
-    //Obtengo el usuario basado en el documento
-    let usuario = listaUsuarios.find(usr => (usr.documento === documento));
-  
-    //Si no encuentro el usuario, muestro error
-    if(!usuario)
-      {
-        res.render('index', {
-          claseAlerta:'alert alert-danger col-6 col-sm-7 col-lg-4 col-xl-4',
-          mensajeLogin:'El usuario y/o contraseña son incorrectos!'
+      if(!usuario){
+        return res.render('error', {
+          estudiante:'Usuario no encontrado.'
         });
       }
-      else
-      {
-          res.render('editar-usuario', {
-            documento:parseInt(usuario.documento),
-            nombre:usuario.nombre,
-            correo:usuario.correo,
-            telefono:usuario.telefono,
-            contrasena:usuario.contrasena,
-            tipo:usuario.tipo
-          });
-      }
   
+      res.render('editar-usuario', {
+        idUsuario: usuario._id,
+        documento: parseInt(usuario.documento),
+        nombre: usuario.nombre,
+        correo: usuario.correo,
+        telefono: usuario.telefono,
+        contrasena: '',
+        tipo: usuario.tipo
+      });
+    });  
   });
   
   //Guarda la edición de usuario
   app.post('/actualizar-usuario',(req, res) => {
     
+    let respuesta = '';
+
     //Defino variable usuario
     let usuario = {
       documento: parseInt(req.body.documento),
       nombre: req.body.nombre,
       correo: req.body.correo,
       telefono: req.body.telefono,
-      contrasena: req.body.contrasena,
-      tipo: req.body.tipo,
+      contrasena: (req.body.documento == '') ? req.body.oldContrasena : bcrypt.hashSync(req.body.contrasena, 10),
+      tipo: req.body.tipo
     };
-  
-    //Realiza la redirección
-    res.render('actualizar-usuario-resultado', {
-      usuario: usuario
-    });
-  
+
+    Usuario.findOneAndUpdate({documento: usuario.documento}, usuario, {new: true, runValidators: true, context: 'query'}, (err, resultados) => {
+      if(err){
+        console.log(err);
+        respuesta = "No fue posible actualizar el usuario: " + err.message;
+        return res.render('actualizar-usuario-resultado', {
+          respuesta: respuesta
+        });
+      }
+      respuesta = "El usuario " + usuario.nombre + ' con documento de identidad ' + usuario.documento  + " fue actualizado de manera exitosa!";
+      
+      //Realiza la redirección
+      res.render('actualizar-usuario-resultado', {
+        respuesta: respuesta
+      });      
+    })
   });
   
   //Llamada para cargar formulario de listado de cursos para estudiante
@@ -353,7 +377,7 @@ app.post('/calculos',(req, res) => {
   
   app.get('*', (req, res) => {
     res.render('error',{
-      estudiante: 'Error'
+      estudiante: 'Error 404: La pagina no existe'
     });
   });
   
