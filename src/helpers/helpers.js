@@ -638,25 +638,17 @@ hbs.registerHelper('listarCursos',(listado)=>{
     return texto;
 });
 
-
-
-//hbs.registerHelper('incripcionCursos',(documento,nombre,correo,telefono,curso, documentoLogin)=>{
-hbs.registerHelper('incripcionCursos',(curso,documentoLogin)=>{	
-    console.log('incripcionCursos::::.' + documentoLogin);
-	listarEstd();
-	let est = listaEstudiantes.find(doc=>doc.documento==documentoLogin);
-    ///let est = crearEstudiante(documento,nombre,correo,telefono,curso);
-    let result = crearEstudianteCurso(documentoLogin,curso);
-    let texto = "";
-    if ( result )
+hbs.registerHelper('incripcionCursos',(mostrar, texto)=>{	
+	console.log('texto::::' + texto);
+    if ( texto == "OK" )
     {
-        texto =  "<h2> Estudiante  " + est.nombre + " inscrito con exito en el curso " + curso + "</h2>"
+        label =  "<h2> Estudiante  inscrito con exito en el curso </h2>"
     }
     else
     {
-        texto =  "<div class='alert alert-danger' role='alert'> Ya está registrado en este curso</div>" 
+        label =  "<div class='alert alert-danger' role='alert'> Ya está registrado en este curso</div>" 
     }
-    return texto;
+    return label;
 });
 
 const crearEstudiante = (documento,nombre,correo,telefono,curso)=>{
