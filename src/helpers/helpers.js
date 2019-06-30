@@ -2,8 +2,6 @@ const hbs = require('hbs');
 //requiero filesystem
 const fs = require('fs');
 
-const Cursos = require('./../models/cursos');
-
 listaEstudiantes = [];
 listaEstudiantesCursos = [];
 listaCursos = [];
@@ -17,9 +15,15 @@ return (valor*100)
 });
 
 //** JHON */
-hbs.registerHelper('listar-cursos', () => {
+hbs.registerHelper('listar-cursos', (respuesta, err) => {
     //listaCursos = require('./bd-cursos.json');
-    listaCursos = JSON.parse(fs.readFileSync('src/bd-cursos.json', 'utf8'));
+    //listaCursos = JSON.parse(fs.readFileSync('src/bd-cursos.json', 'utf8'));
+
+    if(err){
+        console.log("err")
+        return console.log(err)
+    }
+
     let texto = "<table class='table'> \
                     <thead class='thead-dark'> \
                     <th>ID </th>\
@@ -32,7 +36,7 @@ hbs.registerHelper('listar-cursos', () => {
                     </thead> \
                 <tbody>";
     
-    listaCursos.forEach(curso => {
+    respuesta.forEach(curso => {
         texto = texto +            
             "<tr>" +
             "<td>" + curso.id + '</td>' +
@@ -49,15 +53,15 @@ hbs.registerHelper('listar-cursos', () => {
     return texto;
 });
 
-hbs.registerHelper('listar-cursos-disponibles', (respuesta) => {
+hbs.registerHelper('listar-cursos-disponibles', (respuesta, err) => {
 
     console.log("listar-cursos-disponibles")
     let texto = "";
-
-		/*if(err){
+    console.log(err)
+		if(err){
             console.log("err")
 			return console.log(err)
-		}*/
+		}
 
         if (respuesta.length == 0){
             console.log('No existen cursos disponibles');
@@ -106,7 +110,7 @@ hbs.registerHelper('listar-cursos-disponibles', (respuesta) => {
         }
     //let msg = texto;
     console.log("QUE PASA");
-    console.log("texto R " + texto);
+    //console.log("texto R " + texto);
     return texto;   
         
  
@@ -335,16 +339,17 @@ hbs.registerHelper('listar-cursos-docente-cerrados', () => {
     return texto;
 });
 
-hbs.registerHelper('crearCurso', (curso, texto, mostrar) => {
-    if (texto == 'OK'){
+hbs.registerHelper('crearCurso', (resultado, err) => {
+    console.log("err " + err)
+    if (err){
+        texto = '<div class="alert alert-danger" role="alert">' +
+                    'ERROR al crear un Curso - ' + err +
+                '</div>';        
+    }
+    else{
         texto = `<div  class="alert alert-success" role="alert">
                     Curso creado con Exito
                 </div>`;
-    }
-    else{
-        texto = '<div class="alert alert-danger" role="alert">' +
-                    'ERROR al crear un Curso - ' + mostrar +
-                '</div>';
     }
 
     return texto;
@@ -584,12 +589,13 @@ hbs.registerHelper('actualizarUsuario', (respuesta) => {
 //** FIN SEBASTIÁN */
 
 /* Walter */
-hbs.registerHelper('listarCursos',()=>{
+hbs.registerHelper('listarCursos',(listado)=>{
     //listaCursos=require('./bd-cursos.json');
-	listaCursos = JSON.parse(fs.readFileSync('src/bd-cursos.json', 'utf8'));
+    //listaCursos = JSON.parse(fs.readFileSync('src/bd-cursos.json', 'utf8'));
+    console.log('LISTADOOOO' + listado);
     let texto = "<label for='curso'>Cursos disponibles</label> \
                     <select class='form-control' name='curso' required>";
-    listaCursos.forEach(curso => {
+    listado.forEach(curso => {
         if ( curso.estado == "Disponible")
         {
             texto = texto + 

@@ -62,7 +62,26 @@ app.post('/calculos',(req, res) => {
   
   //** JHON */
   app.get('/listado-cursos',(req, res) => {
-    res.render('listado-cursos');
+
+    Cursos.find({}).exec((err,respuesta)=> {
+      if(err){
+        console.log("err")
+      }
+      console.log(respuesta)
+
+      res.render('listado-cursos', {
+        respuesta : respuesta,
+        
+        curso : {
+                id: parseInt(req.body.id),
+                nombre: req.body.nombre,
+                modalidad: req.body.modalidad,
+                valor: parseInt(req.body.valor),
+                descripcion: req.body.descripcion,
+                intensidad: parseInt(req.body.intensidad)
+              }
+      })
+    })
   });
   
   app.get('/listado-cursos-docente',(req, res) => {
@@ -97,9 +116,10 @@ app.post('/calculos',(req, res) => {
 
     curso.save((err, resultado)=> {
       if(err){
+        console.log("errsave")
         res.render('crear-curso-confirmacion', {
-          mostrar : err,
-          texto : 'KO'
+          resultado : resultado,
+          err : err
         })
       }
 
@@ -110,9 +130,9 @@ app.post('/calculos',(req, res) => {
           console.log(respuesta)
 
           res.render('crear-curso-confirmacion', {
-            mostrar : resultado,
+            resultado : resultado,
+            err : err,
             respuesta : respuesta,
-            texto : 'OK',
             curso : {
                     id: parseInt(req.body.id),
                     nombre: req.body.nombre,
@@ -323,16 +343,38 @@ app.post('/calculos',(req, res) => {
   
   //** WALTER */
   app.get('/inscripcion',(req, res) => {
-    res.render('inscripcion', {
-      documentoLogin: req.query.documentoLogin
+    console.log('INDEXXX inscripcion:::::');
+    Cursos.find({}).exec((err,respuesta)=>{  
+        if ( err )
+        {
+          return console.log( err );
+        }
+        console.log('INDEXXX :::::' + respuesta);
+        res.render ('inscripcion',{
+          listado : respuesta
+        })
     });
+    /*res.render('inscripcion', {
+      documentoLogin: req.query.documentoLogin
+    });*/
   });
   
   app.post('/inscripcion',(req, res) => {
-    res.render('inscripcion-confirmacion', {
+    console.log('INDEXXX inscripcion:::::');
+    Cursos.find({}).exec((err,respuesta)=>{  
+        if ( err )
+        {
+          return console.log( err );
+        }
+        console.log('INDEXXX :::::' + respuesta);
+        res.render ('inscripcion',{
+          listado : respuesta
+        })
+    });
+    /*res.render('inscripcion-confirmacion', {
       nombre: req.body.nombre,
       curso: req.body.modalidad
-    });
+    });*/
   });
   
   app.post('/crearIncripcion',(req,res)=>{	
