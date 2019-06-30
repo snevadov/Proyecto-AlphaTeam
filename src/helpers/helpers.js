@@ -108,7 +108,7 @@ hbs.registerHelper('listar-cursos-disponibles', () => {
         
     });
     //let msg = texto;
-    //console.log("msg " + msg);
+    console.log("QUE PASA");
     console.log("texto R " + texto);
     return texto;
 });
