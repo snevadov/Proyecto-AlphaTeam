@@ -4,6 +4,7 @@ const app = express ();
 const path = require('path');
 const hbs = require('hbs');
 const Usuario = require('./../models/usuario');
+const CursoEstudiante = require('./../models/cursos-estudiantes');
 //requiero filesystem
 const fs = require('fs');
 
@@ -165,6 +166,7 @@ app.post('/calculos',(req, res) => {
       req.session.documento = usuario.documento;
       req.session.tipo = usuario.tipo;
   
+	 console.log('Variable de sesion:' + req.session);
       // res.render('index', {
       //   mensaje : "Bienvenido " + usuario.nombre,
       //   sesion: true,
@@ -285,7 +287,7 @@ app.post('/calculos',(req, res) => {
   app.get('/misCursos',(req, res) => {
     console.log(req.session);
     res.render('misCursos', {
-      documentoLogin: parseInt(req.query.documentoLogin)
+      documentoLogin: parseInt(req.session.documento)
     });
   });
   
