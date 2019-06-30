@@ -119,7 +119,7 @@ hbs.registerHelper('listar-cursos-disponibles', (respuesta, err) => {
         
 
 
-hbs.registerHelper('listar-cursos-docente-disponibles', () => {
+hbs.registerHelper('listar-cursos-docente-disponibles', (respuesta) => {
     let texto = "";
     listaCursos = [];
     listaEstudiantes = [];
@@ -233,7 +233,7 @@ hbs.registerHelper('listar-cursos-docente-disponibles', () => {
     return texto;
 });
 
-hbs.registerHelper('listar-cursos-docente-cerrados', () => {
+hbs.registerHelper('listar-cursos-docente-cerrados', (respuesta) => {
     let texto = "";
     listaEstudiantes = [];
     listaCursos = JSON.parse(fs.readFileSync('src/bd-cursos.json', 'utf8'));

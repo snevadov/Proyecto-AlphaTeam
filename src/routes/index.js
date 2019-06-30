@@ -60,8 +60,8 @@ app.post('/calculos',(req, res) => {
     });
 });
   
-  //** JHON */
-  app.get('/listado-cursos',(req, res) => {
+//** JHON */
+app.get('/listado-cursos',(req, res) => {
 
     Cursos.find({}).exec((err,respuesta)=> {
       if(err){
@@ -85,7 +85,32 @@ app.post('/calculos',(req, res) => {
   });
   
   app.get('/listado-cursos-docente',(req, res) => {
-    res.render('listado-cursos-docente');
+    Cursos.find({estado: 'Disponible'}).exec((err,respuestaDisponibles)=> {
+      if(err){
+        console.log("err")
+      }
+      console.log(respuestaDisponibles)
+
+      Cursos.find({estado: 'Cerrado'}).exec((err,respuestaCerrados)=> {
+        if(err){
+          console.log("err")
+        }
+        console.log(respuestaCerrados)
+
+        res.render('listado-cursos-docente', {
+          respuestaDisponibles : respuestaDisponibles,
+          respuestaCerrados : respuestaCerrados,
+          curso : {
+                  id: parseInt(req.body.id),
+                  nombre: req.body.nombre,
+                  modalidad: req.body.modalidad,
+                  valor: parseInt(req.body.valor),
+                  descripcion: req.body.descripcion,
+                  intensidad: parseInt(req.body.intensidad)
+                }
+        })
+      })
+    })
   });
   
   app.post('/listado-cursos-docente-eliminar',(req, res) => {
@@ -125,7 +150,7 @@ app.post('/calculos',(req, res) => {
 
         Cursos.find({}).exec((err,respuesta)=> {
           if(err){
-            console.log("err")
+            console.log("errfind")
           }
           console.log(respuesta)
 
