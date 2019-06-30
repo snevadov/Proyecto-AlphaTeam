@@ -73,7 +73,7 @@ hbs.registerHelper('listar-cursos-disponibles', () => {
                             <div class="row">`;
             i = 1;
             respuesta.forEach(curso => {
-                console.log('cursos disponibles despues del for');
+                console.log('cursos disponibles dentro del for');
                 texto = texto +            
                                 `<div class="col">            
                                     <div class="card">
