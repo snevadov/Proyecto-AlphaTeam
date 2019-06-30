@@ -4,6 +4,7 @@ const app = express ();
 const path = require('path');
 const hbs = require('hbs');
 const Usuario = require('./../models/usuario');
+const Cursos = require('./../models/cursos');
 //requiero filesystem
 const fs = require('fs');
 
@@ -84,14 +85,36 @@ app.post('/calculos',(req, res) => {
   });
   
   app.post('/crear-curso',(req, res) => {
-    res.render('crear-curso-confirmacion', {
+    let curso = new Cursos({
       id: parseInt(req.body.id),
       nombre: req.body.nombre,
       modalidad: req.body.modalidad,
       valor: parseInt(req.body.valor),
       descripcion: req.body.descripcion,
       intensidad: parseInt(req.body.intensidad)
-    });
+    })
+    curso.save((err, resultado)=> {
+      if(err){
+        res.render('crear-curso-confirmacion', {
+          mostrar : err,
+          texto : 'KO'
+        })
+      }
+  
+      res.render('crear-curso-confirmacion', {
+        mostrar : resultado,
+        texto : 'OK',
+        curso : {
+                id: parseInt(req.body.id),
+                nombre: req.body.nombre,
+                modalidad: req.body.modalidad,
+                valor: parseInt(req.body.valor),
+                descripcion: req.body.descripcion,
+                intensidad: parseInt(req.body.intensidad)
+              }
+      })
+    })		
+
   });
   //** FIN */
   
