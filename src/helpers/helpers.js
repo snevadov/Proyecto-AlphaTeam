@@ -620,12 +620,13 @@ hbs.registerHelper('actualizarUsuario', (usuario) => {
 //** FIN SEBASTIÁN */
 
 /* Walter */
-hbs.registerHelper('listarCursos',()=>{
+hbs.registerHelper('listarCursos',(listado)=>{
     //listaCursos=require('./bd-cursos.json');
-	listaCursos = JSON.parse(fs.readFileSync('src/bd-cursos.json', 'utf8'));
+    //listaCursos = JSON.parse(fs.readFileSync('src/bd-cursos.json', 'utf8'));
+    console.log('LISTADOOOO' + listado);
     let texto = "<label for='curso'>Cursos disponibles</label> \
                     <select class='form-control' name='curso' required>";
-    listaCursos.forEach(curso => {
+    listado.forEach(curso => {
         if ( curso.estado == "Disponible")
         {
             texto = texto + 

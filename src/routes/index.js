@@ -319,16 +319,38 @@ app.post('/calculos',(req, res) => {
   
   //** WALTER */
   app.get('/inscripcion',(req, res) => {
-    res.render('inscripcion', {
-      documentoLogin: req.query.documentoLogin
+    console.log('INDEXXX inscripcion:::::');
+    Cursos.find({}).exec((err,respuesta)=>{  
+        if ( err )
+        {
+          return console.log( err );
+        }
+        console.log('INDEXXX :::::' + respuesta);
+        res.render ('inscripcion',{
+          listado : respuesta
+        })
     });
+    /*res.render('inscripcion', {
+      documentoLogin: req.query.documentoLogin
+    });*/
   });
   
   app.post('/inscripcion',(req, res) => {
-    res.render('inscripcion-confirmacion', {
+    console.log('INDEXXX inscripcion:::::');
+    Cursos.find({}).exec((err,respuesta)=>{  
+        if ( err )
+        {
+          return console.log( err );
+        }
+        console.log('INDEXXX :::::' + respuesta);
+        res.render ('inscripcion',{
+          listado : respuesta
+        })
+    });
+    /*res.render('inscripcion-confirmacion', {
       nombre: req.body.nombre,
       curso: req.body.modalidad
-    });
+    });*/
   });
   
   app.post('/crearIncripcion',(req,res)=>{	
