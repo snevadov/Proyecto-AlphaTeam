@@ -164,6 +164,9 @@ app.post('/calculos',(req, res) => {
       req.session.nombre = usuario.nombre;
       req.session.documento = usuario.documento;
       req.session.tipo = usuario.tipo;
+      req.session.coordinador = (usuario.tipo == 'coordinador');
+      req.session.docente = (usuario.tipo == 'docente');
+      req.session.aspirante = (usuario.tipo == 'aspirante');
   
       // res.render('index', {
       //   mensaje : "Bienvenido " + usuario.nombre,

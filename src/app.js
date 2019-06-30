@@ -36,9 +36,15 @@ app.use(session({
 }))
 
 app.use((req, res, next) => {
-	if(req.session.usuario){
+	if(req.session.documento){
 		res.locals.sesion = true
 		res.locals.nombre = req.session.nombre
+		res.locals.tipo = req.session.tipo
+		res.locals.idusuario = req.session.idusuario
+		res.locals.documento = req.session.documento
+		res.locals.coordinador = (req.session.tipo == 'coordinador')
+		res.locals.docente = (req.session.tipo == 'docente')
+		res.locals.aspirante = (req.session.tipo == 'aspirante')
 	}
 	next()
 })
