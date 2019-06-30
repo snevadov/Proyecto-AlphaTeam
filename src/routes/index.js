@@ -60,8 +60,8 @@ app.post('/calculos',(req, res) => {
     });
 });
   
-  //** JHON */
-  app.get('/listado-cursos',(req, res) => {
+//** JHON */
+app.get('/listado-cursos',(req, res) => {
 
     Cursos.find({}).exec((err,respuesta)=> {
       if(err){
@@ -85,7 +85,32 @@ app.post('/calculos',(req, res) => {
   });
   
   app.get('/listado-cursos-docente',(req, res) => {
-    res.render('listado-cursos-docente');
+    Cursos.find({estado: 'Disponible'}).exec((err,respuestaDisponibles)=> {
+      if(err){
+        console.log("err")
+      }
+      console.log(respuestaDisponibles)
+
+      Cursos.find({estado: 'Cerrado'}).exec((err,respuestaCerrados)=> {
+        if(err){
+          console.log("err")
+        }
+        console.log(respuestaCerrados)
+
+        res.render('listado-cursos-docente', {
+          respuestaDisponibles : respuestaDisponibles,
+          respuestaCerrados : respuestaCerrados,
+          curso : {
+                  id: parseInt(req.body.id),
+                  nombre: req.body.nombre,
+                  modalidad: req.body.modalidad,
+                  valor: parseInt(req.body.valor),
+                  descripcion: req.body.descripcion,
+                  intensidad: parseInt(req.body.intensidad)
+                }
+        })
+      })
+    })
   });
   
   app.post('/listado-cursos-docente-eliminar',(req, res) => {
@@ -125,7 +150,7 @@ app.post('/calculos',(req, res) => {
 
         Cursos.find({}).exec((err,respuesta)=> {
           if(err){
-            console.log("err")
+            console.log("errfind")
           }
           console.log(respuesta)
 
@@ -360,7 +385,6 @@ app.post('/calculos',(req, res) => {
   });
   
   app.post('/inscripcion',(req, res) => {
-    console.log('INDEXXX inscripcion:::::');
     Cursos.find({}).exec((err,respuesta)=>{  
         if ( err )
         {
@@ -378,14 +402,38 @@ app.post('/calculos',(req, res) => {
   });
   
   app.post('/crearIncripcion',(req,res)=>{	
-      res.render('inscripcion-confirmacion',{
-          documento: req.body.documento,
-          correo: req.body.correo,
-          nombre: req.body.nombre,
-          telefono: req.body.telefono,
-          curso: req.body.curso,
-          documentoLogin: req.body.documentoLogin
+    console.log('CREAR CURSOOOO' + req.body.curso);
+      
+    Cursos.find({nombre : req.body.curso }).exec((err,respuesta)=>{  
+      if ( err )
+      {
+        return console.log( err);
+      }
+      console.log('INDEXXX :::::' + respuesta );
+      console.log('INDEXXX LISTADO:::::' + respuesta[0].id );
+      console.log('INDEXXX :::::' + respuesta );
+      console.log('INDEXXX LISTADO:::::' + respuesta[0].id );
+      let cursoEstudiante = new CursoEstudiante({
+        documento: req.session.documento,
+        curso: respuesta[0].id
+      })
+      console.log('PASOOOO :::::' + cursoEstudiante);
+      cursoEstudiante.save( (err,resultado) => {  
+          console.log('ERROOORRR::::' + err);        
+          if (err)
+          {
+            res.render ('inscripcion-confirmacion',{
+              mostrar : err,
+              texto : 'KO'
+            })
+          }
+          res.render ('inscripcion-confirmacion',{
+            mostrar : resultado,
+            texto : 'OK'
+          })
       });
+    });
+
   });
   
   app.get('/misCursos',(req, res) => {

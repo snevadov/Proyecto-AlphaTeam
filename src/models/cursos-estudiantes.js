@@ -8,13 +8,11 @@ const Schema = mongoose.Schema;
 const cursosestudiantesSchema = new Schema({
     documento:{
         type: Number,
-        required: true,
-		unique: true //Vuelve único el documento
+        required: true
     },
     curso:{
         type: Number,
-        required: true,
-		unique: true //Vuelve único el documento
+        required: true
     }
 });
 
