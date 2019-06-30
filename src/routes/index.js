@@ -4,11 +4,8 @@ const app = express ();
 const path = require('path');
 const hbs = require('hbs');
 const Usuario = require('./../models/usuario');
-<<<<<<< HEAD
 const CursoEstudiante = require('./../models/cursos-estudiantes');
-=======
 const Cursos = require('./../models/cursos');
->>>>>>> a7145cae316c5a5caa5275517aaf95928d421a46
 //requiero filesystem
 const fs = require('fs');
 
