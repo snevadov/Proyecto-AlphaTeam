@@ -39,7 +39,9 @@ app.use((req, res, next) => {
 	if(req.session.documento){
 		res.locals.sesion = true
 		res.locals.nombre = req.session.nombre
+		res.locals.nombreLogin = req.session.nombre
 		res.locals.tipo = req.session.tipo
+		res.locals.tipoLogin = req.session.tipo
 		res.locals.idusuario = req.session.idusuario
 		res.locals.documento = req.session.documento
 		res.locals.coordinador = (req.session.tipo == 'coordinador')

@@ -119,7 +119,7 @@ hbs.registerHelper('listar-cursos-disponibles', (respuesta, err) => {
         
 
 
-hbs.registerHelper('listar-cursos-docente-disponibles', () => {
+hbs.registerHelper('listar-cursos-docente-disponibles', (respuesta) => {
     let texto = "";
     listaCursos = [];
     listaEstudiantes = [];
@@ -233,7 +233,7 @@ hbs.registerHelper('listar-cursos-docente-disponibles', () => {
     return texto;
 });
 
-hbs.registerHelper('listar-cursos-docente-cerrados', () => {
+hbs.registerHelper('listar-cursos-docente-cerrados', (respuesta) => {
     let texto = "";
     listaEstudiantes = [];
     listaCursos = JSON.parse(fs.readFileSync('src/bd-cursos.json', 'utf8'));
@@ -503,10 +503,7 @@ hbs.registerHelper('registrarUsuario', (usuario) => {
 });
 
 // listado de usuarios
-hbs.registerHelper('listarUsuarios', () => {
-    let listaUsuarios = [];
-    //listaUsuarios = require('./estudiantes.json');
-    listaUsuarios = JSON.parse(fs.readFileSync('src/estudiantes.json'));
+hbs.registerHelper('listarUsuarios', (listaUsuarios) => {
 
     let texto = "<table class='table'> \
                     <thead class='thead-dark'> \
@@ -515,6 +512,7 @@ hbs.registerHelper('listarUsuarios', () => {
                     <th>Correo </th>\
                     <th>Teléfono </th>\
                     <th>Rol </th>\
+                    <th></th>\
                     </theader> \
                 <tbody>";
     
@@ -526,6 +524,7 @@ hbs.registerHelper('listarUsuarios', () => {
             "<td>" + usuario.correo + '</td>' +
             "<td>" + usuario.telefono + '</td>' +
             "<td>" + usuario.tipo + '</td>' +
+            '<td>' + '<button class="btn btn-primary" name="id" value="' + usuario._id +'">Actualizar</button>' + '</td>' +
             "<tr>"
     });
     texto = texto + "</tbody></table>"
@@ -551,69 +550,39 @@ hbs.registerHelper('listarUsuariosSelect', () => {
 });
 
 // listado de roles en select o si es administrador no permite cambiarlo
-hbs.registerHelper('listarRolesUsuarios', (documento) => {
-    let listaUsuarios = [];
-    //listaUsuarios = require('./estudiantes.json');
-    listaUsuarios = JSON.parse(fs.readFileSync('src/estudiantes.json'));
+hbs.registerHelper('listarRolesUsuarios', (tipo) => {
 
-    //Obtengo el usuario basado en el documento
-    let usuario = listaUsuarios.find(usr => (usr.documento == documento));
-    console.log(usuario);
-
-    let texto = '<select class="form-control" name="tipo" ';
-    if(usuario.tipo == 'coordinador')
+    let texto = '';
+    let campoTipo = '';
+    if(tipo == 'coordinador')
     {
-        texto = texto + 'readonly disabled> \
+        texto = texto + '<select class="form-control" name="tipoNoLeer" readonly disabled> \
         <option value="coordinador" selected>Coordinador</option> \
         <option value="aspirante">Aspirante</option> \
-        <option value="docente">Docente</option>';
+        <option value="docente">Docente</option> \
+        </select> \
+        <input type="hidden"  class="form-control" name="tipo" value="coordinador">';
     }
-    else if(usuario.tipo == 'docente')
+    else if(tipo == 'docente')
     {
-        texto = texto + '><option value="aspirante">Aspirante</option><option value="docente" selected>Docente</option>'
+        texto = texto + '<select class="form-control" name="tipo"> \
+            <option value="aspirante">Aspirante</option> \
+            <option value="docente" selected>Docente</option> \
+            </select>';
     }
-    else if(usuario.tipo == 'aspirante')
+    else if(tipo == 'aspirante')
     {
-        texto = texto + '><option value="aspirante" selected>Aspirante</option><option value="docente">Docente</option>'
+        texto = texto + '<select class="form-control" name="tipo"> \
+        <option value="aspirante" selected>Aspirante</option> \
+        <option value="docente">Docente</option> \
+        </select>';
     };
-
-    texto = texto + "</select>";
 
     return texto;
 });
 
 // Actaulización de usuarios
-hbs.registerHelper('actualizarUsuario', (usuario) => {
-    let listaUsuarios = [];
-    //listaUsuarios = require('./estudiantes.json');
-    listaUsuarios = JSON.parse(fs.readFileSync('src/estudiantes.json'));
-
-    let respuesta = '';
-
-    //Valido que no permita guardar duplicados
-    let encontrado = listaUsuarios.find(usr => usr.documento === usuario.documento);
-    if(encontrado)
-    {
-        encontrado['documento'] = usuario.documento;
-        encontrado['nombre'] = usuario.nombre;
-        encontrado['correo'] = usuario.correo;
-        encontrado['telefono'] = usuario.telefono;
-        encontrado['contrasena'] = usuario.contrasena;
-        encontrado['tipo'] = usuario.tipo;
-
-        let datos = JSON.stringify(listaUsuarios);
-        fs.writeFileSync('src/estudiantes.json', datos, (err)=>{
-            if(err) console.log(err);
-            console.log('Archivo creado con éxito');
-        });
-
-        respuesta = "El usuario " + usuario.nombre + ' con documento de identidad ' + usuario.documento  + " fue actualizado de manera exitosa!";
-    }
-    else
-    {
-        respuesta = "No se fue posible actualizar el usuario" + usuario.nombre + ' con documento de identidad ' + usuario.documento + '. No existe usuario con ese documento.';
-    }
-
+hbs.registerHelper('actualizarUsuario', (respuesta) => {
     return respuesta;
 });
 
