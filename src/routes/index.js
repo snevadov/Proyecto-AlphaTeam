@@ -62,7 +62,26 @@ app.post('/calculos',(req, res) => {
   
   //** JHON */
   app.get('/listado-cursos',(req, res) => {
-    res.render('listado-cursos');
+
+    Cursos.find({}).exec((err,respuesta)=> {
+      if(err){
+        console.log("err")
+      }
+      console.log(respuesta)
+
+      res.render('listado-cursos', {
+        respuesta : respuesta,
+        
+        curso : {
+                id: parseInt(req.body.id),
+                nombre: req.body.nombre,
+                modalidad: req.body.modalidad,
+                valor: parseInt(req.body.valor),
+                descripcion: req.body.descripcion,
+                intensidad: parseInt(req.body.intensidad)
+              }
+      })
+    })
   });
   
   app.get('/listado-cursos-docente',(req, res) => {
@@ -97,9 +116,10 @@ app.post('/calculos',(req, res) => {
 
     curso.save((err, resultado)=> {
       if(err){
+        console.log("errsave")
         res.render('crear-curso-confirmacion', {
-          mostrar : err,
-          texto : 'KO'
+          resultado : resultado,
+          err : err
         })
       }
 
@@ -110,9 +130,9 @@ app.post('/calculos',(req, res) => {
           console.log(respuesta)
 
           res.render('crear-curso-confirmacion', {
-            mostrar : resultado,
+            resultado : resultado,
+            err : err,
             respuesta : respuesta,
-            texto : 'OK',
             curso : {
                     id: parseInt(req.body.id),
                     nombre: req.body.nombre,
