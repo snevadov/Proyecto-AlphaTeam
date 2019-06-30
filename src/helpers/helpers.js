@@ -749,6 +749,7 @@ const listarCursos = () => {
 }
 
 hbs.registerHelper('listarMisCursos',(documentoLogin)=>{
+	//console.log('Variable sesions miscursos::::' + req.session);
     listaEstudiantesCursos = [];
 	console.log("%%%%%%%%documentoLogin::::"+  documentoLogin);
 	let usuario = buscarUsuario(documentoLogin);
