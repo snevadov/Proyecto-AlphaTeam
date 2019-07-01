@@ -243,11 +243,10 @@ hbs.registerHelper('listar-cursos-docente-disponibles', (listaCursos, listaEstud
 
 hbs.registerHelper('listar-cursos-docente-cerrados', (listaCursos, listaEstudiantes, listaCursoEstudiante) => {
     let texto = "";
-    listaEstudiantes = [];
-    listaCursos = JSON.parse(fs.readFileSync('src/bd-cursos.json', 'utf8'));
-    listaEstudiantes = JSON.parse(fs.readFileSync('src/estudiantes.json', 'utf8'));
-    //listadoCursosEstudiantes = require('./cursos-estudiantes.json')
-    listadoCursosEstudiantes = JSON.parse(fs.readFileSync('src/cursos-estudiantes.json', 'utf8'));
+    //listaEstudiantes = [];
+    //listaCursos = JSON.parse(fs.readFileSync('src/bd-cursos.json', 'utf8'));
+    //listaEstudiantes = JSON.parse(fs.readFileSync('src/estudiantes.json', 'utf8'));
+    //listadoCursosEstudiantes = JSON.parse(fs.readFileSync('src/cursos-estudiantes.json', 'utf8'));
 
     
 
@@ -284,7 +283,7 @@ hbs.registerHelper('listar-cursos-docente-cerrados', (listaCursos, listaEstudian
                                     </div>        
                                     <div id="collapse${i}" class="collapse" aria-labelledby="heading${i}" data-parent="#accordionExample">
                                     <div class="card-body">`
-                                        cursosEstudiantes = listadoCursosEstudiantes.filter(buscar => buscar.curso == curso.id);
+                                        cursosEstudiantes = listaCursoEstudiante.filter(buscar => buscar.curso == curso.id);
 
                                         if (cursosEstudiantes.length == 0){
                                             texto = texto +                       
