@@ -119,15 +119,23 @@ hbs.registerHelper('listar-cursos-disponibles', (respuesta, err) => {
         
 
 
-hbs.registerHelper('listar-cursos-docente-disponibles', (respuesta) => {
+hbs.registerHelper('listar-cursos-docente-disponibles', (listaCursos, listaEstudiantes, listaCursosEstudiantes) => {
     let texto = "";
-    listaCursos = [];
-    listaEstudiantes = [];
-    listadoCursosEstudiantes = [];
-    listaCursos = JSON.parse(fs.readFileSync('src/bd-cursos.json', 'utf8'));
-    listaEstudiantes = JSON.parse(fs.readFileSync('src/estudiantes.json', 'utf8'));
-    //listadoCursosEstudiantes = require('./cursos-estudiantes.json')
-    listadoCursosEstudiantes = JSON.parse(fs.readFileSync('src/cursos-estudiantes.json', 'utf8'));
+    //listaCursos = [];
+    //listaEstudiantes = [];
+    //listadoCursosEstudiantes = [];
+    //listaCursos = JSON.parse(fs.readFileSync('src/bd-cursos.json', 'utf8'));
+    //listaEstudiantes = JSON.parse(fs.readFileSync('src/estudiantes.json', 'utf8'));
+    //listadoCursosEstudiantes = JSON.parse(fs.readFileSync('src/cursos-estudiantes.json', 'utf8'));
+
+    console.log("listaUsuarios ADENTRO: ");
+    console.log(listaCursos);
+
+    console.log("listaEstudiantes ADENTRO: ");
+    console.log(listaEstudiantes);
+
+    console.log("listaCursosEstudiantes ADENTRO: ");
+    console.log(listaCursosEstudiantes);
 
     let cursos = listaCursos.filter(buscar => buscar.estado == "Disponible");    
     if (cursos.length == 0){
@@ -161,9 +169,9 @@ hbs.registerHelper('listar-cursos-docente-disponibles', (respuesta) => {
                                     </h2>
                                     </div>        
                                     <div id="collapseD${i}" class="collapse" aria-labelledby="headingD${i}" data-parent="#accordionExampleD">
-                                    <div class="card-body">`
-
-                                        cursosEstudiantes = listadoCursosEstudiantes.filter(buscar => buscar.curso == curso.id);
+                                    <div class="card""-body">`
+                                        console.log("curso.nombre> " + curso.nombre);
+                                        cursosEstudiantes = listaCursosEstudiantes.filter(buscar => buscar.curso == curso.id);
 
                                         if (cursosEstudiantes.length == 0){
                                             texto = texto +                       
@@ -233,7 +241,7 @@ hbs.registerHelper('listar-cursos-docente-disponibles', (respuesta) => {
     return texto;
 });
 
-hbs.registerHelper('listar-cursos-docente-cerrados', (respuesta) => {
+hbs.registerHelper('listar-cursos-docente-cerrados', (listaCursos, listaEstudiantes, listaCursoEstudiante) => {
     let texto = "";
     listaEstudiantes = [];
     listaCursos = JSON.parse(fs.readFileSync('src/bd-cursos.json', 'utf8'));
