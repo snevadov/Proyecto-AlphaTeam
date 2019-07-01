@@ -702,7 +702,7 @@ hbs.registerHelper('listarMisCursos',(listaCursos, listaEstudiantes ,listaCursos
 				texto = texto + '<td>' + listEstudiante.nombre + '</td>';
 				texto = texto + '<td>' + curso.curso + '</td>';
 				texto = texto + '<td>' + listCurso.nombre + '</td>';
-				texto = texto + '<td>' + '<button class="btn btn-primary" name="cursoest" value="' + curso.documento + curso.curso +'">Eliminar</button>' + '</td>';
+				texto = texto + '<td>' + '<button class="btn btn-primary" name="cursoest" value="' +  curso.curso +'">Eliminar</button>' + '</td>';
 				texto = texto + '</tr>';
 			}
             
@@ -714,20 +714,18 @@ hbs.registerHelper('listarMisCursos',(listaCursos, listaEstudiantes ,listaCursos
     return texto;
 });
 
-hbs.registerHelper('eliminarCursoEst',(cursoest)=>{
-    eliminarCursoEst(cursoest);
-    let result = eliminarCursoEst(cursoest);
-    let texto = "";
-    if ( result )
+hbs.registerHelper('eliminarCursoEst',(texto, mostrar)=>{
+    let label = "";    
+    console.log('texto::::' + texto);
+    if ( texto == "OK" )
     {
-        texto =  "<h2> Curso  elminado exitosamente</h2>"
+        label =  "<h2> Estudiante  eliminado del curso exitosamente </h2>"
     }
     else
     {
-        texto =  "<div class='alert alert-danger' role='alert'> Ya está registrado en este curso</div>" 
+        label =  "<div class='alert alert-danger' role='alert'> " + mostrar + "</div>" 
     }
-    return texto;
-    
+    return label;    
 });
 
 const eliminarCursoEst=(cursoest)=>{
