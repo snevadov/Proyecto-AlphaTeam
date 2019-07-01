@@ -407,31 +407,45 @@ app.get('/listado-cursos',(req, res) => {
     Cursos.find({nombre : req.body.curso }).exec((err,respuesta)=>{  
       if ( err )
       {
-        return console.log( err);
-      }
-      console.log('INDEXXX :::::' + respuesta );
-      console.log('INDEXXX LISTADO:::::' + respuesta[0].id );
-      console.log('INDEXXX :::::' + respuesta );
-      console.log('INDEXXX LISTADO:::::' + respuesta[0].id );
-      let cursoEstudiante = new CursoEstudiante({
-        documento: req.session.documento,
-        curso: respuesta[0].id
-      })
-      console.log('PASOOOO :::::' + cursoEstudiante);
-      cursoEstudiante.save( (err,resultado) => {  
-          console.log('ERROOORRR::::' + err);        
-          if (err)
-          {
-            res.render ('inscripcion-confirmacion',{
-              mostrar : err,
-              texto : 'KO'
-            })
-          }
+        return console.log(  );
+      } 
+      console.log('req.session.documento :::::' + req.session.documento);
+      console.log('respuesta[0].id :::::' + respuesta[0].id);
+      CursoEstudiante.find( {documento:req.session.documento,curso : respuesta[0].id } ).exec((err,respuestaCurEst)=>{
+        console.log('respuestaCurEst:::' + respuestaCurEst);
+        console.log( 'respuestaCurEst.length:::' + respuestaCurEst.length );
+        if ( respuestaCurEst.length > 0 )
+        {
+          console.log('YA ESTA :::::');
           res.render ('inscripcion-confirmacion',{
-            mostrar : resultado,
-            texto : 'OK'
+            mostrar : "Ya está registrado en este curso",
+            texto : 'KO'
           })
-      });
+        }
+        else
+        {
+          console.log('NO ESTA :::::');
+          let cursoEstudiante = new CursoEstudiante({
+            documento: req.session.documento,
+            curso: respuesta[0].id
+          })
+          
+          cursoEstudiante.save( (err,resultado) => {  
+              console.log('ERROOORRR::::' + err);        
+              if (err)
+              {
+                res.render ('inscripcion-confirmacion',{
+                  mostrar : err,
+                  texto : 'KO'
+                })
+              }
+              res.render ('inscripcion-confirmacion',{
+                mostrar : resultado,
+                texto : 'OK'
+              })
+          });
+        }        
+      });      
     });
 
   });
