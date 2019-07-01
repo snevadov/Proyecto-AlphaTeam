@@ -464,11 +464,144 @@ app.get('/listado-cursos',(req, res) => {
   });
   
   //** FIN */
+
+//** SEBASTIÁN */
+app.get('/mis-cursos-docente',(req, res) => {
+  console.log(req.session);
+
+  // //Cursos.find({idDocente : req.session._id }).exec((err,cursos)=>{
+  // Cursos.find({}).exec((err,misCursos)=>{
+  //   if (err){
+  //     console.log(err);
+  //     return res.render('error',{
+  //       estudiante: 'Ocurrió un error'
+  //     });
+  //   }
+
+  //   misCursos.forEach(miCurso => {
+  //     //Busco Estudiantes del curso
+  //     cursoEstudiante.find({curso : miCurso.documento}).exec((err,estudiantes)=>{
+  //       if (err){
+  //         res.render ('inscripcion-confirmacion',{
+  //           mostrar : err,
+  //           texto : 'KO'
+  //         })
+  //       }
+  //       //Creo array para almacenar los estudiantes
+  //       miCurso.estudiante = [];
+
+  //       //Recorro los estudiantes y busco su información en BD
+  //       estudiantes.forEach(estudiante => {
+  //         Usuario.findOne({documento : estudiante.documento}).exec((err,usuario)=>{
+  //           miCurso.estudiante.push(usuario);
+  //         })
+  //       })
+  //     });   
+  //   });
+
+  //   res.render('mis-cursos-docente', {
+  //     listadoCursos: misCursos
+  //   });
+  // });
   
-  app.get('*', (req, res) => {
-    res.render('error',{
-      estudiante: 'Error 404: La pagina no existe'
-    });
+  //Array de prueba
+  let listadoCursos = [
+    {
+        documento: 1,
+        nombre: 'a',
+        intensidad: 5,
+        modalidad: 'Presencial',
+        descripcion: 'Prueba 1',
+        valor: 10,
+        estudiantes: [
+            {
+                documento: 01,
+                nombre: 'Pepito',
+                correo: "pepito@correo.com",
+                telefono: "3"
+            },
+            {
+                documento: 02,
+                nombre: 'fulanito',
+                correo: "fulanito@correo.com",
+                telefono: "3"
+            },
+            {
+                documento: 03,
+                nombre: 'zultanito',
+                correo: "zultanito@correo.com",
+                telefono: "3"
+            }
+        ]
+    },
+    {
+        documento: 2,
+        nombre: 'b',
+        intensidad: 6,
+        modalidad: 'Presencial',
+        descripcion: 'Prueba 2',
+        valor: 10,
+        estudiantes: [
+            {
+                documento: 04,
+                nombre: 'Pepito2',
+                correo: "pepito2@correo.com",
+                telefono: "3"
+            },
+            {
+                documento: 05,
+                nombre: 'fulanito2',
+                correo: "fulanito2@correo.com",
+                telefono: "3"
+            },
+            {
+                documento: 06,
+                nombre: 'zultanito2',
+                correo: "zultanito2@correo.com",
+                telefono: "3"
+            }
+        ]
+    },
+    {
+        documento: 3,
+        nombre: 'c',
+        intensidad: 7,
+        modalidad: 'Presencial',
+        descripcion: 'Prueba 3',
+        valor: 10,
+        estudiantes: [
+            {
+                documento: 01,
+                nombre: 'Pepito',
+                correo: "pepito@correo.com",
+                telefono: "3"
+            },
+            {
+                documento: 02,
+                nombre: 'fulanito',
+                correo: "fulanito@correo.com",
+                telefono: "3"
+            },
+            {
+                documento: 03,
+                nombre: 'zultanito',
+                correo: "zultanito@correo.com",
+                telefono: "3"
+            }
+        ]
+    }
+  ];
+  res.render('mis-cursos-docente', {
+    listadoCursos: listadoCursos
   });
+
+});
+//** FIN SEBASTIÁN */
   
-  module.exports = app
+app.get('*', (req, res) => {
+  res.render('error',{
+    estudiante: 'Error 404: La pagina no existe'
+  });
+});
+
+module.exports = app
