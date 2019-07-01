@@ -469,8 +469,7 @@ app.get('/listado-cursos',(req, res) => {
 app.get('/mis-cursos-docente',(req, res) => {
   console.log(req.session);
 
-  // //Cursos.find({idDocente : req.session._id }).exec((err,cursos)=>{
-  // Cursos.find({}).exec((err,misCursos)=>{
+  //Cursos.find({idDocente : req.session._id }).exec((err,misCursos)=>{
   //   if (err){
   //     console.log(err);
   //     return res.render('error',{
