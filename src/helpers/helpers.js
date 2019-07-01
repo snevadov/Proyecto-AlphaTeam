@@ -226,7 +226,7 @@ hbs.registerHelper('listar-cursos-docente-disponibles', (listaCursos, listaEstud
                                                 <td>${est.telefono}</td>
                                                 <td>
                                                     <form action="/eliminarCursoDocente" method="POST">
-                                                        <button  class="btn btn-danger" name="cursoest" value="` + est.documento + curso.id +`">Eliminar</button>
+                                                        <button  class="btn btn-danger" name="cursoest" value="` + est.documento + "|" +  curso.id +`">Eliminar</button>
                                                     </form>
                                                 </td>
                                                 </tr>`

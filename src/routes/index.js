@@ -675,10 +675,29 @@ app.get('/listado-cursos-docente',(req, res) => {
   
   
   app.post('/eliminarCursoDocente',(req,res)=>{	
-      res.render('eliminar-curso-docente-confirmacion',{
+    console.log('req.body.cursoest ::: ' + req.body.cursoest);
+    console.log('req.body.documentoLogin ::: ' + req.session.documento);
+    
+    let campos = req.body.cursoest.split("|");
+    console.log("Campos::::" + campos[0]);
+    console.log("Campos::::" + campos[1]);
+   CursoEstudiante.remove({documento: campos[0], curso : campos[1]}).exec((err,respuesta)=> {
+      if(err){
+        res.render ('eliminar-curso-docente-confirmacion',{
+          mostrar : err,
+          texto : 'KO'
+        })
+      }
+      res.render ('eliminar-curso-docente-confirmacion',{
+        mostrar : respuesta,
+        texto : 'OK'
+      })
+    })
+
+      /*res.render('eliminar-curso-docente-confirmacion',{
       cursoest: req.body.cursoest,
       documentoLogin: req.body.documentoLogin
-      });
+      });*/
   });
   
   //** FIN */
