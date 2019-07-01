@@ -505,9 +505,50 @@ app.get('/listado-cursos-docente',(req, res) => {
   
   app.get('/misCursos',(req, res) => {
     console.log(req.session);
-    res.render('misCursos', {
-      documentoLogin: parseInt(req.session.documento)
-    });
+    
+    Cursos.find({}).exec((err,respuestaCursos)=> {
+      if(err){
+        console.log("err")
+      }
+      listaCursos = [];
+      listaCursos = respuestaCursos;
+  
+      //console.log("listaCursos: ");
+      //console.log(listaCursos);
+  
+      Usuario.find({}).exec((err,respuestaUsuarios)=> {
+        if(err){
+          console.log("err")
+        }
+        listaEstudiantes = [];
+        listaEstudiantes = respuestaUsuarios;
+  
+        //console.log("listaUsuarios: ");
+        //console.log(listaEstudiantes);
+  
+        CursoEstudiante.find({}).exec((err,respuestaCursoEstudiante)=> {
+          if(err){
+            console.log("err")
+          }
+          listaCursosEstudiantes = [];
+          listaCursosEstudiantes = respuestaCursoEstudiante;
+    
+          //console.log("listaCursoEstudiante: ");
+          //console.log(listaCursosEstudiantes);
+  
+          res.render('misCursos', {
+            listaCursos : listaCursos,
+            listaEstudiantes : listaEstudiantes,
+            listaCursosEstudiantes : listaCursosEstudiantes,
+            usuario : req.session.documento
+          })
+        })
+      })
+    })
+
+    /*res.render('misCursos', {
+      documentoLogin: req.session.documento
+    });*/
   });
   
   app.post('/misCursos',(req, res) => {

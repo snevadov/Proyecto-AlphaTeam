@@ -723,26 +723,17 @@ const listarCursos = () => {
     }   
 }
 
-hbs.registerHelper('listarMisCursos',(documentoLogin)=>{
-	//console.log('Variable sesions miscursos::::' + req.session);
-    listaEstudiantesCursos = [];
-	console.log("%%%%%%%%documentoLogin::::"+  documentoLogin);
-	let usuario = buscarUsuario(documentoLogin);
-    console.log("PASO documentoLogin::::" + usuario.documento);
-    
-    //listaCursosEstudiantes();
-    //listaEstudiantesCursos=require('./cursos-estudiantes.json');
-	listaEstudiantesCursos = JSON.parse(fs.readFileSync('src/cursos-estudiantes.json', 'utf8'));
-    //listaCursos=require('./bd-cursos.json');
-	listaCursos = JSON.parse(fs.readFileSync('src/bd-cursos.json', 'utf8'));
-    //listaEstudiantes = require('./estudiantes.json');
-	listaEstudiantes = JSON.parse(fs.readFileSync('src/estudiantes.json', 'utf8'));
+hbs.registerHelper('listarMisCursos',(listaCursos, listaEstudiantes ,listaCursosEstudiantes, usuario)=>{
+	
     let texto = "";
-    console.log("listaEstudiantesCursos.length:::" + listaEstudiantesCursos.length);
-    if( listaEstudiantesCursos.length >= 1 )
+    console.log("listaCursos.length:::" + listaCursos);
+    console.log("listaEstudiantes.length:::" + listaEstudiantes);
+    console.log("listaCursosEstudiantes.length:::" + listaCursosEstudiantes);
+    console.log("usuario.length:::" + usuario);
+    if( listaCursosEstudiantes.length >= 1 )
     {
 		
-        console.log("PAOS crear table::::" + listaEstudiantesCursos.length);
+        console.log("PAOS crear table::::" + listaCursosEstudiantes.length);
         texto = "<table class='table'> \
                     <thead class='thead-dark'> \
                         <tr> \
@@ -754,8 +745,8 @@ hbs.registerHelper('listarMisCursos',(documentoLogin)=>{
                         </tr>\
                     </thead> \
                     <tbody>";
-        listaEstudiantesCursos.forEach(curso => {
-			if ( usuario.documento == curso.documento)
+            listaCursosEstudiantes.forEach(curso => {
+			if ( usuario == curso.documento)
 			{
 				let listCurso = listaCursos.find(cur=>cur.id==curso.curso);
 				let listEstudiante = listaEstudiantes.find(est=>est.documento==curso.documento);
