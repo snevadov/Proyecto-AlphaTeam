@@ -85,8 +85,7 @@ app.get('/listado-cursos',(req, res) => {
   });
   
 app.get('/listado-cursos-docente',(req, res) => {
-  listaCursos = [];
-
+ 
   Cursos.find({}).exec((err,respuestaCursos)=> {
     if(err){
       console.log("err")
@@ -117,65 +116,164 @@ app.get('/listado-cursos-docente',(req, res) => {
         //console.log("listaCursoEstudiante: ");
         //console.log(listaCursosEstudiantes);
 
-        res.render('listado-cursos-docente', {
-          listaCursos : listaCursos,
-          listaEstudiantes : listaEstudiantes,
-          listaCursosEstudiantes : listaCursosEstudiantes,
-          curso : {
-                  id: parseInt(req.body.id),
-                  nombre: req.body.nombre,
-                  modalidad: req.body.modalidad,
-                  valor: parseInt(req.body.valor),
-                  descripcion: req.body.descripcion,
-                  intensidad: parseInt(req.body.intensidad)
-                }
+        Usuario.find({tipo: 'docente'}).exec((err,respuestaDocente)=> {
+          if(err){
+            console.log("err")
+          }
+          listaDocentes = [];
+          listaDocentes = respuestaDocente;
+
+          res.render('listado-cursos-docente', {
+            listaCursos : listaCursos,
+            listaEstudiantes : listaEstudiantes,
+            listaCursosEstudiantes : listaCursosEstudiantes,
+            listaDocentes : listaDocentes,
+            curso : {
+                    id: parseInt(req.body.id),
+                    nombre: req.body.nombre,
+                    modalidad: req.body.modalidad,
+                    valor: parseInt(req.body.valor),
+                    descripcion: req.body.descripcion,
+                    intensidad: parseInt(req.body.intensidad)
+                  }
+          })
         })
       })
     })
   })
 });
-  
-/*
-app.get('/listado-cursos-docente',(req, res) => {
-  Cursos.find({estado: 'Disponible'}).exec((err,respuestaDisponibles)=> {
-    if(err){
-      console.log("err")
-    }
-    console.log(respuestaDisponibles)
 
-    Cursos.find({estado: 'Cerrado'}).exec((err,respuestaCerrados)=> {
+
+  app.post('/listado-cursos-docente-eliminar',(req, res) => {
+
+    console.log('curso: '+req.body.idCurso)
+    console.log('docente: '+req.body.docente)
+
+    Cursos.findOneAndUpdate({id: req.body.idCurso},{estado: 'Cerrado', docente: req.body.docente}, {new : true}, (err,respuestaActualizar)=> {
       if(err){
         console.log("err")
       }
-      console.log(respuestaCerrados)
+  
+      //console.log("listaCursos: ");
+      //console.log(listaCursos);
+  
+      Usuario.find({}).exec((err,respuestaUsuarios)=> {
+        if(err){
+          console.log("err")
+        }
+        listaEstudiantes = [];
+        listaEstudiantes = respuestaUsuarios;
+  
+        //console.log("listaUsuarios: ");
+        //console.log(listaEstudiantes);
+  
+        CursoEstudiante.find({}).exec((err,respuestaCursoEstudiante)=> {
+          if(err){
+            console.log("err")
+          }
+          listaCursosEstudiantes = [];
+          listaCursosEstudiantes = respuestaCursoEstudiante;
+    
+          //console.log("listaCursoEstudiante: ");
+          //console.log(listaCursosEstudiantes);
+  
+          Usuario.find({tipo: 'docente'}).exec((err,respuestaDocente)=> {
+            if(err){
+              console.log("err")
+            }
+            listaDocentes = [];
+            listaDocentes = respuestaDocente;
 
-      res.render('listado-cursos-docente', {
-        respuestaDisponibles : respuestaDisponibles,
-        respuestaCerrados : respuestaCerrados,
-        curso : {
-                id: parseInt(req.body.id),
-                nombre: req.body.nombre,
-                modalidad: req.body.modalidad,
-                valor: parseInt(req.body.valor),
-                descripcion: req.body.descripcion,
-                intensidad: parseInt(req.body.intensidad)
+            Cursos.find({}).exec((err,respuestaCursos)=> {
+              if(err){
+                console.log("err")
               }
+              listaCursos = [];
+              listaCursos = respuestaCursos;
+            
+
+
+              res.render('listado-cursos-docente-eliminar', {
+                listaCursos : listaCursos,
+                listaEstudiantes : listaEstudiantes,
+                listaCursosEstudiantes : listaCursosEstudiantes,
+                listaDocentes : listaDocentes,
+                idCurso: parseInt(req.body.idCurso),
+                idDocente: parseInt(req.body.docente),
+                respuestaActualizar : respuestaActualizar,
+                err : err
+              })
+            })
+          })
+        })
       })
     })
-  })
-});
-*/
-
-  app.post('/listado-cursos-docente-eliminar',(req, res) => {
-    res.render('listado-cursos-docente-eliminar', {
-      id: parseInt(req.body.id)
-    });
   });
   
   app.post('/listado-cursos-docente-abrir',(req, res) => {
-    res.render('listado-cursos-docente-abrir', {
-      id: parseInt(req.body.id)
-    });
+
+    console.log('curso: '+req.body.idCurso)
+    console.log('docente: '+req.body.docente)
+
+    Cursos.findOneAndUpdate({id: req.body.idCurso},{estado: 'Disponible'}, {new : true}, (err,respuestaActualizar)=> {
+      if(err){
+        console.log("err")
+      }
+  
+      //console.log("listaCursos: ");
+      //console.log(listaCursos);
+  
+      Usuario.find({}).exec((err,respuestaUsuarios)=> {
+        if(err){
+          console.log("err")
+        }
+        listaEstudiantes = [];
+        listaEstudiantes = respuestaUsuarios;
+  
+        //console.log("listaUsuarios: ");
+        //console.log(listaEstudiantes);
+  
+        CursoEstudiante.find({}).exec((err,respuestaCursoEstudiante)=> {
+          if(err){
+            console.log("err")
+          }
+          listaCursosEstudiantes = [];
+          listaCursosEstudiantes = respuestaCursoEstudiante;
+    
+          //console.log("listaCursoEstudiante: ");
+          //console.log(listaCursosEstudiantes);
+  
+          Usuario.find({tipo: 'docente'}).exec((err,respuestaDocente)=> {
+            if(err){
+              console.log("err")
+            }
+            listaDocentes = [];
+            listaDocentes = respuestaDocente;
+
+            Cursos.find({}).exec((err,respuestaCursos)=> {
+              if(err){
+                console.log("err")
+              }
+              listaCursos = [];
+              listaCursos = respuestaCursos;
+            
+
+
+              res.render('listado-cursos-docente-abrir', {
+                listaCursos : listaCursos,
+                listaEstudiantes : listaEstudiantes,
+                listaCursosEstudiantes : listaCursosEstudiantes,
+                listaDocentes : listaDocentes,
+                idCurso: parseInt(req.body.idCurso),
+                idDocente: parseInt(req.body.docente),
+                respuestaActualizar : respuestaActualizar,
+                err : err
+              })
+            })
+          })
+        })
+      })
+    })
   });
   
   app.get('/crear-curso',(req, res) => {

@@ -5,16 +5,16 @@
     <h1>Confirmacion cerrar curso</h1>
 </div>
 
-<p>{{{cerrarCurso id}}}</p>
+<p>{{{cerrarCurso idCurso respuestaActualizar err}}}</p>
 
 <h4>CURSOS DISPONIBLES</h4>
-{{{listar-cursos-docente-disponibles}}}
+{{{listar-cursos-docente-disponibles listaCursos listaEstudiantes listaCursosEstudiantes listaDocentes}}}
 <br><br>
 <h4>CURSOS CERRADOS</h4>
-{{{listar-cursos-docente-cerrados}}}
+{{{listar-cursos-docente-cerrados listaCursos listaEstudiantes listaCursosEstudiantes}}}
 <br><br>
 <h4>TODOS LOS CURSOS</h4>
-{{{listar-cursos}}}
+{{{listar-cursos listaCursos err}}}
 
 <!-- FIN -->
 

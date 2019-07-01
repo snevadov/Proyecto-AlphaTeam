@@ -119,7 +119,7 @@ hbs.registerHelper('listar-cursos-disponibles', (respuesta, err) => {
         
 
 
-hbs.registerHelper('listar-cursos-docente-disponibles', (listaCursos, listaEstudiantes, listaCursosEstudiantes) => {
+hbs.registerHelper('listar-cursos-docente-disponibles', (listaCursos, listaEstudiantes, listaCursosEstudiantes, listaDocentes) => {
     let texto = "";
     //listaCursos = [];
     //listaEstudiantes = [];
@@ -136,6 +136,10 @@ hbs.registerHelper('listar-cursos-docente-disponibles', (listaCursos, listaEstud
 
     console.log("listaCursosEstudiantes ADENTRO: ");
     console.log(listaCursosEstudiantes);
+
+    console.log("listaDocentes ADENTRO: ");
+    console.log(listaDocentes);
+    
 
     let cursos = listaCursos.filter(buscar => buscar.estado == "Disponible");    
     if (cursos.length == 0){
@@ -157,15 +161,27 @@ hbs.registerHelper('listar-cursos-docente-disponibles', (listaCursos, listaEstud
                             `<div class="col">            
                                 <div class="card">
                                 <div class="card-header text-center id="headingD${i}">
-                                <h2 class="mb-0">
-                                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseD${i}" aria-expanded="true" aria-controls="collapseD${i}">
-                                        Curso: ${curso.nombre} - (id: ${curso.id}) - 
-                                        <form class="form-inline" action="/listado-cursos-docente-eliminar" method="POST">                                           
-                                            <button class="btn btn-outline-danger" name="id" value="${curso.id}">Cerrar Curso</button>
-                                            </form>
-                                        </button>
-                                        
-                                        
+                                    <h2 class="mb-0">
+                                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseD${i}" aria-expanded="true" aria-controls="collapseD${i}">
+                                            Curso: ${curso.nombre} - (id: ${curso.id}) - 
+                                            <form class="form-inline" action="/listado-cursos-docente-eliminar" method="POST">                                           
+                                                
+                                                <button class="btn btn-outline-danger" name="idCurso" value="${curso.id}">Cerrar Curso</button>
+
+                                                <div class="form-group">
+                                                    <select class="form-control" name="docente" required>
+                                                        <option value="" selected>Seleccionar docente</option>`
+                                                        
+                                                        listaDocentes.forEach(docente => {
+                                                        texto = texto + 
+                                                        `<option value="${docente.documento}">${docente.nombre}</option>`
+                                                        }); 
+
+                                                    texto = texto +
+                                                    `</select>
+                                                </div>                                                        
+                                            </form>                                        
+                                        </button>                                                                        
                                     </h2>
                                     </div>        
                                     <div id="collapseD${i}" class="collapse" aria-labelledby="headingD${i}" data-parent="#accordionExampleD">
@@ -274,7 +290,7 @@ hbs.registerHelper('listar-cursos-docente-cerrados', (listaCursos, listaEstudian
                                         <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse${i}" aria-expanded="true" aria-controls="collapse${i}">
                                             Curso: ${curso.nombre} - (id: ${curso.id}) - 
                                             <form class="form-inline" action="/listado-cursos-docente-abrir" method="POST">                                           
-                                                <button class="btn btn-outline-success" name="id" value="${curso.id}">Abrir Curso</button>
+                                                <button class="btn btn-outline-success" name="idCurso" value="${curso.id}">Abrir Curso</button>
                                             </form>
                                         </button>
                                         
@@ -363,72 +379,15 @@ hbs.registerHelper('crearCurso', (resultado, err) => {
 
 });
 
-/*hbs.registerHelper('crearCurso', (id, nombre, modalidad, valor, descripcion, intensidad) => {
+hbs.registerHelper('cerrarCurso', (id, respuestaActualizar, err) => {
 
-    const fs = require('fs');
-    listaCursos = [];
-    texto = '';
-
-    //Listar
-    listaCursos = JSON.parse(fs.readFileSync('src/bd-cursos.json', 'utf8'));
-
-    console.log(modalidad);
-    console.log(descripcion);
-
-    let cur = {
-        id: id,
-        nombre: nombre,
-        modalidad: modalidad,
-        valor: valor,
-        descripcion: descripcion,
-        intensidad: intensidad,
-        estado: 'Disponible'        
-    };
-    let duplicado = listaCursos.find(curso => curso.id == id);
-    if (!duplicado){
-
-        listaCursos.push(cur);
-        //Guardar
-        let datos = JSON.stringify (listaCursos);
-        fs.writeFileSync('./src/bd-cursos.json', datos, function (err) {
-            if (err) throw err;
-        });
-        texto = `<div  class="alert alert-success" role="alert">
-                    Curso creado con Exito
-                </div>`;
-
-    }
-    else{
-        texto = '<div class="alert alert-danger" role="alert">' +
-                    'Ya existe un Curso con el ID ' +  id +
-                '</div>';
-    }
-
-    return texto;
-
-});*/
-
-hbs.registerHelper('cerrarCurso', (id) => {
-
-    listaCursos = [];
-    estado = "estado";
-    texto = '';
-    //Listar
-    listaCursos = JSON.parse(fs.readFileSync('src/bd-cursos.json', 'utf8'));
-
-    let encontrado = listaCursos.find(buscar => buscar.id == id);
-    if (!encontrado){
+    console.log("err " + err)
+    if (err){
         texto = `<div  class="alert alert-danger" role="alert">
                     Error cambiando estado del curso a Cerrado
-                </div>`;
+                </div>`;     
     }
-    else {
-        encontrado[estado] = "Cerrado";
-
-        let datos = JSON.stringify (listaCursos);
-        fs.writeFileSync('./src/bd-cursos.json', datos, function (err) {
-            if (err) throw err;
-        });
+    else{
         texto = `<div  class="alert alert-success" role="alert">
                     Curso cerrado con Exito
                 </div>`;
@@ -438,26 +397,15 @@ hbs.registerHelper('cerrarCurso', (id) => {
 
 });
 
-hbs.registerHelper('abrirCurso', (id) => {
+hbs.registerHelper('abrirCurso', (id, respuestaActualizar, err) => {
 
-    listaCursos = [];
-    estado = "estado";
-    texto = '';
-    //Listar
-    listaCursos = JSON.parse(fs.readFileSync('src/bd-cursos.json', 'utf8'));
-    let encontrado = listaCursos.find(buscar => buscar.id == id);
-    if (!encontrado){
+    console.log("err " + err)
+    if (err){
         texto = `<div  class="alert alert-danger" role="alert">
                     Error cambiando estado del curso a Disponible
-                </div>`;
+                </div>`;     
     }
-    else {
-        encontrado[estado] = "Disponible";
-
-        let datos = JSON.stringify (listaCursos);
-        fs.writeFileSync('./src/bd-cursos.json', datos, function (err) {
-            if (err) throw err;
-        });
+    else{
         texto = `<div  class="alert alert-success" role="alert">
                     Curso abierto con Exito
                 </div>`;

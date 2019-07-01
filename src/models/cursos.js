@@ -38,6 +38,10 @@ const cursosSchema = new Schema({
         required: true,
         default: 'Disponible'
     },
+    docente:{
+        type: Number,
+        default: ''
+    },
 });
 
 //Activo el uniqueValidator
