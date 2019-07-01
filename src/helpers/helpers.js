@@ -870,4 +870,91 @@ const validarLogin = (documento, contrasena) => {
         return true;
     }
 }
+
+//Se arma el HTML del listado de los cursos de los docentes
+hbs.registerHelper('listarMisCursosDocente',(listadoCursos)=>{
+	
+    let texto = "";
+    let i = 1;
+
+    if( listadoCursos.length >= 1 ){
+        texto = '<div class="accordion" id="accordionExample">';
+
+        listadoCursos.forEach(curso => {
+            texto = texto + `
+            <div class="card">
+                <div class="card-header" id="heading`+ i +`">
+                    <h2 class="mb-0">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse`+ i + `" aria-expanded="true" aria-controls="collapse`+ i + `">
+                    <b>Código: </b>` + curso.documento  + ' - <b>Nombre del curso: </b> ' + curso.nombre + `
+                    </button>
+                    </h2>
+                </div>
+                
+                <div id="collapse`+ i +`" class="collapse" aria-labelledby="heading`+ i +`" data-parent="#accordionExample">
+                    <div class="card-body">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-sm">
+                                    <b>Descripción</b>: ` + curso.descripcion + `
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm">
+                                    <b>Modalidad</b>: ` + curso.modalidad + `
+                                </div>
+                                <div class="col-sm">
+                                    <b>Valor</b>: ` + curso.valor + `
+                                </div>
+                                <div class="col-sm">
+                                    <b>Intensidad</b>: ` + curso.intensidad + `
+                                </div>
+                            </div>`;
+
+            // curso.estudiantes.forEach(estudiante => {
+            //     texto = texto + ``
+            // });
+
+            if( curso.estudiantes.length >= 1 )
+            {
+                texto = texto + `
+                            <div class="dropdown-divider"></div>
+                            <h3 align="center">Listado de estudiantes</h3>
+                            <div class="dropdown-divider"></div>
+                            <table class='table'>
+                                <thead class='thead-dark'>
+                                    <tr>
+                                        <th scope='documento'>Documento</th>
+                                        <th scope='nombre'>Estudiante</th>
+                                        <th scope='correo'>Correo</th>
+                                        <th scope='telefono'>Teléfono</th>
+                                    </tr>
+                                </thead>
+                                <tbody>`;
+                
+                //Recorro los estudiantes
+                curso.estudiantes.forEach(curso => {
+            		texto = texto + '<tr>';
+                    texto = texto + '<td>' + curso.documento + '</td>';
+                    texto = texto + '<td>' + curso.nombre + '</td>';
+                    texto = texto + '<td>' + curso.correo + '</td>';
+                    texto = texto + '<td>' + curso.telefono + '</td>';
+                    texto = texto + '</tr>';                    
+                });
+                
+                texto = texto + '</tbody> </table>';
+
+                texto = texto + `</div></div>
+                </div>
+            </div>`
+            }
+
+            i = i + 1
+        });
+
+        texto = texto + '</div>';
+    }
+    
+    return texto;
+});
 /*FIN SEBASTIÁN */
