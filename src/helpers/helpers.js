@@ -813,7 +813,7 @@ hbs.registerHelper('listarMisCursosDocente',(listadoCursos)=>{
     let texto = "";
     let i = 1;
 
-    if( listadoCursos.length >= 1 ){
+    if( listadoCursos && listadoCursos.length >= 1 ){
         texto = '<div class="accordion" id="accordionExample">';
 
         listadoCursos.forEach(curso => {
@@ -822,7 +822,7 @@ hbs.registerHelper('listarMisCursosDocente',(listadoCursos)=>{
                 <div class="card-header" id="heading`+ i +`">
                     <h2 class="mb-0">
                     <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse`+ i + `" aria-expanded="true" aria-controls="collapse`+ i + `">
-                    <b>Código: </b>` + curso.documento  + ' - <b>Nombre del curso: </b> ' + curso.nombre + `
+                    <b>Código: </b>` + curso.id  + ' - <b>Nombre del curso: </b> ' + curso.nombre + `
                     </button>
                     </h2>
                 </div>
@@ -846,12 +846,9 @@ hbs.registerHelper('listarMisCursosDocente',(listadoCursos)=>{
                                     <b>Intensidad</b>: ` + curso.intensidad + `
                                 </div>
                             </div>`;
-
-            // curso.estudiantes.forEach(estudiante => {
-            //     texto = texto + ``
-            // });
-
-            if( curso.estudiantes.length >= 1 )
+            
+            //Si tiene estudiantes, construyo la tabla de estudiantes
+            if( curso.estudiante && curso.estudiante.length >= 1 )
             {
                 texto = texto + `
                             <div class="dropdown-divider"></div>
@@ -869,7 +866,7 @@ hbs.registerHelper('listarMisCursosDocente',(listadoCursos)=>{
                                 <tbody>`;
                 
                 //Recorro los estudiantes
-                curso.estudiantes.forEach(curso => {
+                curso.estudiante.forEach(curso => {
             		texto = texto + '<tr>';
                     texto = texto + '<td>' + curso.documento + '</td>';
                     texto = texto + '<td>' + curso.nombre + '</td>';
@@ -879,11 +876,11 @@ hbs.registerHelper('listarMisCursosDocente',(listadoCursos)=>{
                 });
                 
                 texto = texto + '</tbody> </table>';
+            }
 
-                texto = texto + `</div></div>
+            texto = texto + `</div></div>
                 </div>
             </div>`
-            }
 
             i = i + 1
         });
