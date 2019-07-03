@@ -554,7 +554,7 @@ hbs.registerHelper('listarCursos',(listado)=>{
         if ( curso.estado == "Disponible")
         {
             texto = texto + 
-            '<option>' + curso.nombre + '</option>';
+            '<option value="'+ curso.id + '">' + curso.nombre + '</option>';
         }       
     });
     

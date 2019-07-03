@@ -576,14 +576,16 @@ app.get('/listado-cursos-docente',(req, res) => {
   app.post('/crearIncripcion',(req,res)=>{	
     console.log('CREAR CURSOOOO' + req.body.curso);
       
-    Cursos.find({nombre : req.body.curso }).exec((err,respuesta)=>{  
+    Cursos.findOne({id : req.body.curso }).exec((err,respuesta)=>{  
       if ( err )
       {
         return console.log(  );
-      } 
+      }
+      console.log("req.session");
+      console.log(req.session);
       console.log('req.session.documento :::::' + req.session.documento);
-      console.log('respuesta[0].id :::::' + respuesta[0].id);
-      CursoEstudiante.find( {documento:req.session.documento,curso : respuesta[0].id } ).exec((err,respuestaCurEst)=>{
+      console.log('respuesta.id :::::' + respuesta.id);
+      CursoEstudiante.find( {documento:req.session.documento,curso : respuesta.id } ).exec((err,respuestaCurEst)=>{
         console.log('respuestaCurEst:::' + respuestaCurEst);
         console.log( 'respuestaCurEst.length:::' + respuestaCurEst.length );
         if ( respuestaCurEst.length > 0 )
@@ -599,8 +601,11 @@ app.get('/listado-cursos-docente',(req, res) => {
           console.log('NO ESTA :::::');
           let cursoEstudiante = new CursoEstudiante({
             documento: req.session.documento,
-            curso: respuesta[0].id
+            curso: respuesta.id
           })
+
+          console.log("cursoEstudiante");
+          console.log(cursoEstudiante);
           
           cursoEstudiante.save( (err,resultado) => {  
               console.log('ERROOORRR::::' + err);        
