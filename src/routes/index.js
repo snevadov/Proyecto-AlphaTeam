@@ -63,23 +63,32 @@ app.post('/calculos',(req, res) => {
 //** JHON */
 app.get('/listado-cursos',(req, res) => {
 
-    Cursos.find({}).exec((err,respuesta)=> {
+    Cursos.find({}).exec((err,respuestaTodos)=> {
       if(err){
         console.log("err")
       }
-      console.log(respuesta)
+      console.log(respuestaTodos)
 
-      res.render('listado-cursos', {
-        respuesta : respuesta,
-        
-        curso : {
-                id: parseInt(req.body.id),
-                nombre: req.body.nombre,
-                modalidad: req.body.modalidad,
-                valor: parseInt(req.body.valor),
-                descripcion: req.body.descripcion,
-                intensidad: parseInt(req.body.intensidad)
-              }
+      Cursos.find({estado: 'Disponible'}).exec((err,respuestaDisponibles)=> {
+        if(err){
+          console.log("err")
+        }
+        console.log('respuestaDisponibles')
+        console.log(respuestaDisponibles)
+
+        res.render('listado-cursos', {
+          respuestaTodos : respuestaTodos,
+          respuestaDisponibles : respuestaDisponibles,
+          
+          curso : {
+                  id: parseInt(req.body.id),
+                  nombre: req.body.nombre,
+                  modalidad: req.body.modalidad,
+                  valor: parseInt(req.body.valor),
+                  descripcion: req.body.descripcion,
+                  intensidad: parseInt(req.body.intensidad)
+                }
+        })
       })
     })
   });
@@ -510,9 +519,25 @@ app.get('/listado-cursos-docente',(req, res) => {
   
   //Llamada para cargar formulario de listado de cursos para estudiante
   app.get('/listado-cursos-estudiante',(req, res) => {
-    res.render('listado-cursos-estudiante', {
-      documentoLogin: parseInt(req.query.documentoLogin)
-    });
+    Cursos.find({estado: 'Disponible'}).exec((err,respuesta)=> {
+      if(err){
+        console.log("err")
+      }
+      console.log(respuesta)
+
+      res.render('listado-cursos-estudiante', {
+        respuesta : respuesta,
+        
+        curso : {
+                id: parseInt(req.body.id),
+                nombre: req.body.nombre,
+                modalidad: req.body.modalidad,
+                valor: parseInt(req.body.valor),
+                descripcion: req.body.descripcion,
+                intensidad: parseInt(req.body.intensidad)
+              }
+      })
+    })
   });
   
   //** FIN SEBASTIÁN */

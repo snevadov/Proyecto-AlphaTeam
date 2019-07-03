@@ -26,9 +26,13 @@
                 </div>     
                 
                 <div class="col-sm-8">
-                    <h1>Entrega de la semana 2 - Curso Node.JS</h2>                    
+                    <h1>Segunda Entrega Grupal - Curso Node.JS</h2>                    
                     <br>
+                    {{#if nombreLogin}}
                     <h3>Bienvenido {{nombreLogin}} ({{tipoLogin}})</h3>
+                    {{else}}
+                    <h3>Bienvenido</h3>
+                    {{/if}}
                 </div>    
             </div>
         </div>
@@ -57,7 +61,7 @@
                     {{#if aspirante}}
                         <a class="nav-item nav-link" href="/inscripcion?documentoLogin={{{documentoLogin}}}">INSCRIBIR</a>            
                         <a class="nav-item nav-link" href="/misCursos?documentoLogin={{{documentoLogin}}}">MIS CURSOS</a>
-                        <a class="nav-item nav-link" href="/listado-cursos-estudiante?documentoLogin={{{documentoLogin}}}">VER CURSOS</a>
+                        <a class="nav-item nav-link" href="/listado-cursos-estudiante">VER CURSOS</a>
                     {{/if}}
                     <a class="nav-item nav-link" href="/">SALIR <span class="sr-only">(current)</span></a>
                 {{else}}
