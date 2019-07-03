@@ -808,86 +808,107 @@ const validarLogin = (documento, contrasena) => {
 }
 
 //Se arma el HTML del listado de los cursos de los docentes
-hbs.registerHelper('listarMisCursosDocente',(listadoCursos)=>{
-	
+hbs.registerHelper('listarMisCursosDocente', (listaCursos, listaEstudiantes, listaCursosEstudiantes) => {
+    
     let texto = "";
-    let i = 1;
-
-    if( listadoCursos && listadoCursos.length >= 1 ){
-        texto = '<div class="accordion" id="accordionExample">';
-
-        listadoCursos.forEach(curso => {
-            texto = texto + `
-            <div class="card">
-                <div class="card-header" id="heading`+ i +`">
-                    <h2 class="mb-0">
-                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse`+ i + `" aria-expanded="true" aria-controls="collapse`+ i + `">
-                    <b>Código: </b>` + curso.id  + ' - <b>Nombre del curso: </b> ' + curso.nombre + `
-                    </button>
-                    </h2>
-                </div>
-                
-                <div id="collapse`+ i +`" class="collapse" aria-labelledby="heading`+ i +`" data-parent="#accordionExample">
-                    <div class="card-body">
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-sm">
-                                    <b>Descripción</b>: ` + curso.descripcion + `
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm">
-                                    <b>Modalidad</b>: ` + curso.modalidad + `
-                                </div>
-                                <div class="col-sm">
-                                    <b>Valor</b>: ` + curso.valor + `
-                                </div>
-                                <div class="col-sm">
-                                    <b>Intensidad</b>: ` + curso.intensidad + `
-                                </div>
-                            </div>`;
+    if (listaCursos.length == 0){
+        console.log('No existen cursos asignados');
+        texto = '<div class="alert alert-danger" role="alert">' +
+                    'No existen cursos asignados' +
+                '</div>';
+    }
+    else {
+        texto = `<div class="accordion" id="accordionExample"> 
+                        <div class="row">`;
+        i = 1;
+        
+        listaCursos.forEach(curso => {
+            texto = texto +            
+                            `<div class="col">            
+                                <div class="card">
+                                    <div class="card-header" id="heading${i}">
+                                        <h2 class="mb-0">
+                                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse${i}" aria-expanded="true" aria-controls="collapse${i}">
+                                                <b>ID:</b> ${curso.id} - <b>Nombre:</b> ${curso.nombre}
+                                            </button>
+                                        </h2>
+                                    </div>        
+                                    <div id="collapse${i}" class="collapse" aria-labelledby="heading${i}" data-parent="#accordionExample">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <b>Descripción</b>: ${curso.descripcion}
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <b>Modalidad</b>: ${curso.modalidad}
+                                                </div>
+                                                <div class="col">
+                                                    <b>Valor</b>: ${curso.valor}
+                                                </div>
+                                                <div class="col">
+                                                    <b>Intensidad</b>: ${curso.intensidad}
+                                                </div>
+                                                <div class="col">
+                                                    <b>Estado</b>: ${curso.estado}
+                                                </div>
+                                            </div>`;
             
+            let listadoEstudiantes = []
+            let cursosEstudiante = listaCursosEstudiantes.filter(buscar => buscar.curso == curso.id);
+            cursosEstudiante.forEach(cursoEstudiante => {
+                let estudiantes = listaEstudiantes.filter(buscarEstudiante => buscarEstudiante.documento == cursoEstudiante.documento);
+                estudiantes.forEach(estudiante => {
+                    listadoEstudiantes.push(estudiante);
+                });
+            });
+
             //Si tiene estudiantes, construyo la tabla de estudiantes
-            if( curso.estudiante && curso.estudiante.length >= 1 )
+            if( listadoEstudiantes && listadoEstudiantes.length >= 1 )
             {
                 texto = texto + `
-                            <div class="dropdown-divider"></div>
-                            <h3 align="center">Listado de estudiantes</h3>
-                            <div class="dropdown-divider"></div>
-                            <table class='table'>
-                                <thead class='thead-dark'>
-                                    <tr>
-                                        <th scope='documento'>Documento</th>
-                                        <th scope='nombre'>Estudiante</th>
-                                        <th scope='correo'>Correo</th>
-                                        <th scope='telefono'>Teléfono</th>
-                                    </tr>
-                                </thead>
-                                <tbody>`;
+                                            <div class="dropdown-divider"></div>
+                                            <h3 align="center">Listado de estudiantes</h3>
+                                            <div class="dropdown-divider"></div>
+                                            <table class='table'>
+                                                <thead class='thead-dark'>
+                                                    <tr>
+                                                        <th scope='documento'>Documento</th>
+                                                        <th scope='nombre'>Estudiante</th>
+                                                        <th scope='correo'>Correo</th>
+                                                        <th scope='telefono'>Teléfono</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>`;
                 
                 //Recorro los estudiantes
-                curso.estudiante.forEach(curso => {
-            		texto = texto + '<tr>';
-                    texto = texto + '<td>' + curso.documento + '</td>';
-                    texto = texto + '<td>' + curso.nombre + '</td>';
-                    texto = texto + '<td>' + curso.correo + '</td>';
-                    texto = texto + '<td>' + curso.telefono + '</td>';
-                    texto = texto + '</tr>';                    
+                listadoEstudiantes.forEach(estudiante => {
+                    texto = texto + `               <tr>
+                                                        <td>${estudiante.documento}</td>
+                                                        <td>${estudiante.nombre}</td>
+                                                        <td>${estudiante.correo}</td>
+                                                        <td>${estudiante.telefono}</td>
+                                                    </tr>`;                    
                 });
                 
-                texto = texto + '</tbody> </table>';
+                texto = texto + `
+                                                </tbody> 
+                                            </table>`;
             }
 
-            texto = texto + `</div></div>
-                </div>
-            </div>`
-
-            i = i + 1
+            texto = texto + `
+                                        </div>
+                                    </div>
+                                </div>                    
+                            </div>`;
+                i=i+1;
         });
+        texto = texto + `</div>
+                    </div>`;
 
-        texto = texto + '</div>';
     }
-    
+
     return texto;
 });
 /*FIN SEBASTIÁN */

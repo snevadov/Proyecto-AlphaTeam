@@ -1,17 +1,11 @@
 {{>header}}
 	<div class="container">
 		<h1 align="center">Mis cursos como docente</h1>
-        <div class="dropdown-divider"></div>
-		
-		<form action="/eliminarCurso" method="POST">			
-			<div class="container">
-			 	<input type="hidden"  class="form-control" name="documentoLogin" placeholder="Ingrese su documento de identidad" aria-describedby="idHelp" value="{{{documentoLogin}}}">
-			  <div class="row">
-				<div class="col-sm">
-					{{{listarMisCursosDocente listadoCursos}}}
-				</div>
-			  </div>
+        <div class="dropdown-divider"></div>			
+		<div class="row">
+			<div class="col">
+				{{{listarMisCursosDocente listaCursos listaEstudiantes listaCursosEstudiantes}}}
 			</div>
-		</form>
+		</div>
 	</div>
 {{>footer}}

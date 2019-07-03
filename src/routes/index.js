@@ -410,11 +410,6 @@ app.get('/listado-cursos-docente',(req, res) => {
       req.session.aspirante = (usuario.tipo == 'aspirante');
   
 	    console.log('Variable de sesion:' + req.session);
-      // res.render('index', {
-      //   mensaje : "Bienvenido " + usuario.nombre,
-      //   sesion: true,
-      //   nombre: req.session.nombre
-      // })
 
       //Dependiendo del rol, redirecciono a una página
       if(usuario.tipo == 'coordinador')
@@ -423,11 +418,11 @@ app.get('/listado-cursos-docente',(req, res) => {
       }
       else if(usuario.tipo == 'aspirante')
       {
-        res.redirect('/misCursos?documentoLogin='+documento);
+        res.redirect('/misCursos');
       }
       else if(usuario.tipo == 'docente')
       {
-        res.redirect('/listado-cursos');
+        res.redirect('/mis-cursos-docente');
       }
     })
   
@@ -729,47 +724,39 @@ app.get('/listado-cursos-docente',(req, res) => {
 
 //** SEBASTIÁN */
 app.get('/mis-cursos-docente',(req, res) => {
-  console.log(req.session);
-
-  Cursos.find({docente : req.session.documento }).exec((err,misCursos)=>{
-    if (err){
-      console.log(err);
-      return res.render('error',{
-        estudiante: 'Ocurrió un error'
-      });
+  
+  //Busco mis cursos como docente
+  Cursos.find({docente: req.session.documento}).exec((err,respuestaCursos)=> {
+    if(err){
+      console.log("err")
     }
-
-    console.log("misCursos");
-    console.log(misCursos);
-
-    misCursos.forEach(miCurso => {
-      //Busco Estudiantes del curso
-      CursoEstudiante.find({curso : miCurso.id}).exec((err,estudiantes)=>{
-        if (err){
-          res.render ('inscripcion-confirmacion',{
-            mostrar : err,
-            texto : 'KO'
-          })
+    listaCursos = [];
+    listaCursos = respuestaCursos;
+    
+    //Busco todos los usuarios
+    Usuario.find({}).exec((err,respuestaUsuarios)=> {
+      if(err){
+        console.log("err")
+      }
+      listaEstudiantes = [];
+      listaEstudiantes = respuestaUsuarios;
+      
+      //Busco todos los curso por estudiante
+      CursoEstudiante.find({}).exec((err,respuestaCursoEstudiante)=> {
+        if(err){
+          console.log("err")
         }
-        console.log("estudiantes");
-        console.log(estudiantes);
-        //Creo array para almacenar los estudiantes
-        miCurso.estudiante = [];
+        listaCursosEstudiantes = [];
+        listaCursosEstudiantes = respuestaCursoEstudiante;
 
-        //Recorro los estudiantes y busco su información en BD
-        estudiantes.forEach(estudiante => {
-          Usuario.findOne({documento : estudiante.documento}).exec((err,usuario)=>{
-            miCurso.estudiante.push(usuario);
-          })
+        res.render('mis-cursos-docente', {
+          listaCursos : listaCursos,
+          listaEstudiantes : listaEstudiantes,
+          listaCursosEstudiantes : listaCursosEstudiantes
         })
-      });   
-    });
-
-    res.render('mis-cursos-docente', {
-      listadoCursos: misCursos
-    });
-  });
-
+      })
+    })
+  })
 });
 //** FIN SEBASTIÁN */
   
