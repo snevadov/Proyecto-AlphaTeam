@@ -475,6 +475,7 @@ app.get('/listado-cursos-docente',(req, res) => {
         correo: usuario.correo,
         telefono: usuario.telefono,
         contrasena: '',
+        oldContrasena: usuario.contrasena,
         tipo: usuario.tipo
       });
     });  
@@ -491,7 +492,7 @@ app.get('/listado-cursos-docente',(req, res) => {
       nombre: req.body.nombre,
       correo: req.body.correo,
       telefono: req.body.telefono,
-      contrasena: (req.body.documento == '') ? req.body.oldContrasena : bcrypt.hashSync(req.body.contrasena, 10),
+      contrasena: (req.body.contrasena == '') ? req.body.oldContrasena : bcrypt.hashSync(req.body.contrasena, 10),
       tipo: req.body.tipo
     };
 
