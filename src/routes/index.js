@@ -39,11 +39,35 @@ app.use(session({
 //Views
 app.get('/', (req, res ) => {
   
+  Cursos.find({estado: 'Disponible'}).exec((err,respuesta)=> {
+    if(err){
+      console.log("err")
+    }
+    console.log(respuesta)
+
+    res.render('listado-cursos-estudiante', {
+      respuesta : respuesta,
+      
+      curso : {
+              id: parseInt(req.body.id),
+              nombre: req.body.nombre,
+              modalidad: req.body.modalidad,
+              valor: parseInt(req.body.valor),
+              descripcion: req.body.descripcion,
+              intensidad: parseInt(req.body.intensidad)
+            }
+    })
+  })
+});
+
+//Views
+app.get('/login', (req, res ) => {
+  
   //Destruyo la sesión
   req.session.destroy((err) => {
 		if(err) return console.log(err)
   })
-	res.render('index', {
+	res.render('login', {
 		titulo: 'Inicio'		
 	})
 });
