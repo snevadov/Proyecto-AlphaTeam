@@ -28,10 +28,10 @@
                 <div class="col-sm-8">
                     <h1>Segunda Entrega Grupal - Curso Node.JS</h1>                    
                     <br>
-                    {{#if nombreLogin}}
+                    {{#if sesion}}
                     <h3>Bienvenido {{nombreLogin}} ({{tipoLogin}})</h3>
                     {{else}}
-                    <h3>Bienvenido</h3>
+                    <h3>Bienvenido invitado</h3>
                     {{/if}}
                 </div>    
             </div>
@@ -45,7 +45,7 @@
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
             {{!-- SEBASTIÁN --}}
-                {{#if tipo}}
+                {{#if sesion}}
                     {{#if coordinador}}
                         <a class="nav-item nav-link" href="/listado-cursos-docente">GESTIONAR CURSOS</a>
                         <a class="nav-item nav-link" href="/crear-curso">CREAR CURSO</a>
@@ -62,9 +62,9 @@
                         <a class="nav-item nav-link" href="/misCursos">MIS CURSOS</a>
                         <a class="nav-item nav-link" href="/listado-cursos-estudiante">VER CURSOS</a>
                     {{/if}}
-                    <a class="nav-item nav-link" href="/login">SALIR <span class="sr-only">(current)</span></a>
+                    <a class="nav-item nav-link" href="/">SALIR <span class="sr-only">(current)</span></a>
                 {{else}}
-                    <a class="nav-item nav-link" href="/listado-cursos">VER CURSOS</a>
+                    <a class="nav-item nav-link" href="/listado-cursos-estudiante">VER CURSOS</a>
                     <a class="nav-item nav-link" href="/registrar-usuario">REGISTRAR USUARIO</a>
                     <a class="nav-item nav-link" href="/login">INGRESAR <span class="sr-only">(current)</span></a> 
                 {{/if}}

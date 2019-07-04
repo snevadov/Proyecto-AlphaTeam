@@ -38,7 +38,11 @@ app.use(session({
 
 //Views
 app.get('/', (req, res ) => {
-  
+  //Destruyo la sesión
+  req.session.destroy((err) => {
+		if(err) return console.log(err)
+  })
+
   Cursos.find({estado: 'Disponible'}).exec((err,respuesta)=> {
     if(err){
       console.log("err")
@@ -47,7 +51,7 @@ app.get('/', (req, res ) => {
 
     res.render('listado-cursos-estudiante', {
       respuesta : respuesta,
-      
+      sesion: false,
       curso : {
               id: parseInt(req.body.id),
               nombre: req.body.nombre,
