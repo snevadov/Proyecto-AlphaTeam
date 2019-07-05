@@ -1,0 +1,11 @@
+{{>header}}
+<div class="container">
+	<h1 align="center">Listado de usuarios</h1>
+	<div class="dropdown-divider"></div>
+	<br>
+	<form action="/editar-usuario" method="POST">
+		{{{listarUsuarios listaUsuarios}}}
+	</form>
+</div>
+
+{{>footer}}

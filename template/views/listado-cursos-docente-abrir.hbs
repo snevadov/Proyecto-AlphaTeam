@@ -1,0 +1,21 @@
+{{>header}}
+
+<!-- JHON -->
+<div class="container">
+    <h1>Confirmacion abrir curso</h1>
+</div>
+
+<p>{{{abrirCurso idCurso respuestaActualizar err}}}</p>
+
+<h4>CURSOS DISPONIBLES</h4>
+{{{listar-cursos-docente-disponibles listaCursos listaEstudiantes listaCursosEstudiantes listaDocentes}}}
+<br><br>
+<h4>CURSOS CERRADOS</h4>
+{{{listar-cursos-docente-cerrados listaCursos listaEstudiantes listaCursosEstudiantes}}}
+<br><br>
+<h4>TODOS LOS CURSOS</h4>
+{{{listar-cursos listaCursos err}}}
+
+<!-- FIN -->
+
+{{>footer}}
