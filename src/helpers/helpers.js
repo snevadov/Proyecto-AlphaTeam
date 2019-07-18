@@ -870,20 +870,18 @@ hbs.registerHelper('listarMisCursosDocente', (listaCursos, listaEstudiantes, lis
             let listadoEstudiantes = []
             let cursosEstudiante = listaCursosEstudiantes.filter(buscar => buscar.curso == curso.id);
             cursosEstudiante.forEach(cursoEstudiante => {
-                let estudiantes = listaEstudiantes.filter(buscarEstudiante => buscarEstudiante.documento == cursoEstudiante.documento);
-                estudiantes.forEach(estudiante => {
-                    let miEstudiante = {
-                        tipo: estudiante.tipo,
-                        _id: estudiante._id,
-                        nombre: estudiante.nombre,
-                        documento: estudiante.documento,
-                        correo: estudiante.correo,
-                        telefono: estudiante.telefono,
-                        contrasena: estudiante.contrasena,
-                        nota: (cursoEstudiante.nota) ? cursoEstudiante.nota : '-'
-                    };
-                    listadoEstudiantes.push(miEstudiante);
-                });
+                let estudiante = listaEstudiantes.find(est=>est.documento==cursoEstudiante.documento);
+                let miEstudiante = {
+                    tipo: estudiante.tipo,
+                    _id: estudiante._id,
+                    nombre: estudiante.nombre,
+                    documento: estudiante.documento,
+                    correo: estudiante.correo,
+                    telefono: estudiante.telefono,
+                    contrasena: estudiante.contrasena,
+                    nota: (cursoEstudiante.nota) ? cursoEstudiante.nota : '-'
+                };
+                listadoEstudiantes.push(miEstudiante);
             });
 
             //Si tiene estudiantes, construyo la tabla de estudiantes
