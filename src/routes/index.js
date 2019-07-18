@@ -758,6 +758,19 @@ app.get('/listado-cursos-docente',(req, res) => {
 
 //** SEBASTIÁN */
 app.get('/mis-cursos-docente',(req, res) => {
+
+  let mensaje = ''
+
+  //Si viene con parámetro de éxito, muestro mensaje
+  if(req.query.exito)
+  {
+    mensaje = ` <div class="alert alert-success alert-dismissible fade show" role="alert">
+                  <strong>Proceso exitoso!</strong><br>Las notas fueron almacenadas correctamente.
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>`;
+  }
   
   //Busco mis cursos como docente
   Cursos.find({docente: req.session.documento}).exec((err,respuestaCursos)=> {
@@ -786,7 +799,8 @@ app.get('/mis-cursos-docente',(req, res) => {
         res.render('mis-cursos-docente', {
           listaCursos : listaCursos,
           listaEstudiantes : listaEstudiantes,
-          listaCursosEstudiantes : listaCursosEstudiantes
+          listaCursosEstudiantes : listaCursosEstudiantes,
+          mensaje: mensaje
         })
       })
     })
@@ -795,8 +809,6 @@ app.get('/mis-cursos-docente',(req, res) => {
 
 //Carga la calificación de un curso
 app.post('/calificar-curso',(req, res) => {
-    
-  let respuesta = '';
 
   //Defino variable usuario
   let idCurso = req.body.idCurso;
@@ -838,6 +850,75 @@ app.post('/calificar-curso',(req, res) => {
         })
       })
     })
+  })
+});
+
+//Guarda las calificaciones de un curso
+app.post('/guardar-calificaciones-curso',(req, res) => {
+
+  console.log('req.body');
+  console.log(req.body);
+  
+  let respuesta = '';
+
+  //Busco todos los curso por estudiante
+  CursoEstudiante.find({curso: req.body.idCurso}).exec((err,respuestaCursoEstudiante)=> {
+    if(err){
+      console.log('Ocurrió un error al consultar los estudiantes por curso');
+      console.log(err);
+    }
+
+    //Obtengo los documentos de los estudiantes y excluyo el campo idCurso del req.body
+    listaIdsEstudiante = Object.keys(req.body).filter(campo => campo != 'idCurso');
+
+    let listaEstudiante = [];
+    let mensaje = '';
+    let exito = false;
+
+    var notasValidadas = 0;
+
+    listaIdsEstudiante.forEach(documentoEstudiante => {
+      notasValidadas++;
+      //Si tiene nota y está entre 0 y 5
+      if(req.body[documentoEstudiante] && req.body[documentoEstudiante] >= 0 && req.body[documentoEstudiante] <=5) {
+        let estudianteNota = {
+          documento: documentoEstudiante,
+          nota: parseFloat(req.body[documentoEstudiante]).toFixed(1)
+        }
+        listaEstudiante.push(estudianteNota);
+      }
+      else{
+        mensaje = mensaje + 'El estudiante con documento ' + documentoEstudiante + ' no tiene una nota ingresada.';
+        console.log(mensaje);
+      }
+
+      //Si todos los elementos fueron procesados
+      if(notasValidadas === listaIdsEstudiante.length) {
+        
+        //Si todos los estudiantes están calificados, procedo a actualizar
+        if(listaEstudiante.length == respuestaCursoEstudiante.length){
+          //Recorro la lista de estudiantes y actualizo nota
+          listaEstudiante.forEach(estudiante => {
+            CursoEstudiante.findOneAndUpdate({documento: estudiante.documento}, {nota: estudiante.nota}, (err,respuestaActualizar)=> {
+              if(err){
+                console.log('Ocurrió un error en la actualización');
+                console.log(err);
+              }
+            })
+          })
+
+          mensaje = 'Notas actualizadas correctamente';
+          console.log(mensaje);
+          exito = true;
+          return res.redirect('/mis-cursos-docente?exito=' + exito);
+        }
+        else{
+          mensaje = 'Existen estudiantes que no tiene una nota ingresada. Por favor valide.';
+          console.log(mensaje);
+          return res.redirect('/mis-cursos-docente?exito=' + exito);
+        }
+      }
+    });
   })
 });
 //** FIN SEBASTIÁN */

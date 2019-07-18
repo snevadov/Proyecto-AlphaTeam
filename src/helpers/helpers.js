@@ -128,17 +128,17 @@ hbs.registerHelper('listar-cursos-docente-disponibles', (listaCursos, listaEstud
     //listaEstudiantes = JSON.parse(fs.readFileSync('src/estudiantes.json', 'utf8'));
     //listadoCursosEstudiantes = JSON.parse(fs.readFileSync('src/cursos-estudiantes.json', 'utf8'));
 
-    console.log("listaUsuarios ADENTRO: ");
-    console.log(listaCursos);
+    //console.log("listaUsuarios ADENTRO: ");
+    //console.log(listaCursos);
 
-    console.log("listaEstudiantes ADENTRO: ");
-    console.log(listaEstudiantes);
+    //console.log("listaEstudiantes ADENTRO: ");
+    //console.log(listaEstudiantes);
 
-    console.log("listaCursosEstudiantes ADENTRO: ");
-    console.log(listaCursosEstudiantes);
+    //console.log("listaCursosEstudiantes ADENTRO: ");
+    //console.log(listaCursosEstudiantes);
 
-    console.log("listaDocentes ADENTRO: ");
-    console.log(listaDocentes);
+    //console.log("listaDocentes ADENTRO: ");
+    //console.log(listaDocentes);
     
 
     let cursos = listaCursos.filter(buscar => buscar.estado == "Disponible");    
@@ -974,7 +974,7 @@ hbs.registerHelper('listar-estudiantes-calificar', (listaEstudiantes) => {
                                                 <td>${estudiante.nombre}</td>
                                                 <td>${estudiante.correo}</td>
                                                 <td>${estudiante.telefono}</td>
-                                                <td><input type="number"  class="form-control" name="${estudiante._id}" placeholder="Nota" required></td>
+                                                <td><input type="number"  class="form-control" name="${estudiante.documento}" placeholder="Nota" step=".01" required></td>
                                                 
                                             </tr>`;                    
         });
