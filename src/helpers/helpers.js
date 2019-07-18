@@ -688,6 +688,7 @@ hbs.registerHelper('listarMisCursos',(listaCursos, listaEstudiantes ,listaCursos
                             <th scope='nombre'>Estudiante</th>\
                             <th scope='idCurso'>idCurso</th>\
                             <th scope='curso'>Curso</th>\
+                            <th scope='curso'>Nota</th>\
                             <th scope='eliminar'>Eliminar</th>\
                         </tr>\
                     </thead> \
@@ -696,12 +697,14 @@ hbs.registerHelper('listarMisCursos',(listaCursos, listaEstudiantes ,listaCursos
 			if ( usuario == curso.documento)
 			{
 				let listCurso = listaCursos.find(cur=>cur.id==curso.curso);
-				let listEstudiante = listaEstudiantes.find(est=>est.documento==curso.documento);
+                let listEstudiante = listaEstudiantes.find(est=>est.documento==curso.documento);
+                let nota = (curso.nota) ? curso.nota : '-';
 				texto = texto + '<tr>';
 				texto = texto + '<td>' + curso.documento + '</td>';
 				texto = texto + '<td>' + listEstudiante.nombre + '</td>';
 				texto = texto + '<td>' + curso.curso + '</td>';
-				texto = texto + '<td>' + listCurso.nombre + '</td>';
+                texto = texto + '<td>' + listCurso.nombre + '</td>';
+                texto = texto + '<td>' + nota + '</td>';
 				texto = texto + '<td>' + '<button class="btn btn-primary" name="cursoest" value="' +  curso.curso +'">Eliminar</button>' + '</td>';
 				texto = texto + '</tr>';
 			}
