@@ -48,7 +48,7 @@ app.use((req, res, next) => {
 		res.locals.docente = (req.session.tipo == 'docente')
 		res.locals.aspirante = (req.session.tipo == 'aspirante')
 	}
-	console.log(req.session);
+	//console.log(req.session);
 	next()
 })
 
@@ -65,7 +65,7 @@ mongoose.connect(process.env.URLDB, {useNewUrlParser: true}, (error, resultado) 
 
 
 //** JHON */
-console.log(__dirname)
+//console.log(__dirname)
 app.listen(process.env.PORT, () => {
 	console.log ('servidor en el puerto ' + process.env.PORT);
 });

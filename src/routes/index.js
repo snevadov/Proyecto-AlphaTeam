@@ -437,7 +437,7 @@ app.get('/listado-cursos-docente',(req, res) => {
       req.session.docente = (usuario.tipo == 'docente');
       req.session.aspirante = (usuario.tipo == 'aspirante');
   
-	    console.log('Variable de sesion:' + req.session);
+	    //console.log('Variable de sesion:' + req.session);
 
       //Dependiendo del rol, redirecciono a una página
       if(usuario.tipo == 'coordinador')
@@ -610,7 +610,7 @@ app.get('/listado-cursos-docente',(req, res) => {
         return console.log(  );
       }
       console.log("req.session");
-      console.log(req.session);
+      //console.log(req.session);
       console.log('req.session.documento :::::' + req.session.documento);
       console.log('respuesta.id :::::' + respuesta.id);
       CursoEstudiante.find( {documento:req.session.documento,curso : respuesta.id } ).exec((err,respuestaCurEst)=>{
@@ -656,7 +656,7 @@ app.get('/listado-cursos-docente',(req, res) => {
   });
   
   app.get('/misCursos',(req, res) => {
-    console.log(req.session);
+    //console.log(req.session);
     
     Cursos.find({}).exec((err,respuestaCursos)=> {
       if(err){
@@ -787,6 +787,54 @@ app.get('/mis-cursos-docente',(req, res) => {
           listaCursos : listaCursos,
           listaEstudiantes : listaEstudiantes,
           listaCursosEstudiantes : listaCursosEstudiantes
+        })
+      })
+    })
+  })
+});
+
+//Carga la calificación de un curso
+app.post('/calificar-curso',(req, res) => {
+    
+  let respuesta = '';
+
+  //Defino variable usuario
+  let idCurso = req.body.idCurso;
+
+  //Busco mis cursos como docente
+  Cursos.findOne({id: idCurso}).exec((err,respuestaCurso)=> {
+    if(err){
+      console.log("Error consultando los cursos");
+      return console.log(err);
+    }
+
+    //Curso que calificaré
+    let miCurso = respuestaCurso;
+    
+    //Busco todos los curso por estudiante
+    CursoEstudiante.find({curso: idCurso}).exec((err,respuestaCursoEstudiante)=> {
+      if(err){
+        console.log('Ocurrió un error al consultar los estudiantes por curso');
+        console.log(err);
+      }
+      
+      listaCursosEstudiantes = [];
+      listaCursosEstudiantes = respuestaCursoEstudiante;
+
+      //let listadoEst = respuestaCursoEstudiante.find({}).select('documento');
+      let listadoEst = respuestaCursoEstudiante.map(cursoEstudiante => cursoEstudiante.documento);
+
+      //Busco todos los usuarios
+      Usuario.find({documento: {"$in" : respuestaCursoEstudiante.map(cursoEstudiante => cursoEstudiante.documento)} }).exec((err,respuestaUsuarios)=> {
+        if(err){
+          console.log("err")
+        }
+        listaEstudiantes = [];
+        listaEstudiantes = respuestaUsuarios;
+
+        res.render('calificar-curso', {
+          miCurso : miCurso,
+          listaEstudiantes : listaEstudiantes
         })
       })
     })

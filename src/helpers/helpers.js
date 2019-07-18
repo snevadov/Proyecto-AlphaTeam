@@ -828,9 +828,13 @@ hbs.registerHelper('listarMisCursosDocente', (listaCursos, listaEstudiantes, lis
                                 <div class="card">
                                     <div class="card-header" id="heading${i}">
                                         <h2 class="mb-0">
-                                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse${i}" aria-expanded="true" aria-controls="collapse${i}">
-                                                <b>ID:</b> ${curso.id} - <b>Nombre:</b> ${curso.nombre}
-                                            </button>
+                                            <form class="form-inline" action="/calificar-curso" method="POST">  
+                                                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse${i}" aria-expanded="true" aria-controls="collapse${i}">
+                                                    <b>ID:</b> ${curso.id} - <b>Nombre:</b> ${curso.nombre}
+                                                </button>
+                                                
+                                                <button class="btn btn-outline-success" name="idCurso" value="${curso.id}">Calificar</button>
+                                            </form>
                                         </h2>
                                     </div>        
                                     <div id="collapse${i}" class="collapse" aria-labelledby="heading${i}" data-parent="#accordionExample">
@@ -911,4 +915,76 @@ hbs.registerHelper('listarMisCursosDocente', (listaCursos, listaEstudiantes, lis
 
     return texto;
 });
+
+//Armo el listado de estudiantes
+hbs.registerHelper('listar-estudiantes-calificar', (listaEstudiantes) => {
+    //listaCursos = require('./bd-cursos.json');
+    //listaCursos = JSON.parse(fs.readFileSync('src/bd-cursos.json', 'utf8'));
+
+    // if(err){
+    //     console.log("err")
+    //     return console.log(err)
+    // }
+
+    let texto = '';
+
+    // let texto = "<table class='table'> \
+    //                 <thead class='thead-dark'> \
+    //                 <th>ID </th>\
+    //                 <th>Nombre </th>\
+    //                 <th>Descripcion </th> \
+    //                 <th>Modalidad </th> \
+    //                 <th>Valor </th> \
+    //                 <th>Intensidad </th> \
+    //                 <th>Estado </th> \
+    //                 </thead> \
+    //             <tbody>";
+    
+    // respuesta.forEach(curso => {
+    //     texto = texto +            
+    //         "<tr>" +
+    //         "<td>" + curso.id + '</td>' +
+    //         "<td>" + curso.nombre + '</td>' +
+    //         "<td>" + curso.descripcion + '</td>' +            
+    //         "<td>" + curso.modalidad + '</td>' +
+    //         "<td>" + curso.valor + '</td>' +
+    //         "<td>" + curso.intensidad + '</td>' +
+    //         "<td>" + curso.estado + '</td>' +            
+    //         "<tr>"
+    // });
+    //Si tiene estudiantes, construyo la tabla de estudiantes
+    if( listaEstudiantes && listaEstudiantes.length >= 1 )
+    {
+        texto = texto + `<table class='table'>
+                            <thead class='thead-dark'>
+                                <tr>
+                                    <th scope='documento'>Documento</th>
+                                    <th scope='nombre'>Estudiante</th>
+                                    <th scope='correo'>Correo</th>
+                                    <th scope='telefono'>Teléfono</th>
+                                    <th scope='nota'>Nota</th>
+                                </tr>
+                            </thead>
+                            <tbody>`;
+        
+        //Recorro los estudiantes
+        listaEstudiantes.forEach(estudiante => {
+            texto = texto + `               <tr>
+                                                <td>${estudiante.documento}</td>
+                                                <td>${estudiante.nombre}</td>
+                                                <td>${estudiante.correo}</td>
+                                                <td>${estudiante.telefono}</td>
+                                                <td><input type="number"  class="form-control" name="${estudiante._id}" placeholder="Nota" required></td>
+                                                
+                                            </tr>`;                    
+        });
+        
+        texto = texto + `
+                                        </tbody> 
+                                    </table>`;
+    }
+
+    return texto;
+});
+
 /*FIN SEBASTIÁN */
