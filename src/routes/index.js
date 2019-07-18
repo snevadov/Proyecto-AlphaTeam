@@ -860,9 +860,10 @@ app.post('/guardar-calificaciones-curso',(req, res) => {
   console.log(req.body);
   
   let respuesta = '';
+  let idCurso = req.body.idCurso;
 
   //Busco todos los curso por estudiante
-  CursoEstudiante.find({curso: req.body.idCurso}).exec((err,respuestaCursoEstudiante)=> {
+  CursoEstudiante.find({curso: idCurso}).exec((err,respuestaCursoEstudiante)=> {
     if(err){
       console.log('Ocurrió un error al consultar los estudiantes por curso');
       console.log(err);
@@ -898,19 +899,29 @@ app.post('/guardar-calificaciones-curso',(req, res) => {
         //Si todos los estudiantes están calificados, procedo a actualizar
         if(listaEstudiante.length == respuestaCursoEstudiante.length){
           //Recorro la lista de estudiantes y actualizo nota
+          let estudiantesListos = 0;
           listaEstudiante.forEach(estudiante => {
             CursoEstudiante.findOneAndUpdate({documento: estudiante.documento}, {nota: estudiante.nota}, (err,respuestaActualizar)=> {
+              estudiantesListos++;
               if(err){
-                console.log('Ocurrió un error en la actualización');
+                console.log('Ocurrió un error en la actualización de la nota');
                 console.log(err);
               }
+
+              if(estudiantesListos === listaEstudiante.length){
+                Cursos.findOneAndUpdate({id: idCurso}, {estado: 'Finalizado'}, (err,respuestaActualizarCurso)=> {
+                  if(err){
+                    console.log('Ocurrió un error en la actualización del curso');
+                    console.log(err);
+                  }
+                  mensaje = 'Notas actualizadas correctamente';
+                  console.log(mensaje);
+                  exito = true;
+                  return res.redirect('/mis-cursos-docente?exito=' + exito);
+                })                
+              }              
             })
           })
-
-          mensaje = 'Notas actualizadas correctamente';
-          console.log(mensaje);
-          exito = true;
-          return res.redirect('/mis-cursos-docente?exito=' + exito);
         }
         else{
           mensaje = 'Existen estudiantes que no tiene una nota ingresada. Por favor valide.';
