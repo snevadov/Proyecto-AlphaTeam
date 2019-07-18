@@ -831,9 +831,14 @@ hbs.registerHelper('listarMisCursosDocente', (listaCursos, listaEstudiantes, lis
                                             <form class="form-inline" action="/calificar-curso" method="POST">  
                                                 <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse${i}" aria-expanded="true" aria-controls="collapse${i}">
                                                     <b>ID:</b> ${curso.id} - <b>Nombre:</b> ${curso.nombre}
-                                                </button>
+                                                </button>`;
                                                 
-                                                <button class="btn btn-outline-success" name="idCurso" value="${curso.id}">Calificar</button>
+            if(curso.estado == 'Cerrado'){
+                texto = texto +`<button class="btn btn-outline-success" name="idCurso" value="${curso.id}">Calificar</button>`;
+            }
+            
+            texto = texto +`
+                                                
                                             </form>
                                         </h2>
                                     </div>        
@@ -864,7 +869,17 @@ hbs.registerHelper('listarMisCursosDocente', (listaCursos, listaEstudiantes, lis
             cursosEstudiante.forEach(cursoEstudiante => {
                 let estudiantes = listaEstudiantes.filter(buscarEstudiante => buscarEstudiante.documento == cursoEstudiante.documento);
                 estudiantes.forEach(estudiante => {
-                    listadoEstudiantes.push(estudiante);
+                    let miEstudiante = {
+                        tipo: estudiante.tipo,
+                        _id: estudiante._id,
+                        nombre: estudiante.nombre,
+                        documento: estudiante.documento,
+                        correo: estudiante.correo,
+                        telefono: estudiante.telefono,
+                        contrasena: estudiante.contrasena,
+                        nota: (cursoEstudiante.nota) ? cursoEstudiante.nota : '-'
+                    };
+                    listadoEstudiantes.push(miEstudiante);
                 });
             });
 
@@ -882,6 +897,7 @@ hbs.registerHelper('listarMisCursosDocente', (listaCursos, listaEstudiantes, lis
                                                         <th scope='nombre'>Estudiante</th>
                                                         <th scope='correo'>Correo</th>
                                                         <th scope='telefono'>Teléfono</th>
+                                                        <th scope='nota'>Nota</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>`;
@@ -893,6 +909,7 @@ hbs.registerHelper('listarMisCursosDocente', (listaCursos, listaEstudiantes, lis
                                                         <td>${estudiante.nombre}</td>
                                                         <td>${estudiante.correo}</td>
                                                         <td>${estudiante.telefono}</td>
+                                                        <td>${estudiante.nota}</td>
                                                     </tr>`;                    
                 });
                 
@@ -918,40 +935,10 @@ hbs.registerHelper('listarMisCursosDocente', (listaCursos, listaEstudiantes, lis
 
 //Armo el listado de estudiantes
 hbs.registerHelper('listar-estudiantes-calificar', (listaEstudiantes) => {
-    //listaCursos = require('./bd-cursos.json');
-    //listaCursos = JSON.parse(fs.readFileSync('src/bd-cursos.json', 'utf8'));
-
-    // if(err){
-    //     console.log("err")
-    //     return console.log(err)
-    // }
-
+    
+    //Defino la variable a retornar
     let texto = '';
 
-    // let texto = "<table class='table'> \
-    //                 <thead class='thead-dark'> \
-    //                 <th>ID </th>\
-    //                 <th>Nombre </th>\
-    //                 <th>Descripcion </th> \
-    //                 <th>Modalidad </th> \
-    //                 <th>Valor </th> \
-    //                 <th>Intensidad </th> \
-    //                 <th>Estado </th> \
-    //                 </thead> \
-    //             <tbody>";
-    
-    // respuesta.forEach(curso => {
-    //     texto = texto +            
-    //         "<tr>" +
-    //         "<td>" + curso.id + '</td>' +
-    //         "<td>" + curso.nombre + '</td>' +
-    //         "<td>" + curso.descripcion + '</td>' +            
-    //         "<td>" + curso.modalidad + '</td>' +
-    //         "<td>" + curso.valor + '</td>' +
-    //         "<td>" + curso.intensidad + '</td>' +
-    //         "<td>" + curso.estado + '</td>' +            
-    //         "<tr>"
-    // });
     //Si tiene estudiantes, construyo la tabla de estudiantes
     if( listaEstudiantes && listaEstudiantes.length >= 1 )
     {
