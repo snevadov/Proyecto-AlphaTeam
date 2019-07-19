@@ -6,6 +6,9 @@ const hbs = require('hbs');
 const Usuario = require('./../models/usuario');
 const CursoEstudiante = require('./../models/cursos-estudiantes');
 const Cursos = require('./../models/cursos');
+const multer = require('multer');
+var upload = multer({ })
+
 //requiero filesystem
 const fs = require('fs');
 
@@ -371,7 +374,7 @@ app.get('/listado-cursos-docente',(req, res) => {
   });
   
   //Llamada para cargar formulario de creación de usuarios
-  app.post('/registrar-usuario',(req, res) => {
+  app.post('/registrar-usuario',upload.single('archivo'),(req, res) => {
     
     //Defino variable usuario
     let usuario = new Usuario({
@@ -379,7 +382,8 @@ app.get('/listado-cursos-docente',(req, res) => {
       nombre: req.body.nombre,
       correo: req.body.correo,
       telefono: req.body.telefono,
-      contrasena: bcrypt.hashSync(req.body.contrasena, 10)
+      contrasena: bcrypt.hashSync(req.body.contrasena, 10),
+      avatar: req.file.buffer
       
     });
     
@@ -436,6 +440,8 @@ app.get('/listado-cursos-docente',(req, res) => {
       req.session.coordinador = (usuario.tipo == 'coordinador');
       req.session.docente = (usuario.tipo == 'docente');
       req.session.aspirante = (usuario.tipo == 'aspirante');
+
+      req.session.avatar = usuario.avatar.toString('base64');
   
 	    console.log('Variable de sesion:' + req.session);
 

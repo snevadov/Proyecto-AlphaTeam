@@ -3,7 +3,12 @@
 <div class="container">
     <h1 align="center">Formulario para registro de usuarios</h1>
 
-    <form action="/registrar-usuario" method="POST">
+    <form action="/registrar-usuario" method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                    <label for="archivo">Foto de perfil</label>
+                    <input type="file"  class="form-control" name="archivo" required>
+            </div>
+
             <div class="form-group">
                     <label for="documento">Documento de identidad</label>
                     <input type="number"  class="form-control" name="documento" placeholder="Ingrese su documento de identidad" aria-describedby="idHelp" required>

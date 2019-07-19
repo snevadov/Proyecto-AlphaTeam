@@ -47,6 +47,8 @@ app.use((req, res, next) => {
 		res.locals.coordinador = (req.session.tipo == 'coordinador')
 		res.locals.docente = (req.session.tipo == 'docente')
 		res.locals.aspirante = (req.session.tipo == 'aspirante')
+
+		res.locals.avatar = req.session.avatar
 	}
 	console.log(req.session);
 	next()
