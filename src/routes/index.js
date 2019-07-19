@@ -50,7 +50,7 @@ app.get('/', (req, res ) => {
     if(err){
       console.log("err")
     }
-    console.log(respuesta)
+    //console.log(respuesta)
 
     res.render('listado-cursos-estudiante', {
       respuesta : respuesta,

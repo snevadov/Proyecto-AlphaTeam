@@ -6,6 +6,9 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const mongoose = require ('mongoose');
 
+const server = require('http').createServer(app);
+const io = require('socket.io')(server);
+
 //Variables de sesión
 const session = require('express-session');
 var MemoryStore = require('memorystore')(session);
@@ -65,9 +68,12 @@ mongoose.connect(process.env.URLDB, {useNewUrlParser: true}, (error, resultado) 
 	console.log("conectado");
 });
 
+io.on('connection', client => {
+	console.log("usuario conectado por socket");
+})
 
 //** JHON */
 //console.log(__dirname)
-app.listen(process.env.PORT, () => {
+server.listen(process.env.PORT, () => {
 	console.log ('servidor en el puerto ' + process.env.PORT);
 });
