@@ -72,6 +72,7 @@ const { Usuarios } = require('./clsUsuarios')
 const usuarios = new Usuarios();
 
 io.on('connection', client => {
+
 	console.log("usuario conectado por socket");
 
 	client.on('usuarioNuevo', (usuario) => {
@@ -81,9 +82,18 @@ io.on('connection', client => {
 		io.emit('nuevoUsuario',texto)
 	})
 
+	client.on('disconnect',()=>{
+		let usuarioBorrado = usuarios.borrarUsuario(client.id)
+		console.log(usuarioBorrado)
+		let texto = 'Se ha desconectado ' + usuarioBorrado.nombre
+		io.emit('usuarioDesconectado', texto)
+	})
+
 	client.on("texto", (text, callback) => {
-		console.log(text)
-		io.emit("texto", (text))
+		let usuario = usuarios.getUsuario(client.id)
+		let texto = usuario.nombre + ' : ' + text
+		console.log(texto)
+		io.emit("texto", (texto))
 		callback()
 	})
 })

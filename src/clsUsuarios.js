@@ -15,7 +15,7 @@ class Usuarios{
     }
 
     getUsuario(id){
-        let usuario = this.usuarios.filter (user => user.id == id)
+        let usuario = this.usuarios.filter (user => user.id == id)[0]
         return usuario
     }
 

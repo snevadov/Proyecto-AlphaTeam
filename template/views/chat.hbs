@@ -2,11 +2,13 @@
 <!-- JHON -->
 <div class="container">
     <h1>Sala de Chat</h1>
-    <form id="formulario">
+    <form id="formulario" action="/chat?nombre={{nombreLogin}}">
         <input type="text" id="texto">
         <button>Enviar</button>
     </form>
     <div id="chat"></div>
+    <script src="socket.io/socket.io.js"></script>
+    <script src="js/socket.js"></script>
 </div>
 <!-- FIN JHON-->
 {{>footer}}
