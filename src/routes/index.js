@@ -92,6 +92,10 @@ app.post('/calculos',(req, res) => {
 });
   
 //** JHON */
+app.get('/chat',(req, res) => {
+  res.render('chat');
+});
+
 app.get('/listado-cursos',(req, res) => {
 
     Cursos.find({}).exec((err,respuestaTodos)=> {
@@ -441,7 +445,11 @@ app.get('/listado-cursos-docente',(req, res) => {
       req.session.docente = (usuario.tipo == 'docente');
       req.session.aspirante = (usuario.tipo == 'aspirante');
 
-      req.session.avatar = usuario.avatar.toString('base64');
+      console.log(usuario.avatar);
+      if(usuario.avatar){
+        req.session.avatar = usuario.avatar.toString('base64');
+      }
+      
   
 	    //console.log('Variable de sesion:' + req.session);
 

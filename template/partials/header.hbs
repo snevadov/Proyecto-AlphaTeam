@@ -32,7 +32,9 @@
                     <br>
                     {{#if sesion}}
                     <h3>Bienvenido {{nombreLogin}} ({{tipoLogin}})</h3>
-                    <img src="data:img/jpg;base64,{{avatar}}" width="200px" height="200px" class="rounded mx-auto d-block"> 
+                        {{#if aspirante}}
+                            <img src="data:img/jpg;base64,{{avatar}}" width="200px" height="200px" class="rounded mx-auto d-block"> 
+                        {{/if}}
                     {{else}}
                     <h3>Bienvenido invitado</h3>
                     {{/if}}
@@ -64,6 +66,7 @@
                         <a class="nav-item nav-link" href="/inscripcion">INSCRIBIR</a>            
                         <a class="nav-item nav-link" href="/misCursos">MIS CURSOS</a>
                         <a class="nav-item nav-link" href="/listado-cursos-estudiante">VER CURSOS</a>
+                        <a class="nav-item nav-link" href="/chat?nombre={{nombreLogin}}">INGRESAR AL CHAT</a>
                     {{/if}}
                     <a class="nav-item nav-link" href="/">SALIR <span class="sr-only">(current)</span></a>
                 {{else}}

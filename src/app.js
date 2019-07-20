@@ -65,11 +65,27 @@ mongoose.connect(process.env.URLDB, {useNewUrlParser: true}, (error, resultado) 
 	if(error){
 		return console.log(error)
 	}
-	console.log("conectado");
+	console.log("conectado a BD");
 });
+
+const { Usuarios } = require('./clsUsuarios')
+const usuarios = new Usuarios();
 
 io.on('connection', client => {
 	console.log("usuario conectado por socket");
+
+	client.on('usuarioNuevo', (usuario) => {
+		let listado = usuarios.agregarUsuario(client.id, usuario)
+		console.log(listado)
+		let texto = 'Se ha conectado ' + usuario
+		io.emit('nuevoUsuario',texto)
+	})
+
+	client.on("texto", (text, callback) => {
+		console.log(text)
+		io.emit("texto", (text))
+		callback()
+	})
 })
 
 //** JHON */
