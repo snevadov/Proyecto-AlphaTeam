@@ -85,8 +85,11 @@ io.on('connection', client => {
 	client.on('disconnect',()=>{
 		let usuarioBorrado = usuarios.borrarUsuario(client.id)
 		console.log(usuarioBorrado)
-		let texto = 'Se ha desconectado ' + usuarioBorrado.nombre
-		io.emit('usuarioDesconectado', texto)
+		if(usuarioBorrado){
+			let texto = 'Se ha desconectado ' + usuarioBorrado.nombre
+			io.emit('usuarioDesconectado', texto)
+		}
+
 	})
 
 	client.on("texto", (text, callback) => {

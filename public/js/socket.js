@@ -11,13 +11,15 @@ socket.on("connect", () => {
 })
 
 socket.on('nuevoUsuario', (texto) => {
-    console.log("usuarioCONECTADO::"+texto)
-    chat.innerHTML = chat.innerHTML + texto + '<br>'
+    console.log("usuarioCONECTADO::"+chat.innerHTML)
+    //chat.innerHTML = chat.innerHTML + texto + '<br>'
+    chat.innerHTML = chat.innerHTML + `<div class="alert alert-success" role="alert">` + texto + `</div>`
 })
 
 socket.on('usuarioDesconectado', (texto) => {
     console.log("usuarioDESCONECTADO::"+texto)
-    chat.innerHTML = chat.innerHTML + texto + '<br>'
+    //chat.innerHTML = chat.innerHTML + texto + '<br>'
+    chat.innerHTML = chat.innerHTML + `<div class="alert alert-danger" role="alert">` + texto + `</div>`
 })
 
 
@@ -27,7 +29,6 @@ chat = document.querySelector('#chat')
 
 formulario.addEventListener('submit', (datos) => {
     datos.preventDefault()
-    console.log("que chimbada "+mensaje.value)
     socket.emit('texto', mensaje.value, () => {
             mensaje.value = ''
             mensaje.focus()
@@ -37,5 +38,6 @@ formulario.addEventListener('submit', (datos) => {
 
 socket.on("texto", (text) => {
     console.log(text)
-    chat.innerHTML = chat.innerHTML + text + '<br>'
+    //chat.innerHTML = chat.innerHTML + text + '<br>'
+    chat.innerHTML = chat.innerHTML + `<div class="alert alert-primary" role="alert">` + text + `</div>`
 })
