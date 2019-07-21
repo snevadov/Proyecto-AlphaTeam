@@ -55,29 +55,29 @@ hbs.registerHelper('listar-cursos', (respuesta, err) => {
 
 hbs.registerHelper('listar-cursos-disponibles', (respuesta, err) => {
 
-    console.log("listar-cursos-disponibles")
+    //console.log("listar-cursos-disponibles")
     let texto = "";
-    console.log(err)
+    //console.log(err)
 		if(err){
-            console.log("err")
-			return console.log(err)
+            //console.log("err")
+			return err
 		}
 
         if (respuesta.length == 0){
-            console.log('No existen cursos disponibles');
+            //console.log('No existen cursos disponibles');
             texto = '<div class="alert alert-danger" role="alert">' +
                         'No existen cursos disponibles' +
                     '</div>';
         }
         else {
 
-            console.log('cursos disponibles antes del for');
+            //console.log('cursos disponibles antes del for');
 
             texto = `<div class="accordion" id="accordionExample"> 
                             <div class="row">`;
             i = 1;
             respuesta.forEach(curso => {
-                console.log('cursos disponibles dentro del for');
+                //console.log('cursos disponibles dentro del for');
                 texto = texto +            
                                 `<div class="col">            
                                     <div class="card">
@@ -109,7 +109,7 @@ hbs.registerHelper('listar-cursos-disponibles', (respuesta, err) => {
 
         }
     //let msg = texto;
-    console.log("QUE PASA");
+    //console.log("QUE PASA");
     //console.log("texto R " + texto);
     return texto;   
         

@@ -6,6 +6,9 @@ const hbs = require('hbs');
 const Usuario = require('./../models/usuario');
 const CursoEstudiante = require('./../models/cursos-estudiantes');
 const Cursos = require('./../models/cursos');
+const multer = require('multer');
+var upload = multer({ })
+
 //requiero filesystem
 const fs = require('fs');
 
@@ -51,7 +54,7 @@ app.get('/', (req, res ) => {
     if(err){
       console.log("err")
     }
-    console.log(respuesta)
+    //console.log(respuesta)
 
     res.render('listado-cursos-estudiante', {
       respuesta : respuesta,
@@ -93,6 +96,10 @@ app.post('/calculos',(req, res) => {
 });
   
 //** JHON */
+app.get('/chat',(req, res) => {
+  res.render('chat');
+});
+
 app.get('/listado-cursos',(req, res) => {
 
     Cursos.find({}).exec((err,respuestaTodos)=> {
@@ -375,7 +382,7 @@ app.get('/listado-cursos-docente',(req, res) => {
   });
   
   //Llamada para cargar formulario de creación de usuarios
-  app.post('/registrar-usuario',(req, res) => {
+  app.post('/registrar-usuario',upload.single('archivo'),(req, res) => {
     
     //Defino variable usuario
     let usuario = new Usuario({
@@ -383,7 +390,8 @@ app.get('/listado-cursos-docente',(req, res) => {
       nombre: req.body.nombre,
       correo: req.body.correo,
       telefono: req.body.telefono,
-      contrasena: bcrypt.hashSync(req.body.contrasena, 10)
+      contrasena: bcrypt.hashSync(req.body.contrasena, 10),
+      avatar: req.file.buffer
       
     });
     
@@ -453,6 +461,12 @@ app.get('/listado-cursos-docente',(req, res) => {
       req.session.coordinador = (usuario.tipo == 'coordinador');
       req.session.docente = (usuario.tipo == 'docente');
       req.session.aspirante = (usuario.tipo == 'aspirante');
+
+      console.log(usuario.avatar);
+      if(usuario.avatar){
+        req.session.avatar = usuario.avatar.toString('base64');
+      }
+      
   
 	    //console.log('Variable de sesion:' + req.session);
 

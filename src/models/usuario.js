@@ -34,6 +34,9 @@ const usuarioSchema = new Schema({
         required: true,
         enum: {values:['aspirante','docente','coordinador'], message: "El campo tipo solo permite Aspirante, Docente o Administrador"}, //Valida que solo permita algunos valores y personaliza mensaje
         default: 'aspirante'
+    },
+    avatar : {
+        type: Buffer
     }
 });
 

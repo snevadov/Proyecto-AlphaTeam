@@ -6,6 +6,9 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const mongoose = require ('mongoose');
 
+const server = require('http').createServer(app);
+const io = require('socket.io')(server);
+
 //Variables de sesión
 const session = require('express-session');
 var MemoryStore = require('memorystore')(session);
@@ -47,6 +50,8 @@ app.use((req, res, next) => {
 		res.locals.coordinador = (req.session.tipo == 'coordinador')
 		res.locals.docente = (req.session.tipo == 'docente')
 		res.locals.aspirante = (req.session.tipo == 'aspirante')
+
+		res.locals.avatar = req.session.avatar
 	}
 	//console.log(req.session);
 	next()
@@ -60,12 +65,44 @@ mongoose.connect(process.env.URLDB, {useNewUrlParser: true}, (error, resultado) 
 	if(error){
 		return console.log(error)
 	}
-	console.log("conectado");
+	console.log("conectado a BD");
 });
 
+const { Usuarios } = require('./clsUsuarios')
+const usuarios = new Usuarios();
+
+io.on('connection', client => {
+
+	console.log("usuario conectado por socket");
+
+	client.on('usuarioNuevo', (usuario) => {
+		let listado = usuarios.agregarUsuario(client.id, usuario)
+		console.log(listado)
+		let texto = 'Se ha conectado ' + usuario
+		io.emit('nuevoUsuario',texto)
+	})
+
+	client.on('disconnect',()=>{
+		let usuarioBorrado = usuarios.borrarUsuario(client.id)
+		console.log(usuarioBorrado)
+		if(usuarioBorrado){
+			let texto = 'Se ha desconectado ' + usuarioBorrado.nombre
+			io.emit('usuarioDesconectado', texto)
+		}
+
+	})
+
+	client.on("texto", (text, callback) => {
+		let usuario = usuarios.getUsuario(client.id)
+		let texto = usuario.nombre + ' : ' + text
+		console.log(texto)
+		io.emit("texto", (texto))
+		callback()
+	})
+})
 
 //** JHON */
 //console.log(__dirname)
-app.listen(process.env.PORT, () => {
+server.listen(process.env.PORT, () => {
 	console.log ('servidor en el puerto ' + process.env.PORT);
 });
