@@ -19,6 +19,10 @@ const bcrypt = require('bcrypt');
 const session = require('express-session');
 var MemoryStore = require('memorystore')(session);
 
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey('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');
+ 
+
 //Helpers
 require('./../helpers/helpers');
 
@@ -390,12 +394,25 @@ app.get('/listado-cursos-docente',(req, res) => {
             respuesta = "No se fue posible registrar el usuario" + usuario.nombre + ' con documento de identidad ' + usuario.documento + '. Error: ' + err;
 			return res.render('registrar-usuario-resultado', {
 				mostrar: respuesta
-			})
+      })
         }
+
+        const msg = { 
+          to: req.body.correo, 
+          from:  'walterasz4@gmail.com', 
+          subject: 'Bienvenido Nodejs!', 
+          text: 'Bienvenido a la tercera entrega grupal del curso de Node.JS. Para ingresar favor dar clic http://localhost:3000/login'     
+        };
+        const path = require('path');
+        console.log('Enviando correo:::' + __dirname);
+        sgMail.send(msg);
+        console.log('Fin correo');
         respuesta = "El usuario " + usuario.nombre + ' con documento de identidad ' + usuario.documento  + " fue creado de manera exitosa!";
 		return res.render('registrar-usuario-resultado', {
 			mostrar: respuesta
-		})
+    })
+      
+
     });
   
   });
@@ -644,6 +661,19 @@ app.get('/listado-cursos-docente',(req, res) => {
                   texto : 'KO'
                 })
               }
+
+              const msg = { 
+                to: req.session.correo, 
+                from:  'walterasz4@gmail.com', 
+                subject: 'Bienvenido Curso ' + Cursos.nombre, 
+                text: 'El registro del Curso fue exitoso! para mas información dirigirse al siguiente link  http://localhost:3000/verCursos'     
+              };
+              const path = require('path');
+              console.log('Enviando correo:::' + __dirname);
+              sgMail.send(msg);
+              console.log('Fin correo');
+
+
               res.render ('inscripcion-confirmacion',{
                 mostrar : resultado,
                 texto : 'OK'
