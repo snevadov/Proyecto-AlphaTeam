@@ -806,10 +806,18 @@ app.get('/mis-cursos-docente',(req, res) => {
   let mensaje = ''
 
   //Si viene con parámetro de éxito, muestro mensaje
-  if(req.query.exito)
+  if(req.query.exito == 1)
   {
     mensaje = ` <div class="alert alert-success alert-dismissible fade show" role="alert">
                   <strong>Proceso exitoso!</strong><br>Las notas fueron almacenadas correctamente.
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>`;
+  }
+  else if(req.query.exito == 0){
+    mensaje = ` <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                  <strong>Ocurrió un error!</strong><br>Las notas NO fueron almacenadas.
                   <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                   </button>
@@ -890,7 +898,9 @@ app.post('/calificar-curso',(req, res) => {
 
         res.render('calificar-curso', {
           miCurso : miCurso,
-          listaEstudiantes : listaEstudiantes
+          listaEstudiantes : listaEstudiantes,
+          nombreProfesor: req.session.nombre,
+          documentoUsuario: req.session.documento
         })
       })
     })
@@ -918,7 +928,7 @@ app.post('/guardar-calificaciones-curso',(req, res) => {
 
     let listaEstudiante = [];
     let mensaje = '';
-    let exito = false;
+    let exito = 0;
 
     var notasValidadas = 0;
 
@@ -960,10 +970,10 @@ app.post('/guardar-calificaciones-curso',(req, res) => {
                   }
                   mensaje = 'Notas actualizadas correctamente';
                   console.log(mensaje);
-                  exito = true;
+                  exito = 1;
                   return res.redirect('/mis-cursos-docente?exito=' + exito);
-                })                
-              }              
+                })
+              }
             })
           })
         }

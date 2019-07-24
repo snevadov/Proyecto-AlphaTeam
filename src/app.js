@@ -70,6 +70,7 @@ mongoose.connect(process.env.URLDB, {useNewUrlParser: true}, (error, resultado) 
 
 const { Usuarios } = require('./clsUsuarios')
 const usuarios = new Usuarios();
+const usuariosNotificacion = new Usuarios();
 
 io.on('connection', client => {
 
@@ -82,12 +83,23 @@ io.on('connection', client => {
 		io.emit('nuevoUsuario',texto)
 	})
 
+	client.on('usuarioNuevoNotificacion', (usuario, documento) => {
+		let listado = usuariosNotificacion.agregarUsuarioConDocumento(client.id, usuario, documento)
+		console.log(listado)
+		let texto = 'Se ha conectado ' + usuario
+		io.emit('nuevoUsuarioNotificacion',texto)
+	})
+
 	client.on('disconnect',()=>{
 		let usuarioBorrado = usuarios.borrarUsuario(client.id)
+		let usuarioBorradoNotificacion = usuariosNotificacion.borrarUsuario(client.id)
 		console.log(usuarioBorrado)
 		if(usuarioBorrado){
 			let texto = 'Se ha desconectado ' + usuarioBorrado.nombre
 			io.emit('usuarioDesconectado', texto)
+
+			let textoNotificacion = 'Se ha desconectado ' + usuarioBorradoNotificacion.nombre
+			io.emit('usuarioBorradoNotificacion', textoNotificacion)
 		}
 
 	})
@@ -98,6 +110,26 @@ io.on('connection', client => {
 		console.log(texto)
 		io.emit("texto", (texto))
 		callback()
+	})
+
+	//Recibo el texto privado
+	client.on("textoPrivado", (text, callback) => {
+		let usuario = usuariosNotificacion.getUsuario(client.id)
+		text.estudiantesNotas.forEach(estudianteNota => {
+			//let texto = `${usuario.nombre} : ${text.mensajePrivado}`
+			let texto = `El curso ${text.nombreCurso} ha sido calificado por el profesor ${text.nombreProfesor}. Su nota es: ${estudianteNota.nota}`
+			console.log('TEXTO PRIVADO' + texto);
+			//Envío a uno
+			let destinatario = usuariosNotificacion.getDestinatario(estudianteNota.documento)
+			console.log('destinatario');
+			console.log(destinatario);
+			if(destinatario)
+			{
+				client.broadcast.to(destinatario.id).emit("textoPrivado", (texto));
+			}
+		});
+
+		callback();
 	})
 })
 

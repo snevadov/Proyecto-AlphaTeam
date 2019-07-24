@@ -941,6 +941,7 @@ hbs.registerHelper('listar-estudiantes-calificar', (listaEstudiantes) => {
     let texto = '';
 
     //Si tiene estudiantes, construyo la tabla de estudiantes
+    let i = 0;
     if( listaEstudiantes && listaEstudiantes.length >= 1 )
     {
         texto = texto + `<table class='table'>
@@ -957,14 +958,15 @@ hbs.registerHelper('listar-estudiantes-calificar', (listaEstudiantes) => {
         
         //Recorro los estudiantes
         listaEstudiantes.forEach(estudiante => {
+            i++
             texto = texto + `               <tr>
                                                 <td>${estudiante.documento}</td>
                                                 <td>${estudiante.nombre}</td>
                                                 <td>${estudiante.correo}</td>
                                                 <td>${estudiante.telefono}</td>
-                                                <td><input type="number"  class="form-control" name="${estudiante.documento}" placeholder="Nota" step=".01" required></td>
+                                                <td><input type="number"  id="estudiante${i}" class="form-control" name="${estudiante.documento}" placeholder="Nota" step=".01" required></td>
                                                 
-                                            </tr>`;                    
+                                            </tr>`;
         });
         
         texto = texto + `

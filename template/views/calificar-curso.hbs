@@ -1,7 +1,7 @@
 {{>header}}
 <!-- SEBASTIÁN -->
 <div class="container">
-    <form action="/guardar-calificaciones-curso" method="POST">
+    <form id="formularioPrivado" action="/guardar-calificaciones-curso" method="POST">
         <h4 align="center">Datos del curso</h4>
         <div class="dropdown-divider"></div>
         <div class="col">            
@@ -38,10 +38,19 @@
         <h4 align="center">Listado de estudiantes</h4>
         {{{listar-estudiantes-calificar listaEstudiantes}}}
         <div class="form-group" align="center">
-            <button class="btn btn-primary" name="idCurso" value="{{miCurso.id}}">Guardar</button>
+            <button class="btn btn-primary" id="idCurso" name="idCurso" value="{{miCurso.id}}">Guardar</button>
             <a class="btn btn-secondary" href="/mis-cursos-docente">Cancelar</a>
         </div>
+        <div id="chatPrivado">
+    
+        </div>
+        <input type="text" id="nombreProfesor" value="{{nombreProfesor}}" hidden>
+        <input type="text" id="nombreCurso" value="{{miCurso.nombre}}" hidden>
+        <input type="text" id="usuario" value="{{nombreProfesor}}" hidden>
+        <input type="text" id="documentoUsuario" value="{{documentoUsuario}}" hidden>
     </form>
 </div>
+<script src="socket.io/socket.io.js"></script>
+<script src="js/socketnotificacion.js"></script>
 <!-- FIN SEBASTIÁN -->
 {{>footer}}
