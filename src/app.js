@@ -126,6 +126,7 @@ io.on('connection', client => {
 			if(destinatario)
 			{
 				client.broadcast.to(destinatario.id).emit("textoPrivado", (texto));
+				console.log('Finalizó el envío del mensaje');
 			}
 		});
 

@@ -62,6 +62,7 @@ formularioPrivado.addEventListener('submit', (datos) => {
         nombreProfesor: nombreProfesor,
         nombreCurso: nombreCurso
     }, () => {
+        chatPrivado.innerHTML = chatPrivado.innerHTML + ''
             //console.log('FIN')
     })
 
@@ -69,6 +70,12 @@ formularioPrivado.addEventListener('submit', (datos) => {
 })
 
 socket.on("textoPrivado", (text) =>{
+    console.log('Socket.on::::::::::::::::::::::');
     console.log(text);
-    chatPrivado.innerHTML = chatPrivado.innerHTML + text + '<br>';
+    chatPrivado.innerHTML = chatPrivado.innerHTML + `<div class="alert alert-success alert-dismissible fade show" role="alert">
+    <strong>Actualización de notas!</strong><br>` + text + `.
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>`
 })

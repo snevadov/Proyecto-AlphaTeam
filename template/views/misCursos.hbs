@@ -1,8 +1,12 @@
 {{>header}}
 	<div class="container">
-		<div id="chatPrivado">
-            
-        </div>
+		<form id="formularioPrivado">
+			<div id="chatPrivado">
+			
+			</div>
+			<input type="text" id="usuario" value="{{nombreUsuario}}" hidden>
+			<input type="text" id="documentoUsuario" value="{{documentoUsuario}}" hidden>
+		</form>
 		<h1 align="center">Formulario para ver mis cursos</h1>
 		<h5 align="center">Utilice este formulario para ver y eliminar mis cursos</h5>
 		
@@ -16,4 +20,6 @@
 			</div>
 		</form>
 	</div>
+	<script src="socket.io/socket.io.js"></script>
+	<script src="js/socketnotificacion.js"></script>
 {{>footer}}

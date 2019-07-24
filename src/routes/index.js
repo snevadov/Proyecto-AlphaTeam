@@ -582,7 +582,8 @@ app.get('/listado-cursos-docente',(req, res) => {
 
       res.render('listado-cursos-estudiante', {
         respuesta : respuesta,
-        
+        usuario: req.session.nombre,
+        documentoUsuario: req.session.documento,
         curso : {
                 id: parseInt(req.body.id),
                 nombre: req.body.nombre,
@@ -623,7 +624,9 @@ app.get('/listado-cursos-docente',(req, res) => {
         }
         console.log('INDEXXX :::::' + respuesta);
         res.render ('inscripcion',{
-          listado : respuesta
+          listado : respuesta,
+          usuario: req.session.nombre,
+          documentoUsuario: req.session.documento
         })
     });
     /*res.render('inscripcion-confirmacion', {
@@ -690,7 +693,9 @@ app.get('/listado-cursos-docente',(req, res) => {
 
               res.render ('inscripcion-confirmacion',{
                 mostrar : resultado,
-                texto : 'OK'
+                texto : 'OK',
+                usuario: req.session.nombre,
+                documentoUsuario: req.session.documento
               })
           });
         }        
@@ -736,7 +741,9 @@ app.get('/listado-cursos-docente',(req, res) => {
             listaCursos : listaCursos,
             listaEstudiantes : listaEstudiantes,
             listaCursosEstudiantes : listaCursosEstudiantes,
-            usuario : req.session.documento
+            usuario : req.session.documento,
+            documentoUsuario: req.session.documento,
+            nombreUsuario: req.session.nombre
           })
         })
       })
