@@ -684,7 +684,11 @@ app.get('/listado-cursos-docente',(req, res) => {
                 to: req.session.correo, 
                 from:  'walterasz4@gmail.com', 
                 subject: 'Bienvenido Curso ' + respuesta.nombre, 
-                text: 'El registro del Curso fue exitoso. para mas información dirigirse al siguiente link  http://localhost:3000/verCursos'     
+                text: 'El registro del Curso fue exitoso! A continuación detallamos la información del Curso. \n ' +
+                        'Curso: ' + respuesta.nombre + ' \n ' +
+                        'Modalidad: ' + respuesta.modalidad + ' \n ' +
+                        'Valor: ' + respuesta.valor  + ' \n\n' + 
+                        'Para mas información dirigirse al siguiente link  http://localhost:3000/login'     
               };
               const path = require('path');
               console.log('Enviando correo:::' + msg);
