@@ -7,7 +7,24 @@ const Usuario = require('./../models/usuario');
 const CursoEstudiante = require('./../models/cursos-estudiantes');
 const Cursos = require('./../models/cursos');
 const multer = require('multer');
-var upload = multer({ })
+var upload = multer({ 
+  fileFilter (req, file, cb) {
+ 
+  // The function should call `cb` with a boolean
+  // to indicate if the file should be accepted
+   
+  // To reject this file pass `false`, like so:
+  if(!file.originalname.match(/\.(jpg|png|jpeg)$/)) {
+    return cb(null, false)
+  }		
+   
+  // To accept the file pass `true`, like so:
+  cb(null, true)
+   
+  // You can always pass an error if something goes wrong:
+   
+  }
+})
 
 //requiero filesystem
 const fs = require('fs');
@@ -382,7 +399,34 @@ app.get('/listado-cursos-docente',(req, res) => {
   });
   
   //Llamada para cargar formulario de creación de usuarios
-  app.post('/registrar-usuario',upload.single('archivo'),(req, res) => {
+  app.post('/registrar-usuario',upload.single('archivo'),(req, res, err) => {
+
+    if(err)
+    {
+      mensaje = ` <div class="alert alert-danger" >
+                    <strong>Proceso no exitoso!</strong><br>El tipo de archivo que adjuntó no es válido.
+                  </div>`
+      return res.render('error', {
+        estudiante:mensaje
+      });
+    }
+
+    upload(req, res, function (err) {
+      console.log("PRUEBA")
+      if (err instanceof multer.MulterError) {
+        // A Multer error occurred when uploading.
+        return res.render('error', {
+          estudiante:'Usuario no encontrado.'
+        });
+      } else if (err) {
+        // An unknown error occurred when uploading.
+        return res.render('error', {
+          estudiante:'Usuario no encontrado 2.'
+        });
+      }
+   
+      // Everything went fine.
+    })
     
     //Defino variable usuario
     let usuario = new Usuario({
