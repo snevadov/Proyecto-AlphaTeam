@@ -98,7 +98,7 @@ io.on('connection', client => {
 			let texto = 'Se ha desconectado ' + usuarioBorrado.nombre
 			io.emit('usuarioDesconectado', texto)
 
-			let textoNotificacion = 'Se ha desconectado ' + usuarioBorradoNotificacion.nombre
+			let textoNotificacion = 'Se ha desconectado ' + (usuarioBorradoNotificacion.nombre) ? usuarioBorradoNotificacion.nombre : 'un invitado';
 			io.emit('usuarioBorradoNotificacion', textoNotificacion)
 		}
 
