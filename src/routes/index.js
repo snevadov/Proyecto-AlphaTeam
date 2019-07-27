@@ -458,6 +458,7 @@ app.get('/listado-cursos-docente',(req, res) => {
       req.session.nombre = usuario.nombre;
       req.session.documento = usuario.documento;
       req.session.tipo = usuario.tipo;
+      req.session.correo = usuario.correo;
       req.session.coordinador = (usuario.tipo == 'coordinador');
       req.session.docente = (usuario.tipo == 'docente');
       req.session.aspirante = (usuario.tipo == 'aspirante');
@@ -678,18 +679,17 @@ app.get('/listado-cursos-docente',(req, res) => {
                   texto : 'KO'
                 })
               }
-
+              console.log("req.session.correo:::" + respuesta.nombre);
               const msg = { 
                 to: req.session.correo, 
                 from:  'walterasz4@gmail.com', 
-                subject: 'Bienvenido Curso ' + Cursos.nombre, 
-                text: 'El registro del Curso fue exitoso! para mas información dirigirse al siguiente link  http://localhost:3000/verCursos'     
+                subject: 'Bienvenido Curso ' + respuesta.nombre, 
+                text: 'El registro del Curso fue exitoso. para mas información dirigirse al siguiente link  http://localhost:3000/verCursos'     
               };
               const path = require('path');
-              console.log('Enviando correo:::' + __dirname);
+              console.log('Enviando correo:::' + msg);
               sgMail.send(msg);
               console.log('Fin correo');
-
 
               res.render ('inscripcion-confirmacion',{
                 mostrar : resultado,

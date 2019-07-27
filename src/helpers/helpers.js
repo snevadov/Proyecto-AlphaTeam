@@ -2,6 +2,7 @@ const hbs = require('hbs');
 //requiero filesystem
 const fs = require('fs');
 
+
 listaEstudiantes = [];
 listaEstudiantesCursos = [];
 listaCursos = [];
@@ -55,29 +56,29 @@ hbs.registerHelper('listar-cursos', (respuesta, err) => {
 
 hbs.registerHelper('listar-cursos-disponibles', (respuesta, err) => {
 
-    //console.log("listar-cursos-disponibles")
+    console.log("listar-cursos-disponibles")
     let texto = "";
-    //console.log(err)
+    console.log(err)
 		if(err){
-            //console.log("err")
-			return err
+            console.log("err")
+			return console.log(err)
 		}
-
+        console.log("Objeto respuesta::::::::::." + respuesta);
         if (respuesta.length == 0){
-            //console.log('No existen cursos disponibles');
+            console.log('No existen cursos disponibles');
             texto = '<div class="alert alert-danger" role="alert">' +
                         'No existen cursos disponibles' +
                     '</div>';
         }
         else {
 
-            //console.log('cursos disponibles antes del for');
+            console.log('cursos disponibles antes del for');
 
             texto = `<div class="accordion" id="accordionExample"> 
                             <div class="row">`;
             i = 1;
             respuesta.forEach(curso => {
-                //console.log('cursos disponibles dentro del for');
+                console.log('cursos disponibles dentro del for');
                 texto = texto +            
                                 `<div class="col">            
                                     <div class="card">
@@ -109,7 +110,7 @@ hbs.registerHelper('listar-cursos-disponibles', (respuesta, err) => {
 
         }
     //let msg = texto;
-    //console.log("QUE PASA");
+    console.log("QUE PASA");
     //console.log("texto R " + texto);
     return texto;   
         
@@ -941,7 +942,6 @@ hbs.registerHelper('listar-estudiantes-calificar', (listaEstudiantes) => {
     let texto = '';
 
     //Si tiene estudiantes, construyo la tabla de estudiantes
-    let i = 0;
     if( listaEstudiantes && listaEstudiantes.length >= 1 )
     {
         texto = texto + `<table class='table'>
@@ -958,15 +958,14 @@ hbs.registerHelper('listar-estudiantes-calificar', (listaEstudiantes) => {
         
         //Recorro los estudiantes
         listaEstudiantes.forEach(estudiante => {
-            i++
             texto = texto + `               <tr>
                                                 <td>${estudiante.documento}</td>
                                                 <td>${estudiante.nombre}</td>
                                                 <td>${estudiante.correo}</td>
                                                 <td>${estudiante.telefono}</td>
-                                                <td><input type="number"  id="estudiante${i}" class="form-control" name="${estudiante.documento}" placeholder="Nota" step=".01" required></td>
+                                                <td><input type="number"  class="form-control" name="${estudiante.documento}" placeholder="Nota" step=".01" required></td>
                                                 
-                                            </tr>`;
+                                            </tr>`;                    
         });
         
         texto = texto + `
