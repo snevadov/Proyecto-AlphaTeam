@@ -1,6 +1,14 @@
 {{>header}}
+	<form id="formularioPrivado">
+		<div id="chatPrivado">
+		
+		</div>
+		<input type="text" id="usuario" value="{{usuario}}" hidden>
+		<input type="text" id="documentoUsuario" value="{{documentoUsuario}}" hidden>
+	</form>
 	<form action="/inscripcion" method="GET">
 		<div class="container">
+			
 			{{{incripcionCursos mostrar texto}}}
 		</div>
 		<div class="container">
@@ -11,4 +19,6 @@
 			</div>
 		</div>            
     </form>
+	<script src="socket.io/socket.io.js"></script>
+	<script src="js/socketnotificacion.js"></script>
 {{>footer}}

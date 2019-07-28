@@ -6,6 +6,9 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const mongoose = require ('mongoose');
 
+const server = require('http').createServer(app);
+const io = require('socket.io')(server);
+
 //Variables de sesión
 const session = require('express-session');
 var MemoryStore = require('memorystore')(session);
@@ -47,8 +50,10 @@ app.use((req, res, next) => {
 		res.locals.coordinador = (req.session.tipo == 'coordinador')
 		res.locals.docente = (req.session.tipo == 'docente')
 		res.locals.aspirante = (req.session.tipo == 'aspirante')
+
+		res.locals.avatar = req.session.avatar
 	}
-	console.log(req.session);
+	//console.log(req.session);
 	next()
 })
 
@@ -60,12 +65,77 @@ mongoose.connect(process.env.URLDB, {useNewUrlParser: true}, (error, resultado) 
 	if(error){
 		return console.log(error)
 	}
-	console.log("conectado");
+	console.log("conectado a BD");
 });
 
+const { Usuarios } = require('./clsUsuarios')
+const usuarios = new Usuarios();
+const usuariosNotificacion = new Usuarios();
+
+io.on('connection', client => {
+
+	console.log("usuario conectado por socket");
+
+	client.on('usuarioNuevo', (usuario) => {
+		let listado = usuarios.agregarUsuario(client.id, usuario)
+		console.log(listado)
+		let texto = 'Se ha conectado ' + usuario
+		io.emit('nuevoUsuario',texto)
+	})
+
+	client.on('usuarioNuevoNotificacion', (usuario, documento) => {
+		let listado = usuariosNotificacion.agregarUsuarioConDocumento(client.id, usuario, documento)
+		console.log(listado)
+		let texto = 'Se ha conectado ' + usuario
+		io.emit('nuevoUsuarioNotificacion',texto)
+	})
+
+	client.on('disconnect',()=>{
+		let usuarioBorrado = usuarios.borrarUsuario(client.id)
+		let usuarioBorradoNotificacion = usuariosNotificacion.borrarUsuario(client.id)
+		console.log(usuarioBorrado)
+		if(usuarioBorrado){
+			let texto = 'Se ha desconectado ' + usuarioBorrado.nombre
+			io.emit('usuarioDesconectado', texto)
+
+			let textoNotificacion = 'Se ha desconectado ' + ((usuarioBorradoNotificacion.nombre) ? usuarioBorradoNotificacion.nombre : 'un invitado');
+			io.emit('usuarioBorradoNotificacion', textoNotificacion)
+		}
+
+	})
+
+	client.on("texto", (text, callback) => {
+		let usuario = usuarios.getUsuario(client.id)
+		let texto = usuario.nombre + ' : ' + text
+		console.log(texto)
+		io.emit("texto", (texto))
+		callback()
+	})
+
+	//Recibo el texto privado
+	client.on("textoPrivado", (text, callback) => {
+		let usuario = usuariosNotificacion.getUsuario(client.id)
+		text.estudiantesNotas.forEach(estudianteNota => {
+			//let texto = `${usuario.nombre} : ${text.mensajePrivado}`
+			let texto = `El curso ${text.nombreCurso} ha sido calificado por el profesor ${text.nombreProfesor}. Su nota es: ${estudianteNota.nota}`
+			console.log('TEXTO PRIVADO' + texto);
+			//Envío a uno
+			let destinatario = usuariosNotificacion.getDestinatario(estudianteNota.documento)
+			console.log('destinatario');
+			console.log(destinatario);
+			if(destinatario)
+			{
+				client.broadcast.to(destinatario.id).emit("textoPrivado", (texto));
+				console.log('Finalizó el envío del mensaje');
+			}
+		});
+
+		callback();
+	})
+})
 
 //** JHON */
-console.log(__dirname)
-app.listen(process.env.PORT, () => {
+//console.log(__dirname)
+server.listen(process.env.PORT, () => {
 	console.log ('servidor en el puerto ' + process.env.PORT);
 });

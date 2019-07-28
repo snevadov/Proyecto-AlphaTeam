@@ -1,8 +1,17 @@
 {{>header}}
 <!-- SEBASTIÁN -->
 <div class="container">
+    <form id="formularioPrivado">
+		<div id="chatPrivado">
+		
+		</div>
+		<input type="text" id="usuario" value="{{usuario}}" hidden>
+		<input type="text" id="documentoUsuario" value="{{documentoUsuario}}" hidden>
+	</form>
     <h4>CURSOS DISPONIBLES</h4>
     {{{listar-cursos-disponibles respuesta err}}}
 </div>
+<script src="socket.io/socket.io.js"></script>
+<script src="js/socketnotificacion.js"></script>
 <!-- FIN SEBASTIÁN-->
 {{>footer}}

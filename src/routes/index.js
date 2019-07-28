@@ -6,6 +6,26 @@ const hbs = require('hbs');
 const Usuario = require('./../models/usuario');
 const CursoEstudiante = require('./../models/cursos-estudiantes');
 const Cursos = require('./../models/cursos');
+const multer = require('multer');
+var upload = multer({ 
+  fileFilter (req, file, cb) {
+ 
+  // The function should call `cb` with a boolean
+  // to indicate if the file should be accepted
+   
+  // To reject this file pass `false`, like so:
+  if(!file.originalname.match(/\.(jpg|png|jpeg)$/)) {
+    return cb(null, false)
+  }		
+   
+  // To accept the file pass `true`, like so:
+  cb(null, true)
+   
+  // You can always pass an error if something goes wrong:
+   
+  }
+})
+
 //requiero filesystem
 const fs = require('fs');
 
@@ -18,6 +38,10 @@ const bcrypt = require('bcrypt');
 //Variables de sesión
 const session = require('express-session');
 var MemoryStore = require('memorystore')(session);
+
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey('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');
+ 
 
 //Helpers
 require('./../helpers/helpers');
@@ -47,7 +71,7 @@ app.get('/', (req, res ) => {
     if(err){
       console.log("err")
     }
-    console.log(respuesta)
+    //console.log(respuesta)
 
     res.render('listado-cursos-estudiante', {
       respuesta : respuesta,
@@ -89,6 +113,10 @@ app.post('/calculos',(req, res) => {
 });
   
 //** JHON */
+app.get('/chat',(req, res) => {
+  res.render('chat');
+});
+
 app.get('/listado-cursos',(req, res) => {
 
     Cursos.find({}).exec((err,respuestaTodos)=> {
@@ -371,7 +399,34 @@ app.get('/listado-cursos-docente',(req, res) => {
   });
   
   //Llamada para cargar formulario de creación de usuarios
-  app.post('/registrar-usuario',(req, res) => {
+  app.post('/registrar-usuario',upload.single('archivo'),(req, res, err) => {
+
+    if(err)
+    {
+      mensaje = ` <div class="alert alert-danger" >
+                    <strong>Proceso no exitoso!</strong><br>El tipo de archivo que adjuntó no es válido.
+                  </div>`
+      return res.render('error', {
+        estudiante:mensaje
+      });
+    }
+
+    upload(req, res, function (err) {
+      console.log("PRUEBA")
+      if (err instanceof multer.MulterError) {
+        // A Multer error occurred when uploading.
+        return res.render('error', {
+          estudiante:'Usuario no encontrado.'
+        });
+      } else if (err) {
+        // An unknown error occurred when uploading.
+        return res.render('error', {
+          estudiante:'Usuario no encontrado 2.'
+        });
+      }
+   
+      // Everything went fine.
+    })
     
     //Defino variable usuario
     let usuario = new Usuario({
@@ -379,7 +434,8 @@ app.get('/listado-cursos-docente',(req, res) => {
       nombre: req.body.nombre,
       correo: req.body.correo,
       telefono: req.body.telefono,
-      contrasena: bcrypt.hashSync(req.body.contrasena, 10)
+      contrasena: bcrypt.hashSync(req.body.contrasena, 10),
+      avatar: req.file.buffer
       
     });
     
@@ -390,12 +446,25 @@ app.get('/listado-cursos-docente',(req, res) => {
             respuesta = "No se fue posible registrar el usuario" + usuario.nombre + ' con documento de identidad ' + usuario.documento + '. Error: ' + err;
 			return res.render('registrar-usuario-resultado', {
 				mostrar: respuesta
-			})
+      })
         }
+
+        const msg = { 
+          to: req.body.correo, 
+          from:  'walterasz4@gmail.com', 
+          subject: 'Bienvenido Nodejs!', 
+          text: 'Bienvenido a la tercera entrega grupal del curso de Node.JS. Para ingresar favor dar clic http://localhost:3000/login'     
+        };
+        const path = require('path');
+        console.log('Enviando correo:::' + __dirname);
+        sgMail.send(msg);
+        console.log('Fin correo');
         respuesta = "El usuario " + usuario.nombre + ' con documento de identidad ' + usuario.documento  + " fue creado de manera exitosa!";
 		return res.render('registrar-usuario-resultado', {
 			mostrar: respuesta
-		})
+    })
+      
+
     });
   
   });
@@ -433,11 +502,18 @@ app.get('/listado-cursos-docente',(req, res) => {
       req.session.nombre = usuario.nombre;
       req.session.documento = usuario.documento;
       req.session.tipo = usuario.tipo;
+      req.session.correo = usuario.correo;
       req.session.coordinador = (usuario.tipo == 'coordinador');
       req.session.docente = (usuario.tipo == 'docente');
       req.session.aspirante = (usuario.tipo == 'aspirante');
+
+      console.log(usuario.avatar);
+      if(usuario.avatar){
+        req.session.avatar = usuario.avatar.toString('base64');
+      }
+      
   
-	    console.log('Variable de sesion:' + req.session);
+	    //console.log('Variable de sesion:' + req.session);
 
       //Dependiendo del rol, redirecciono a una página
       if(usuario.tipo == 'coordinador')
@@ -551,7 +627,8 @@ app.get('/listado-cursos-docente',(req, res) => {
 
       res.render('listado-cursos-estudiante', {
         respuesta : respuesta,
-        
+        usuario: req.session.nombre,
+        documentoUsuario: req.session.documento,
         curso : {
                 id: parseInt(req.body.id),
                 nombre: req.body.nombre,
@@ -592,7 +669,9 @@ app.get('/listado-cursos-docente',(req, res) => {
         }
         console.log('INDEXXX :::::' + respuesta);
         res.render ('inscripcion',{
-          listado : respuesta
+          listado : respuesta,
+          usuario: req.session.nombre,
+          documentoUsuario: req.session.documento
         })
     });
     /*res.render('inscripcion-confirmacion', {
@@ -610,7 +689,7 @@ app.get('/listado-cursos-docente',(req, res) => {
         return console.log(  );
       }
       console.log("req.session");
-      console.log(req.session);
+      //console.log(req.session);
       console.log('req.session.documento :::::' + req.session.documento);
       console.log('respuesta.id :::::' + respuesta.id);
       CursoEstudiante.find( {documento:req.session.documento,curso : respuesta.id } ).exec((err,respuestaCurEst)=>{
@@ -644,9 +723,27 @@ app.get('/listado-cursos-docente',(req, res) => {
                   texto : 'KO'
                 })
               }
+              console.log("req.session.correo:::" + respuesta.nombre);
+              const msg = { 
+                to: req.session.correo, 
+                from:  'walterasz4@gmail.com', 
+                subject: 'Bienvenido Curso ' + respuesta.nombre, 
+                text: 'El registro del Curso fue exitoso! A continuación detallamos la información del Curso. \n ' +
+                        'Curso: ' + respuesta.nombre + ' \n ' +
+                        'Modalidad: ' + respuesta.modalidad + ' \n ' +
+                        'Valor: ' + respuesta.valor  + ' \n\n' + 
+                        'Para mas información dirigirse al siguiente link  http://localhost:3000/login'     
+              };
+              const path = require('path');
+              console.log('Enviando correo:::' + msg);
+              sgMail.send(msg);
+              console.log('Fin correo');
+
               res.render ('inscripcion-confirmacion',{
                 mostrar : resultado,
-                texto : 'OK'
+                texto : 'OK',
+                usuario: req.session.nombre,
+                documentoUsuario: req.session.documento
               })
           });
         }        
@@ -656,7 +753,7 @@ app.get('/listado-cursos-docente',(req, res) => {
   });
   
   app.get('/misCursos',(req, res) => {
-    console.log(req.session);
+    //console.log(req.session);
     
     Cursos.find({}).exec((err,respuestaCursos)=> {
       if(err){
@@ -692,7 +789,9 @@ app.get('/listado-cursos-docente',(req, res) => {
             listaCursos : listaCursos,
             listaEstudiantes : listaEstudiantes,
             listaCursosEstudiantes : listaCursosEstudiantes,
-            usuario : req.session.documento
+            usuario : req.session.documento,
+            documentoUsuario: req.session.documento,
+            nombreUsuario: req.session.nombre
           })
         })
       })
@@ -758,6 +857,27 @@ app.get('/listado-cursos-docente',(req, res) => {
 
 //** SEBASTIÁN */
 app.get('/mis-cursos-docente',(req, res) => {
+
+  let mensaje = ''
+
+  //Si viene con parámetro de éxito, muestro mensaje
+  if(req.query.exito == 1)
+  {
+    mensaje = ` <div class="alert alert-success alert-dismissible fade show" role="alert">
+                  <strong>Proceso exitoso!</strong><br>Las notas fueron almacenadas correctamente.
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>`;
+  }
+  else if(req.query.exito == 0){
+    mensaje = ` <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                  <strong>Ocurrió un error!</strong><br>Las notas NO fueron almacenadas.
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>`;
+  }
   
   //Busco mis cursos como docente
   Cursos.find({docente: req.session.documento}).exec((err,respuestaCursos)=> {
@@ -786,10 +906,139 @@ app.get('/mis-cursos-docente',(req, res) => {
         res.render('mis-cursos-docente', {
           listaCursos : listaCursos,
           listaEstudiantes : listaEstudiantes,
-          listaCursosEstudiantes : listaCursosEstudiantes
+          listaCursosEstudiantes : listaCursosEstudiantes,
+          mensaje: mensaje
         })
       })
     })
+  })
+});
+
+//Carga la calificación de un curso
+app.post('/calificar-curso',(req, res) => {
+
+  //Defino variable usuario
+  let idCurso = req.body.idCurso;
+
+  //Busco mis cursos como docente
+  Cursos.findOne({id: idCurso}).exec((err,respuestaCurso)=> {
+    if(err){
+      console.log("Error consultando los cursos");
+      return console.log(err);
+    }
+
+    //Curso que calificaré
+    let miCurso = respuestaCurso;
+    
+    //Busco todos los curso por estudiante
+    CursoEstudiante.find({curso: idCurso}).exec((err,respuestaCursoEstudiante)=> {
+      if(err){
+        console.log('Ocurrió un error al consultar los estudiantes por curso');
+        console.log(err);
+      }
+      
+      listaCursosEstudiantes = [];
+      listaCursosEstudiantes = respuestaCursoEstudiante;
+
+      //let listadoEst = respuestaCursoEstudiante.find({}).select('documento');
+      let listadoEst = respuestaCursoEstudiante.map(cursoEstudiante => cursoEstudiante.documento);
+
+      //Busco todos los usuarios
+      Usuario.find({documento: {"$in" : respuestaCursoEstudiante.map(cursoEstudiante => cursoEstudiante.documento)} }).exec((err,respuestaUsuarios)=> {
+        if(err){
+          console.log("err")
+        }
+        listaEstudiantes = [];
+        listaEstudiantes = respuestaUsuarios;
+
+        res.render('calificar-curso', {
+          miCurso : miCurso,
+          listaEstudiantes : listaEstudiantes,
+          nombreProfesor: req.session.nombre,
+          documentoUsuario: req.session.documento
+        })
+      })
+    })
+  })
+});
+
+//Guarda las calificaciones de un curso
+app.post('/guardar-calificaciones-curso',(req, res) => {
+
+  console.log('req.body');
+  console.log(req.body);
+  
+  let respuesta = '';
+  let idCurso = req.body.idCurso;
+
+  //Busco todos los curso por estudiante
+  CursoEstudiante.find({curso: idCurso}).exec((err,respuestaCursoEstudiante)=> {
+    if(err){
+      console.log('Ocurrió un error al consultar los estudiantes por curso');
+      console.log(err);
+    }
+
+    //Obtengo los documentos de los estudiantes y excluyo el campo idCurso del req.body
+    listaIdsEstudiante = Object.keys(req.body).filter(campo => campo != 'idCurso');
+
+    let listaEstudiante = [];
+    let mensaje = '';
+    let exito = 0;
+
+    var notasValidadas = 0;
+
+    listaIdsEstudiante.forEach(documentoEstudiante => {
+      notasValidadas++;
+      //Si tiene nota y está entre 0 y 5
+      if(req.body[documentoEstudiante] && req.body[documentoEstudiante] >= 0 && req.body[documentoEstudiante] <=5) {
+        let estudianteNota = {
+          documento: documentoEstudiante,
+          nota: parseFloat(req.body[documentoEstudiante]).toFixed(1)
+        }
+        listaEstudiante.push(estudianteNota);
+      }
+      else{
+        mensaje = mensaje + 'El estudiante con documento ' + documentoEstudiante + ' no tiene una nota ingresada.';
+        console.log(mensaje);
+      }
+
+      //Si todos los elementos fueron procesados
+      if(notasValidadas === listaIdsEstudiante.length) {
+        
+        //Si todos los estudiantes están calificados, procedo a actualizar
+        if(listaEstudiante.length == respuestaCursoEstudiante.length){
+          //Recorro la lista de estudiantes y actualizo nota
+          let estudiantesListos = 0;
+          listaEstudiante.forEach(estudiante => {
+            CursoEstudiante.findOneAndUpdate({documento: estudiante.documento}, {nota: estudiante.nota}, (err,respuestaActualizar)=> {
+              estudiantesListos++;
+              if(err){
+                console.log('Ocurrió un error en la actualización de la nota');
+                console.log(err);
+              }
+
+              if(estudiantesListos === listaEstudiante.length){
+                Cursos.findOneAndUpdate({id: idCurso}, {estado: 'Finalizado'}, (err,respuestaActualizarCurso)=> {
+                  if(err){
+                    console.log('Ocurrió un error en la actualización del curso');
+                    console.log(err);
+                  }
+                  mensaje = 'Notas actualizadas correctamente';
+                  console.log(mensaje);
+                  exito = 1;
+                  return res.redirect('/mis-cursos-docente?exito=' + exito);
+                })
+              }
+            })
+          })
+        }
+        else{
+          mensaje = 'Existen estudiantes que no tiene una nota ingresada. Por favor valide.';
+          console.log(mensaje);
+          return res.redirect('/mis-cursos-docente?exito=' + exito);
+        }
+      }
+    });
   })
 });
 //** FIN SEBASTIÁN */
