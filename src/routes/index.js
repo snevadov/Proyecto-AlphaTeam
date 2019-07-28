@@ -40,7 +40,7 @@ const session = require('express-session');
 var MemoryStore = require('memorystore')(session);
 
 const sgMail = require('@sendgrid/mail');
-sgMail.setApiKey('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');
+sgMail.setApiKey('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');
  
 
 //Helpers
@@ -424,7 +424,7 @@ app.get('/listado-cursos-docente',(req, res) => {
 
         const msg = { 
           to: req.body.correo, 
-          from:  'walterasz4@gmail.com', 
+          from:  'nevado26@hotmail.com', 
           subject: 'Bienvenido Nodejs!', 
           text: 'Bienvenido a la tercera entrega grupal del curso de Node.JS. Para ingresar favor dar clic http://localhost:3000/login'     
         };
@@ -699,7 +699,7 @@ app.get('/listado-cursos-docente',(req, res) => {
               console.log("req.session.correo:::" + respuesta.nombre);
               const msg = { 
                 to: req.session.correo, 
-                from:  'walterasz4@gmail.com', 
+                from:  'nevado26@hotmail.com', 
                 subject: 'Bienvenido Curso ' + respuesta.nombre, 
                 text: 'El registro del Curso fue exitoso! A continuación detallamos la información del Curso. \n ' +
                         'Curso: ' + respuesta.nombre + ' \n ' +
