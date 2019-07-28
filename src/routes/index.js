@@ -15,7 +15,7 @@ var upload = multer({
    
   // To reject this file pass `false`, like so:
   if(!file.originalname.match(/\.(jpg|png|jpeg)$/)) {
-    return cb(null, false)
+    return cb('Tipo de archivo incorrecto', false)
   }		
    
   // To accept the file pass `true`, like so:
@@ -399,34 +399,7 @@ app.get('/listado-cursos-docente',(req, res) => {
   });
   
   //Llamada para cargar formulario de creación de usuarios
-  app.post('/registrar-usuario',upload.single('archivo'),(req, res, err) => {
-
-    if(err)
-    {
-      mensaje = ` <div class="alert alert-danger" >
-                    <strong>Proceso no exitoso!</strong><br>El tipo de archivo que adjuntó no es válido.
-                  </div>`
-      return res.render('error', {
-        estudiante:mensaje
-      });
-    }
-
-    upload(req, res, function (err) {
-      console.log("PRUEBA")
-      if (err instanceof multer.MulterError) {
-        // A Multer error occurred when uploading.
-        return res.render('error', {
-          estudiante:'Usuario no encontrado.'
-        });
-      } else if (err) {
-        // An unknown error occurred when uploading.
-        return res.render('error', {
-          estudiante:'Usuario no encontrado 2.'
-        });
-      }
-   
-      // Everything went fine.
-    })
+  app.post('/registrar-usuario',upload.single('archivo'),(req, res) => {
     
     //Defino variable usuario
     let usuario = new Usuario({
@@ -440,7 +413,7 @@ app.get('/listado-cursos-docente',(req, res) => {
     });
     
     //Guarda y realiza la redirección
-	usuario.save((err, resultado) => {
+	  usuario.save((err, resultado) => {
         let respuesta = '';
 		if(err){
             respuesta = "No se fue posible registrar el usuario" + usuario.nombre + ' con documento de identidad ' + usuario.documento + '. Error: ' + err;
